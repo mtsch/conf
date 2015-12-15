@@ -1,0 +1,17 @@
+#!/bin/sh
+# pacman
+alias pacupg='sudo pacman -Syu'
+alias pacinst='sudo pacman -S'
+alias pacre='sudo pacman -R'
+alias pacrem='sudo pacman -Rns'
+alias pacrep='pacman -Si'
+alias pacreps='pacman -Ss'
+alias pacloc='pacman -Qi'
+alias past=locs='pacman -Qs'
+
+# yaourt
+alias yaoupg='yaourt -Syu'
+alias yaoinst='yaourt -S'
+alias yaoreps='yaourt -Ss'
+alias yaocre='yaourt -R'
+alias yaorem='yaourt -Rns'

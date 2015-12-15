@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# input & stuff
+setxkbmap si              # set keyboard to slovene
+syndaemon -t -k -i 1 -d & # disable touchpad when typing
+xset -b                   # disable beep
+
+# daemons
+urxvtd &
+redshift -l 46:14 -t 6500:4000 &
+
+# xmonad + restore panels
+xmonad --replace &
+sleep 1 && kill -9 $(pgrep panel)
+

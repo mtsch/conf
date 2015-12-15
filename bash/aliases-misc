@@ -1,0 +1,29 @@
+#!/bin/sh
+# misc
+alias df='df -h'
+alias whereis='find . -iname'
+alias grep='egrep'
+alias tcpy='pwd | urxvtc'
+alias poogle='ping www.google.com'
+alias clr='clear'
+
+# restart
+alias rebash='source ~/.bashrc'
+alias remonad='xmonad --recompile && xmonad --restart'
+
+# edit
+alias vivim='vim ~/.vim/vimrc'
+alias viminitrc='vim ~/.xinitrc'
+alias vibash='vim ~/.bashrc'
+alias vimonad='vim ~/.xmonad/xmonad.hs'
+
+# ls
+alias ls='ls --color=auto -p'
+alias ll='ls -l'
+alias la='ls -a'
+
+# why?
+alias al='sl -a'
+
+# typos
+alias :e='vim'
