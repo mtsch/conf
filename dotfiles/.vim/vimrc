@@ -1,0 +1,165 @@
+"==============="
+" VUNDLE VUNDLE "
+"==============="
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'scrooloose/syntastic'
+Plugin 'bling/vim-airline'
+
+Plugin 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-repeat'
+
+Plugin 'tpope/vim-surround'
+Plugin 'godlygeek/tabular'
+Plugin 'altercation/vim-colors-solarized'
+
+"Plugin 'xolox/vim-misc'
+
+Plugin 'tpope/vim-fireplace'
+Plugin 'guns/vim-clojure-static'
+
+"enable filetype plugins
+call vundle#end()
+filetype plugin indent on
+
+"=================="
+" GENERAL SETTINGS "
+"=================="
+
+"normal controls
+set nocompatible
+set backspace=2 "enable backspace
+set mouse=a     "enable mouse
+set title       "set terminal title
+set incsearch   "better search
+set timeout timeoutlen=1000 ttimeoutlen=100
+set guioptions-=m
+set guioptions-=T
+" no files
+set nobackup
+set noswapfile
+set nowb
+" tabs
+set expandtab
+set tabstop=4
+set shiftwidth=2
+set smarttab
+" other
+set history=1000
+set undolevels=1000
+set wildmenu
+set wildmode=longest,list
+" allow saving when not sudo
+cmap w!! w !sudo tee > /dev/null %
+" set completeopts
+set completeopt=longest,menuone
+
+set smartcase "smart search
+
+"========"
+" VISUAL "
+"========"
+
+set encoding=utf-8 "utf-8 encoding
+set t_Co=256       "256 color terminal
+set number         "show line numbers
+set showcmd
+let g:solarized_visibility="low"
+set listchars=eol:¬,extends:»,precedes:«,tab:⇀\ ,trail:·
+set list
+set hlsearch     "always highlight search
+set laststatus=2 "always show statusline
+set scrolloff=5  "dont scroll to edge
+set cursorline   "show currentline
+" colors
+syntax enable
+colorscheme solarized
+set background=light
+let &colorcolumn="80,".join(range(81,335),",")
+
+"===================="
+" KEYBOARD SHORTCUTS "
+"===================="
+
+" leader
+let mapleader=" "
+let maplocalleader="  "
+nmap <Leader>c :set cursorcolumn!<CR>
+nmap <Leader>n :set relativenumber!<CR>
+nmap <Leader>va ggVG "select all
+nmap <Leader>y "+y
+nmap <Leader>p "+p
+vmap <Leader>y "+y
+vmap <Leader>p "+p
+nmap <Leader>rv :source $MYVIMRC<CR>      " reload vimrc
+nmap <Leader>rws :%s/\s\+$//e<CR>:noh<CR> " remove trailing whitespace
+" reselect visual block after indent/outdent
+xnoremap < <gv
+xnoremap > >gv
+" change between dark and light background
+call togglebg#map("<F3>")
+" remove highlights
+nnoremap <CR> :noh<CR><CR>
+
+" add whitespace
+nnoremap <C-@> i <ESC>
+
+"typos
+nmap :W :w
+nmap :Q :q
+nmap :W! :w!
+nmap :Q! :q!
+nmap :Wq :wq
+nmap :WQ :wq
+nmap :Wq! :wq!
+nmap :WQ! :wq!
+
+" =============== "
+" PLUGIN SPECIFIC "
+" =============== "
+
+" unimpaired line bubbling
+nmap <C-k> [e
+nmap <C-j> ]e
+imap <C-k> <Esc>[e
+imap <C-j> <Esc>]ea
+vmap <C-k> [egv
+vmap <C-j> ]egv
+
+" airline
+let g:airline_theme='solarized'
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" symbols
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '◀'
+
+" disable traling
+let g:airline#extensions#whitespace#checks=[]
+
+" tabs
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#buffer_min_count=1
+let g:airline#extensions#tabline#show_buffers=0
+
+" multi cursor
+let g:multi_cursor_exit_from_visual_mode=0
+let g:multi_cursor_exit_from_insert_mode=0
+
+" haskell
+let g:syntastic_haskell_checkers = ['hdevtools']
+
+" clojure
+nnoremap <C-E> :Eval<CR>
+vnoremap <C-E> :Eval<CR>
+
+" asm
+autocmd FileType asm set shiftwidth=8
+autocmd FileType asm set noet
+autocmd FileType asm set tabstop=8
+let g:syntastic_asm_checkers=['']
