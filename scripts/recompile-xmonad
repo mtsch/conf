@@ -1,4 +1,5 @@
 #!/bin/sh
+# recompile and restart xmonad and send notification via notifyd
 (xmonad --recompile && xmonad --restart &&
   notify-send "XMonad" "Recompile successful!") ||
   notify-send "XMonad" "Recompile failed!"

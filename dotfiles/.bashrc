@@ -6,7 +6,7 @@ shopt -s checkwinsize
 [[ $- != *i* ]] && return
 
 # additional sources - aliases, variables and scripts
-SETTINGDIR=~/conf/bash
+SETTINGDIR=~/conf/scripts/bashrc-source
 source $SETTINGDIR/git-completion-bash
 source $SETTINGDIR/bashmarks.sh
 source $SETTINGDIR/vars

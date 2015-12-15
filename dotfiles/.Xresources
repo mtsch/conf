@@ -1,4 +1,4 @@
-URxvt.iconFile        : /home/m/conf/icons/breeze-terminal.svg
+URxvt.iconFile        : /home/m/images/icons/breeze-terminal.svg
 URxvt.intensityStyles : false
 URxvt.scrollBar       : false
 URxvt.scrollstyle     : plain

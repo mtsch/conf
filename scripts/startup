@@ -1,4 +1,5 @@
 #!/bin/bash
+# run at startup
 
 # input & stuff
 setxkbmap si              # set keyboard to slovene
