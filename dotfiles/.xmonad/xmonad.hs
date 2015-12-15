@@ -73,7 +73,7 @@ theColors     = [ "#D33682" -- focused border
 theTabFont      = "xft:sans:size=8"
 
 -- directory with executable scripts
-binDir = "/home/m/conf/bin/"
+scriptDir = "/home/m/conf/scripts/"
 
 theManageHook = composeAll
     -- never open as master
@@ -168,15 +168,15 @@ keyMappings =
                       >> sendMessage NextLayout
                       >> sendMessage NextLayout)
     -- misc
-    , ("M-S-r",     spawn $ binDir ++ "recompile-xmonad")
+    , ("M-S-r",     spawn $ scriptDir ++ "recompile-xmonad")
     , ("M-i",       dynamicLogString defaultPP >>=
                         \d -> spawn $ "notify-send .t 1337 \"" ++ d ++ "\"")
     , ("M-S-q",     spawn "xfce4-session-logout")
 
     -- audio volume
-    , ("<XF86AudioRaiseVolume>", spawn $ binDir ++ "pulse-volume '+'")
-    , ("<XF86AudioLowerVolume>", spawn $ binDir ++ "pulse-volume '-'")
-    , ("<XF86AudioMute>",        spawn $ binDir ++ "pulse-volume mute")
+    , ("<XF86AudioRaiseVolume>", spawn $ scriptDir ++ "pulse-volume '+'")
+    , ("<XF86AudioLowerVolume>", spawn $ scriptDir ++ "pulse-volume '-'")
+    , ("<XF86AudioMute>",        spawn $ scriptDir ++ "pulse-volume mute")
     ]
 
 windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $

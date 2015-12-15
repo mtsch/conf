@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ $1 == '+' ]; then
+  pactl set-sink-mute 1 false
+  pactl -- set-sink-volume 1 +5%
+fi
+if [ $1 == '-' ]; then
+  pactl set-sink-mute 1 false
+  pactl -- set-sink-volume 1 -5%
+fi
+if [ $1 == 'mute' ]; then
+  pactl set-sink-mute 1 toggle
+fi
