@@ -1,0 +1,5 @@
+#!/bin/sh
+(xmonad --recompile && xmonad --restart &&
+  notify-send "XMonad" "Recompile successful!") ||
+  notify-send "XMonad" "Recompile failed!"
+
