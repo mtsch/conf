@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ $# -gt 0 ] && [ $1 == asm ]; then
+  shift
+  java -cp ~/git-stuff/SicTools/out/make/sictools.jar sic.Asm $*
+else
+  java -jar ~/git-stuff/SicTools/out/make/sictools.jar $*
+fi

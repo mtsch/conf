@@ -4,8 +4,6 @@ import Data.Char
 import Data.Monoid
 import System.Exit
 
-import XMonad.ManageHook
-
 import XMonad.Actions.CopyWindow
 import XMonad.Actions.CycleWS
 import XMonad.Actions.DwmPromote
@@ -14,6 +12,8 @@ import XMonad.Actions.SwapWorkspaces
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.WindowGo
 import XMonad.Actions.WithAll
+
+import XMonad.Config.Xfce
 
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
@@ -24,6 +24,8 @@ import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.ThreeColumns
 
+import XMonad.ManageHook
+
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
@@ -32,11 +34,8 @@ import XMonad.Hooks.SetWMName
 import XMonad.Util.Scratchpad
 import XMonad.Util.EZConfig
 
-
 import qualified Data.Map        as M
 import qualified XMonad.StackSet as W
-
-import XMonad.Config.Xfce
 
 main = xmonad $ xfceConfig
               { terminal           = theTerminal
@@ -70,21 +69,21 @@ theColors     = [ "#D33682" -- focused border
                 , "#051A20" -- tab background
                 , "#2AA198" -- inactive tab text
                 ]
-theTabFont      = "xft:sans:size=8"
+theTabFont    = "xft:sans:size=8"
 
 -- directory with executable scripts
 scriptDir = "/home/m/conf/scripts/"
 
 theManageHook = composeAll
     -- never open as master
-    [ className =? "URxvt" --> doF (W.swapDown)
-    , className =? "Thunar"              --> doF (W.swapDown)
+    [ className =? "URxvt"         --> doF (W.swapDown)
+    , className =? "Thunar"        --> doF (W.swapDown)
     -- default workspaces
-    , className =? "Firefox"            --> doF (W.shift $ theWorkspaces !! 0)
-    , className =? "Steam"              --> doF (W.shift $ theWorkspaces !! 2)
-    , className =? "dota_linux"         --> doF (W.shift $ theWorkspaces !! 3)
+    , className =? "Firefox"       --> doF (W.shift $ theWorkspaces !! 0)
+    , className =? "Steam"         --> doF (W.shift $ theWorkspaces !! 2)
+    , className =? "dota_linux"    --> doF (W.shift $ theWorkspaces !! 3)
     -- don't focus xfce4-notifyd
-    , className =? "Xfce4-notifyd"      --> doIgnore
+    , className =? "Xfce4-notifyd" --> doIgnore
     ]
     <+> manageDocks
     <+> manageScratchpad
@@ -136,7 +135,7 @@ keyMappings =
     [ ("M-x",       windows W.focusDown)
     , ("M1-<Tab>",  windows W.focusDown)
     , ("M-y",       windows W.focusUp)
-    , ("M-S-y",     rotSlavesDown)
+    , ("M-S-x",     rotSlavesDown)
     , ("M-S-y",     rotSlavesUp)
     , ("M-s",       dwmpromote)
     , ("M-S-s",     windows W.focusMaster)
@@ -153,6 +152,10 @@ keyMappings =
     , ("M-C-w",     swapNextScreen)
     , ("M-M1-x",    moveTo Next NonEmptyWS)
     , ("M-M1-y",    moveTo Prev NonEmptyWS)
+    , ("M-c",       moveTo Prev NonEmptyWS)
+    , ("M-v",       moveTo Next NonEmptyWS)
+    , ("M-S-c",     shiftToPrev)
+    , ("M-S-v",     shiftToNext)
     -- killing
     , ("M-q q",     kill1)
     , ("M-q M-q",   kill)
@@ -170,7 +173,7 @@ keyMappings =
     -- misc
     , ("M-S-r",     spawn $ scriptDir ++ "recompile-xmonad")
     , ("M-i",       dynamicLogString defaultPP >>=
-                        \d -> spawn $ "notify-send .t 1337 \"" ++ d ++ "\"")
+                        \d -> spawn $ "notify-send \"" ++ d ++ "\"")
     , ("M-S-q",     spawn "xfce4-session-logout")
 
     -- audio volume
@@ -180,13 +183,20 @@ keyMappings =
     ]
 
 windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
+    -- move windows between workspaces
+    [ ((mod .|. controlMask, k), windows $ swapWithCurrent i)
+        | (i, k) <- zip theWorkspaces [xK_1..]] ++
+
+    -- copy windows between workspaces
     [ ((m .|. mod, k), windows $ f i)
         | (i, k) <- zip theWorkspaces [xK_1 ..]
         , (f, m) <- [ (W.view, 0)
                     , (\w -> W.greedyView w . W.shift w, shiftMask)
                     , (copy, shiftMask .|. controlMask)]] ++
-    [ ((mod .|. controlMask, k), windows $ swapWithCurrent i)
-        | (i, k) <- zip theWorkspaces [xK_1..]]
+
+    -- open scratchpad - cedilla not supported by EZConfig
+    [ ((mod, xK_cedilla), scratchpadSpawnActionCustom
+                            "urxvtc -name scratchpad") ]
 
 shortcuts =
     [ ("M-r",      spawn "gmrun")
