@@ -21,6 +21,11 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'tpope/vim-fireplace'
 Plugin 'guns/vim-clojure-static'
 
+Plugin 'vim-scripts/Conque-Shell'
+
+Plugin 'vim-pandoc/vim-pandoc'
+Plugin 'vim-pandoc/vim-pandoc-syntax'
+
 "enable filetype plugins
 call vundle#end()
 filetype plugin indent on
@@ -96,6 +101,7 @@ vmap <Leader>y "+y
 vmap <Leader>p "+p
 nmap <Leader>rv :source $MYVIMRC<CR>      " reload vimrc
 nmap <Leader>rws :%s/\s\+$//e<CR>:noh<CR> " remove trailing whitespace
+nmap <Leader>bt :ConqueTermTab bash<CR>
 " reselect visual block after indent/outdent
 xnoremap < <gv
 xnoremap > >gv
@@ -136,23 +142,28 @@ if !exists('g:airline_symbols')
 endif
 
 " symbols
-let g:airline_left_sep = '▶'
+let g:airline_left_sep  = '▶'
 let g:airline_right_sep = '◀'
 
 " disable traling
-let g:airline#extensions#whitespace#checks=[]
+let g:airline#extensions#whitespace#checks = []
 
 " tabs
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#tabline#buffer_min_count=1
-let g:airline#extensions#tabline#show_buffers=0
+let g:airline#extensions#tabline#enabled          = 1
+let g:airline#extensions#tabline#buffer_min_count = 1
+let g:airline#extensions#tabline#show_buffers     = 0
 
 " multi cursor
-let g:multi_cursor_exit_from_visual_mode=0
-let g:multi_cursor_exit_from_insert_mode=0
+let g:multi_cursor_exit_from_visual_mode = 0
+let g:multi_cursor_exit_from_insert_mode = 0
 
 " haskell
 let g:syntastic_haskell_checkers = ['hdevtools']
+
+" pandoc
+let g:pandoc#modules#disabled     = ["folding"]
+let g:pandoc#formatting#textwidth = 79
+let g:pandoc#spell#enabled        = 0
 
 " clojure
 nnoremap <C-E> :Eval<CR>

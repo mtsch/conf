@@ -1,4 +1,4 @@
 #!/bin/sh
 export EDITOR=vim
 export PAGER=vimpager
-export PATH=$PATH:/home/m/conf/bin
+export PATH=$PATH:/home/m/conf/bin:/home/m/.cabal/bin

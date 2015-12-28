@@ -8,7 +8,7 @@ xset -b                   # disable beep
 
 # daemons
 urxvtd &
-redshift -l 46:14 -t 6500:4000 &
+redshift -l 46:14 -t 4000:3500 &
 
 # xmonad + restore panels
 xmonad --replace &
