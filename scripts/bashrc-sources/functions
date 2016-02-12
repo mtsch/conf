@@ -1,2 +1,3 @@
 #!/bin/sh
 mkcd (){ mkdir -p "$*"; cd "$*";}
+cs (){ cd "$*"; ls;}

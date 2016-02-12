@@ -10,6 +10,7 @@ alias clr='clear'
 # restart
 alias rebash='source ~/.bashrc'
 alias remonad='xmonad --recompile && xmonad --restart'
+alias remacs='emacsclient -e "(kill-emacs)" && emacs --daemon'
 
 # edit
 alias vivim='vim ~/.vim/vimrc'
@@ -20,6 +21,7 @@ alias vimonad='vim ~/.xmonad/xmonad.hs'
 # ls
 alias ls='ls --color=auto -p'
 alias ll='ls -l'
+alias lf='ls -f'
 alias la='ls -a'
 
 # why?
@@ -27,3 +29,12 @@ alias al='sl -a'
 
 # typos
 alias :e='vim'
+alias :r='!!'
+
+# rlwrap
+alias ocaml='rlwrap ocaml'
+
+alias octave=octave-cli
+
+# emacs client in terminal
+alias em="emacsclient -t"

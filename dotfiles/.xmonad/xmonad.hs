@@ -78,6 +78,7 @@ theManageHook = composeAll
     -- never open as master
     [ className =? "URxvt"         --> doF (W.swapDown)
     , className =? "Thunar"        --> doF (W.swapDown)
+    , className =? "Emacs"         --> doF (W.swapDown)
     -- default workspaces
     , className =? "Firefox"       --> doF (W.shift $ theWorkspaces !! 0)
     , className =? "Steam"         --> doF (W.shift $ theWorkspaces !! 2)
@@ -98,19 +99,19 @@ manageScratchpad = scratchpadManageHook (W.RationalRect l t w h)
 
 -- xfce integration, ignore scratchpad workspace, center mouse pointer on focus
 theLogHook = ewmhDesktopsLogHookCustom scratchpadFilterOutWorkspace
-           >> updatePointer (Relative 0.5 0.5)
+           >> updatePointer (0.5, 0.5) (0, 0)
 
 -- layouts
 tabbedL = named "Tabbed" $ tabbedBottom shrinkText tabbedTheme
   where
-    tabbedTheme = defaultTheme { activeBorderColor   = theColors !! 0
-                               , inactiveBorderColor = theColors !! 1
-                               , activeColor         = theColors !! 2
-                               , inactiveColor       = theColors !! 3
-                               , activeTextColor     = theColors !! 0
-                               , inactiveTextColor   = theColors !! 1
-                               , fontName            = theTabFont
-                               }
+    tabbedTheme = def { activeBorderColor   = theColors !! 0
+                      , inactiveBorderColor = theColors !! 1
+                      , activeColor         = theColors !! 2
+                      , inactiveColor       = theColors !! 3
+                      , activeTextColor     = theColors !! 0
+                      , inactiveTextColor   = theColors !! 1
+                      , fontName            = theTabFont
+                      }
 
 threeCol = named "Three" $ ThreeCol 1 (3/100) (1/3)
 
@@ -172,7 +173,7 @@ keyMappings =
                       >> sendMessage NextLayout)
     -- misc
     , ("M-S-r",     spawn $ scriptDir ++ "recompile-xmonad")
-    , ("M-i",       dynamicLogString defaultPP >>=
+    , ("M-i",       dynamicLogString def >>=
                         \d -> spawn $ "notify-send \"" ++ d ++ "\"")
     , ("M-S-q",     spawn "xfce4-session-logout")
 
@@ -199,14 +200,15 @@ windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
                             "urxvtc -name scratchpad") ]
 
 shortcuts =
-    [ ("M-r",      spawn "gmrun")
-    , ("M-e",      spawn "thunar")
-    , ("M-t",      spawn theTerminal)
-    , ("M-<Del>",  spawn "xfce4-taskmanager")
-    , ("M-p",      spawn "pavucontrol")
-    , ("M-g f",    runOrRaise "firefox" $ className =? "Firefox")
-    , ("M-g s",    runOrRaise "steam" $ className =? "Steam")
-    , ("M-g m",    runOrRaise "mumble" $ className =? "Mumble")
+    [ ("M-r",         spawn "gmrun")
+    , ("M-e",         spawn "thunar")
+    , ("M-t",         spawn theTerminal)
+    , ("M-<Delete>",  spawn "xfce4-taskmanager")
+    , ("M-p",         spawn "pavucontrol")
+    , ("M-m",         spawn "emacsclient -c")
+    , ("M-g f",       runOrRaise "firefox" $ className =? "Firefox")
+    , ("M-g s",       runOrRaise "steam" $ className =? "Steam")
+    , ("M-g m",       runOrRaise "mumble" $ className =? "Mumble")
     ]
 
 theMouseBindings (XConfig {XMonad.modMask = mod}) = M.fromList $
