@@ -214,9 +214,9 @@
       helm-recentf-fuzzy-match    t)
 
 ;; Use TAB in helm
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-(define-key helm-map (kbd "C-z")  'helm-select-action)
+(define-key helm-map (kbd "<tab>") 'helm-select-action)
+(define-key helm-map (kbd "C-i") 'helm-select-action)
+(define-key helm-map (kbd "C-z")  'helm-execute-persistent-action)
 
 ;; Helm shrinks
 (helm-autoresize-mode t)
