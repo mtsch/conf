@@ -3,7 +3,7 @@ PS1='[\W]$ '
 shopt -s checkwinsize
 
 # If not running interactively, don't do anything
-[[ $- != *i* ]] && return
+# [[ $- != *i* ]] && return
 
 # additional sources - aliases, variables and scripts
 SETTINGDIR=~/conf/scripts/bashrc-sources

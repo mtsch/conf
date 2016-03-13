@@ -31,7 +31,8 @@
 
                    tuareg
                    markdown-mode
-                   helm-R))
+                   ;;helm-R
+                   ))
 
 (dolist (p packages)
   (when (not (package-installed-p p))
@@ -179,6 +180,10 @@
 ;; Emacs Speaks Statistics
 ;; =======================
 (require 'ess-site)
+(ess-toggle-underscore nil)
+(add-hook 'ess-mode-hook
+          (lambda ()
+            (ess-set-style 'RStudio 'quiet)))
 
 ;; =========
 ;; Powerline
@@ -335,3 +340,13 @@
 (setq merlin-command 'opam)
 ;; Indentation
 (setq tuareg-indent-align-with-first-arg nil)
+
+(load-file (let ((coding-system-for-read 'utf-8))
+                (shell-command-to-string "agda-mode locate")))
+
+;; ====
+;; AGDA
+;; ====
+
+(load-file (let ((coding-system-for-read 'utf-8))
+                (shell-command-to-string "agda-mode locate")))

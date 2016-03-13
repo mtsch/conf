@@ -12,6 +12,7 @@ alias past=locs='pacman -Qs'
 # yaourt
 alias yaoupg='yaourt -Syu'
 alias yaoinst='yaourt -S'
+alias yaoinstnc='yaourt -S --noconfirm'
 alias yaoreps='yaourt -Ss'
 alias yaocre='yaourt -R'
 alias yaorem='yaourt -Rns'
