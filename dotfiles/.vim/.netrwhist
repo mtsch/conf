@@ -1,7 +1,8 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_cnt =6
 let g:netrw_dirhist_1='/home/m/scripts/startup'
 let g:netrw_dirhist_2='/home/m/conf/dotfiles/.xmonad/backup'
 let g:netrw_dirhist_3='/home/m/conf/bin'
 let g:netrw_dirhist_4='/home/m/faks/spo/s63130395/naloga2/trunk/sic-xe/obj-files'
 let g:netrw_dirhist_5='/home/m/faks/spo/s63130395/trunk/naloga3/sic-xe-assembler/src/Parsing'
+let g:netrw_dirhist_6='/home/m/faks/prev/nal/fri-prev/src/tests'

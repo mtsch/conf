@@ -38,3 +38,5 @@ alias octave=octave-cli
 
 # emacs client in terminal
 alias em="emacsclient -t"
+
+alias R="R --no-save"

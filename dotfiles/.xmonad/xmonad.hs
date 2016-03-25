@@ -85,6 +85,7 @@ theManageHook = composeAll
     , className =? "dota_linux"    --> doF (W.shift $ theWorkspaces !! 3)
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
+    , title     =? "Whisker Menu"  --> doFloat
     ]
     <+> manageDocks
     <+> manageScratchpad
@@ -200,7 +201,7 @@ windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
                             "urxvtc -name scratchpad") ]
 
 shortcuts =
-    [ ("M-r",         spawn "gmrun")
+    [ ("M-r",         spawn "xfce4-popup-whiskermenu")
     , ("M-e",         spawn "thunar")
     , ("M-t",         spawn theTerminal)
     , ("M-<Delete>",  spawn "xfce4-taskmanager")
