@@ -31,6 +31,7 @@
 
                    tuareg
                    markdown-mode
+                   julia-mode
                    ;;helm-R
                    ))
 
@@ -184,6 +185,12 @@
 (add-hook 'ess-mode-hook
           (lambda ()
             (ess-set-style 'RStudio 'quiet)))
+
+(require 'julia-mode)
+(add-hook 'ess-julia-mode-hook
+          (lambda()
+            (define-key
+              ess-julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)))
 
 ;; =========
 ;; Powerline

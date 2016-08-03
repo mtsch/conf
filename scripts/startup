@@ -8,7 +8,7 @@ xset -b                   # disable beep
 
 # daemons
 urxvtd &
-redshift -l 46:14 -t 4000:3500 &
+redshift -l 46:14 -t 6000:3500 &
 
 # set keys
 setxkbmap -option ctrl:nocaps
@@ -18,5 +18,5 @@ emacs --daemon &
 
 # xmonad + restore panels
 xmonad --replace &
-sleep 1 && kill -9 $(pgrep panel)
+sleep 2 && kill -9 $(pgrep panel)
 xfce4-panel &
