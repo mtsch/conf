@@ -1,0 +1,2 @@
+#!/bin/bash
+export http_proxy=http://sigx-proxy.eu.novartis.net:2010
