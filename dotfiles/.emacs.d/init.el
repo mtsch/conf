@@ -1,3 +1,5 @@
+(setq mouse-autoselect-window t)
+(setq focus-follows-mouse t)
 ;; =================
 ;; Sources, packages
 ;; =================
@@ -32,6 +34,8 @@
                    tuareg
                    markdown-mode
                    julia-mode
+
+                   sml-mode
                    ;;helm-R
                    ))
 
@@ -54,10 +58,7 @@
 
 (global-set-key [C-tab] 'other-window)
 
-;; Line numbers
-(require 'linum-off)
-(global-linum-mode t)
-(setq linum-format "%4d")
+; (setq linum-format "%4d")
 
 (setq-default
  inhibit-splash-screen t
@@ -171,12 +172,6 @@
 ;; Highlight current line
 (global-hl-line-mode t)
 
-;; ===================
-;; Focus follows mouse
-;; ===================
-(require 'follow-mouse)
-(turn-on-follow-mouse)
-
 ;; =======================
 ;; Emacs Speaks Statistics
 ;; =======================
@@ -186,11 +181,19 @@
           (lambda ()
             (ess-set-style 'RStudio 'quiet)))
 
-(require 'julia-mode)
+; (require 'julia-mode)
+;(add-hook 'ess-julia-mode-hook
+;          (lambda()
+;            (define-key
+;              ess-julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)))
+
+;; TeX input mode for julia
 (add-hook 'ess-julia-mode-hook
-          (lambda()
-            (define-key
-              ess-julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)))
+          (lambda () (set-input-method "TeX")))
+
+(add-hook 'ess-julia-post-run-hook
+          (lambda () (set-input-method "TeX")))
+
 
 ;; =========
 ;; Powerline
@@ -292,9 +295,16 @@
 
 ;; interactive mode
 (custom-set-variables
-  '(haskell-process-suggest-remove-import-lines t)
-  '(haskell-process-auto-import-loaded-modules t)
-  '(haskell-process-log t))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(package-selected-packages
+   (quote
+    (sml-mode tuareg solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc flycheck-hdevtools evil-numbers evil-mc evil-escape))))
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -348,12 +358,16 @@
 ;; Indentation
 (setq tuareg-indent-align-with-first-arg nil)
 
-(load-file (let ((coding-system-for-read 'utf-8))
-                (shell-command-to-string "agda-mode locate")))
-
 ;; ====
 ;; AGDA
 ;; ====
 
 (load-file (let ((coding-system-for-read 'utf-8))
                 (shell-command-to-string "agda-mode locate")))
+(put 'downcase-region 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
