@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ $1 == "off" ]]; then
+    echo "proxy off."
+    unset http_proxy
+    unset https_proxy
+    unset ftp_proxy
+    unset rsync_proxy
+else
+    echo "proxy on."
+    export http_proxy="http://sigx-proxy.eu.novartis.net:2010"
+    export https_proxy=$http_proxy
+    export ftp_proxy=$http_proxy
+    export rsync_proxy=$http_proxy
+    export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com"
+fi
