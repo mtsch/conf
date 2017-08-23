@@ -1,0 +1,34 @@
+isinteractive()
+Pkg.add("ArgParse")
+Pkg.update()
+@doc replace
+try
+error("aa")
+end
+try
+error("aa")
+catch
+true
+end
+isfile
+isdir
+isfile("/home")
+walkdir
+walkdir(".")
+@doc walkdir
+rm
+@doc rm
+@doc run
+cd("/home/m/faks/arpa/2/src/)
+cd("/home/m/faks/arpa/2/src/)"
+cd("/home/m/faks/arpa/2/src/")
+using DifferentialEquations
+Pkg.add("DifferentialEquations")
+dc[:vm]
+dc[:vm]
+kek = Dict{Symbol, Float64}(:a => 1.9)
+kek[:a]
+dc
+dc
+drosmodel
+drosmodel(1.0, [1.0, 2], [1.0, 3])

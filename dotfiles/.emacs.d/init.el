@@ -1,16 +1,18 @@
+(setq default-tab-width 4)
 (setq mouse-autoselect-window t)
 (setq focus-follows-mouse t)
 ;; =================
 ;; Sources, packages
 ;; =================
 (add-to-list 'load-path "~/.emacs.d/plugins/")
+(add-to-list 'load-path "~/.emacs.d/plugins/racket-mode")
 (require 'cl)
 (require 'package)
 
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives
-             '("melpa-stable" . "http://stable.melpa.org/packages/"))
+             '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
 (package-initialize)
 
@@ -34,6 +36,7 @@
                    tuareg
                    markdown-mode
                    julia-mode
+                   stan-mode
 
                    sml-mode
                    ;;helm-R
@@ -57,7 +60,6 @@
 (setq backup-directory-alist '(("." . "~/.emacs-backups")))
 
 (global-set-key [C-tab] 'other-window)
-
 ; (setq linum-format "%4d")
 
 (setq-default
@@ -147,9 +149,9 @@
 ;; =====================
 (require 'fill-column-indicator)
 (setq-default fci-rule-column 80)
+(setq-default fill-column 80)
 (setq fci-rule-width 1)
 (add-hook 'after-change-major-mode-hook 'fci-mode)
-(set-fill-column 80)
 
 ;; Auto indent
 (define-key global-map (kbd "RET") 'newline-and-indent)
@@ -304,7 +306,7 @@
  '(haskell-process-suggest-remove-import-lines t)
  '(package-selected-packages
    (quote
-    (sml-mode tuareg solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc flycheck-hdevtools evil-numbers evil-mc evil-escape))))
+    (stan-mode geiser racket-mode sml-mode tuareg solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc flycheck-hdevtools evil-numbers evil-mc evil-escape))))
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -371,3 +373,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(require 'stan-mode)

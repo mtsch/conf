@@ -3,3 +3,4 @@ export EDITOR="emacsclient -c"
 export PAGER=vimpager
 export PATH=$PATH:/home/m/conf/bin:/home/m/.cabal/bin:/usr/lib/smlnj/bin
 export SMLNJ_HOME=/usr/lib/smlnj/
+export PYTHONPATH=$PYTHONPATH:/home/m/git-stuff/gudhi/build/cython

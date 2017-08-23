@@ -12,12 +12,6 @@ alias rebash='source ~/.bashrc'
 alias remonad='xmonad --recompile && xmonad --restart'
 alias remacs='emacsclient -e "(kill-emacs)"; emacs --daemon'
 
-# edit
-alias vivim='vim ~/.vim/vimrc'
-alias viminitrc='vim ~/.xinitrc'
-alias vibash='vim ~/.bashrc'
-alias vimonad='vim ~/.xmonad/xmonad.hs'
-
 # ls
 alias ls='ls --color=auto -p'
 alias ll='ls -l'
@@ -27,6 +21,7 @@ alias lal='ls -al'
 
 # why?
 alias al='sl -a'
+alias lll='sl -l'
 
 # typos
 alias :e='vim'
@@ -43,9 +38,13 @@ alias em="emacsclient -t"
 alias R="R --no-save"
 
 alias op="exo-open"
+
 toup(){
     touch $1 && op $1
 }
 
+steam(){
+    LD_PRELOAD='/usr/$LIB/libstdc++.so.6 /usr/$LIB/libgcc_s.so.1 /usr/$LIB/libxcb.so.1 /usr/$LIB/libgpg-error.so' /bin/steam
+}
 
-#LD_PRELOAD='/usr/$LIB/libstdc++.so.6 /usr/$LIB/libgcc_s.so.1 /usr/$LIB/libxcb.so.1 /usr/$LIB/libgpg-error.so' steam
+alias todo="op ~/TODO/todo"
