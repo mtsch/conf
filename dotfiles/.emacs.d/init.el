@@ -190,11 +190,15 @@
 ;              ess-julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)))
 
 ;; TeX input mode for julia
-(add-hook 'ess-julia-mode-hook
-          (lambda () (set-input-method "TeX")))
+;(add-hook 'ess-julia-mode-hook
+;          (lambda () (set-input-method "TeX")))
 
-(add-hook 'ess-julia-post-run-hook
-          (lambda () (set-input-method "TeX")))
+;(add-hook 'ess-julia-post-run-hook
+;          (lambda () (set-input-method "TeX")))
+
+(add-hook 'ess-julia-mode-hook
+          (lambda () (local-set-key (kbd "<tab>")
+                                         'julia-latexsub-or-indent)))
 
 
 ;; =========
