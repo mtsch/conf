@@ -17,4 +17,5 @@ emacs --daemon &
 
 # xmonad + restore panels
 xmonad --replace &
-sleep 4 && kill -9 $(pgrep xfce4-panel) && sleep 2 && xfce4-panel &
+sleep 1
+xfce4-panel --restart

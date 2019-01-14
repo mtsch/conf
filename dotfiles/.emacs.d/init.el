@@ -1,11 +1,12 @@
 (setq default-tab-width 4)
+(setq c-basic-offset 4)
+(setq c-indent-level 4)
 (setq mouse-autoselect-window t)
 (setq focus-follows-mouse t)
 ;; =================
 ;; Sources, packages
 ;; =================
 (add-to-list 'load-path "~/.emacs.d/plugins/")
-(add-to-list 'load-path "~/.emacs.d/plugins/racket-mode")
 (require 'cl)
 (require 'package)
 
@@ -15,6 +16,7 @@
              '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
 (package-initialize)
+(auto-package-update-now)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -27,18 +29,22 @@
                    multi-term
                    powerline
                    powerline-evil
+                   auto-package-update
                    helm
-                   ;;flycheck
+
+                   julia-mode
+                   julia-repl
+
+		   ess
 
                    haskell-mode
                    ghc
 
                    tuareg
                    markdown-mode
-                   julia-mode
-                   stan-mode
 
-                   sml-mode
+                   unicode-fonts
+
                    ;;helm-R
                    ))
 
@@ -60,7 +66,6 @@
 (setq backup-directory-alist '(("." . "~/.emacs-backups")))
 
 (global-set-key [C-tab] 'other-window)
-; (setq linum-format "%4d")
 
 (setq-default
  inhibit-splash-screen t
@@ -103,10 +108,30 @@
 (load-theme 'solarized-light t)
 
 ;; Font
-(set-face-attribute 'default nil
-                    :family "Ununtu-Mono"
-                    :height 110
-                    :weight 'normal)
+;(set-face-attribute 'default nil
+;                    :family "Ubuntu-Mono"
+;                    :height 110
+;                    :weight 'normal)
+;(set-face-attribute 'default nil
+;                    :family "Office Code Pro"
+;                    :height 110
+;                    :weight 'normal)
+(require 'unicode-fonts)
+(unicode-fonts-setup)
+;(set-frame-font "DejaVu Sans Mono 12")
+;(set-fontset-font "fontset-default" 'unicode "DejaVu Sans Mono")
+;(set-frame-font "Noto Sans Mono 11")
+;(set-fontset-font "fontset-default" 'unicode "Noto Sans Mono 11")
+(set-frame-font
+ "-GOOG-Noto Mono-normal-normal-normal-*-15-*-*-*-*-0-iso10646-1"
+ ;"-NATH-Office Code Pro-bold-normal-normal-*-15-*-*-*-*-0-iso10646-1"
+ )
+(set-fontset-font t 'unicode
+                  "-GOOG-Noto Mono-normal-normal-normal-*-15-*-*-*-*-0-iso10646-1"
+                  ;"-NATH-Office Code Pro-bold-normal-normal-*-15-*-*-*-*-0-iso10646-1"
+                  nil
+                  'prepend
+                  )
 
 ;; ==================
 ;; Evil mode settings
@@ -139,17 +164,12 @@
 (require 'evil-mc)
 (global-evil-mc-mode 1)
 
-;; Evil-escape
-(require 'evil-escape)
-;(global-set-key (kbd "ESC") 'evil-escape)
-(global-set-key (kbd "C-c :") 'evil-escape)
-
 ;; =====================
 ;; Long lines and spaces
 ;; =====================
 (require 'fill-column-indicator)
-(setq-default fci-rule-column 80)
-(setq-default fill-column 80)
+(setq-default fci-rule-column 92)
+(setq-default fill-column 92)
 (setq fci-rule-width 1)
 (add-hook 'after-change-major-mode-hook 'fci-mode)
 
@@ -174,6 +194,17 @@
 ;; Highlight current line
 (global-hl-line-mode t)
 
+;; =====
+;; Julia
+;; =====
+(require 'julia-mode)
+(require 'julia-repl)
+(add-hook 'julia-mode-hook 'julia-repl-mode)
+(add-to-list 'auto-mode-alist '("\\.jl\\'" . julia-mode))
+(setenv "JULIA_NUM_THREADS" "4")
+(setq julia-repl-switches "-p4 -O3")
+(julia-repl-set-executable "/usr/bin/julia")
+
 ;; =======================
 ;; Emacs Speaks Statistics
 ;; =======================
@@ -183,23 +214,12 @@
           (lambda ()
             (ess-set-style 'RStudio 'quiet)))
 
-; (require 'julia-mode)
 ;(add-hook 'ess-julia-mode-hook
-;          (lambda()
-;            (define-key
-;              ess-julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)))
+;          (lambda () (local-set-key (kbd "<tab>")
+;                                         'julia-latexsub-or-indent)))
 
-;; TeX input mode for julia
-;(add-hook 'ess-julia-mode-hook
-;          (lambda () (set-input-method "TeX")))
-
-;(add-hook 'ess-julia-post-run-hook
-;          (lambda () (set-input-method "TeX")))
-
-(add-hook 'ess-julia-mode-hook
-          (lambda () (local-set-key (kbd "<tab>")
-                                         'julia-latexsub-or-indent)))
-
+;(setq inferior-julia-program-name "/home/m/julia-latest/julia/bin/julia")
+;(setq inferior-julia-args "-O3 -pauto")
 
 ;; =========
 ;; Powerline
@@ -310,15 +330,14 @@
  '(haskell-process-suggest-remove-import-lines t)
  '(package-selected-packages
    (quote
-    (stan-mode geiser racket-mode sml-mode tuareg solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc flycheck-hdevtools evil-numbers evil-mc evil-escape))))
+    (unicode-fonts julia-repl stan-mode geiser racket-mode sml-mode tuareg solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc evil-numbers evil-mc evil-escape))))
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
   (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
   (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
   (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
-  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
 (eval-after-load 'haskell-cabal '(progn
   (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
@@ -378,4 +397,7 @@
  ;; If there is more than one, they won't work right.
  )
 
-(require 'stan-mode)
+;; ======
+;; OCTAVE
+;; ======
+(add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))

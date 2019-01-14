@@ -14,10 +14,9 @@ alias remacs='emacsclient -e "(kill-emacs)"; emacs --daemon'
 
 # ls
 alias ls='ls --color=auto -p'
-alias ll='ls -l'
+alias ll='ls -la'
 alias lf='ls -f'
 alias la='ls -a'
-alias lal='ls -al'
 
 # why?
 alias al='sl -a'

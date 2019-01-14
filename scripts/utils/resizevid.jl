@@ -1,29 +1,46 @@
 using ArgParse
 
-function resizevid(targeth, filename, thresh, debug)
-    fn, ext = splitext(filename)
+function resizevid(file, reso, thresh, debug, clean)
+    println("========================================")
+    print(file)
+    fn, ext = splitext(file)
 
-    sz = readstring(`ffprobe -v error -of flat=s=_ -select_streams v:0 -show_entries stream=height,width $filename`)
-    ht = parse(Int, split(split(sz, '\n')[2], '=')[2])
+    sz = wt = ht = ""
+    try
+        sz = read(`ffprobe -v error -of flat=s=_ -select_streams v:0 -show_entries stream=height,width $file`, String)
+        wt = parse(Int, split(split(sz, '\n')[1], '=')[2])
+        ht = parse(Int, split(split(sz, '\n')[2], '=')[2])
+    catch e
+        println(e)
+        return false
+    end
+    outfile = "$fn-$reso$ext"
+    largesize = min(wt, ht)
 
-    if (targeth + thresh <= ht)
-        cmd = `ffmpeg -i $filename -vf scale=-1:$targeth -analyzeduration 6M -qscale 5 $fn-$targeth$ext`
-        println(cmd)
-        if !debug
-            try
-                @time _ = readstring(cmd)
-                println("Success.")
-                true
-            catch
-                rm("$fn-$targeth$ext")
-                println("Failed.")
-                false
-            end
+    println(" [$(wt)×$(ht)]")
+
+    if (reso + thresh <= largesize)
+        resstr = wt > ht ? "-2:$reso" : "$reso:-2"
+        loglvl = "error"
+        cmd    = `ffmpeg -hide_banner -v $loglvl -i $file -vf scale=$resstr -preset fast -c:v libx265 -x265-params log-level=$loglvl -async 1 -vsync 1 $outfile`
+        if debug
+            println(cmd)
         else
-            false
+            try
+                print("resizing...")
+                run(cmd)
+                println(" OK")
+                if clean
+                    rm(file)
+                end
+                return true
+            catch e
+                println(" FAIL: $e")
+                rm("$fn-$reso$ext")
+                return false
+            end
         end
     else
-        println("Nothing to be done, video is $(ht)p.")
         false
     end
 end
@@ -51,44 +68,34 @@ function parseargs()
         "vid"
         help = "target video"
         arg_type = String
-        default = ["."]
-        nargs = '*'
+        nargs = '+'
     end
     parse_args(ARGS, s, as_symbols = true)
 end
 
-if !isinteractive()
-    args  = parseargs()
-    file  = join(args[:vid], ' ')
-    file  = replace(file, "\\ ", " ")
-    reso  = args[:res]
-    recur = args[:r]
-    clean = args[:c]
-    debug = args[:d]
-    thr   = args[:thr]
+function main()
+    args = parseargs()
+    file = join(args[:vid], ' ')
+    resize = f -> resizevid(f, args[:res], args[:thr], args[:d], args[:c])
 
-    if recur && !isdir(file)
-        println(STDERR, "Not a directory!")
-    elseif !recur && !isfile(file)
-        println(STDERR, "Not a file!")
-    elseif recur
-        try
-            for (root, dirs, files) in walkdir(file)
-                for (i, f) in enumerate(files)
-                    println("Resizing $i/$(length(files))")
-                    succ = resizevid(reso, f, thr, debug)
-                    succ && clean && rm(f)
-                end
+    if isdir(file) && args[:r]
+        for (root, dir, files) in walkdir(file)
+            for f in files
+                println(">> ", dir)
+                resize(joinpath(root, f))
             end
         end
-    else
-        try
-            succ = resizevid(reso, file, thr, debug)
-            succ && clean && rm(file)
+    elseif isdir(file)
+        for f in filter(isfile, readdir(file))
+            resize(joinpath(file, f))
         end
+    else
+        resize(joinpath(file))
     end
 
-    println("========")
-    println("FINISHED")
-    println("========")
+    println("\nFINITO.")
+end
+
+if !isinteractive()
+    main()
 end

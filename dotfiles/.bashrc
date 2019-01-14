@@ -14,3 +14,6 @@ source $SETTINGDIR/aliases-misc
 source $SETTINGDIR/aliases-t
 source $SETTINGDIR/aliases-pacman-yaourt
 source $SETTINGDIR/functions
+
+# added by travis gem
+[ -f /home/m/.travis/travis.sh ] && source /home/m/.travis/travis.sh
