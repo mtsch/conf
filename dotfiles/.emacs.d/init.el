@@ -16,7 +16,8 @@
              '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
 (package-initialize)
-(auto-package-update-now)
+(setq auto-package-update-interval 1)
+(auto-package-update-maybe)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -36,6 +37,8 @@
                    julia-repl
 
 		   ess
+
+                   ein
 
                    haskell-mode
                    ghc
@@ -202,8 +205,7 @@
 (add-hook 'julia-mode-hook 'julia-repl-mode)
 (add-to-list 'auto-mode-alist '("\\.jl\\'" . julia-mode))
 (setenv "JULIA_NUM_THREADS" "4")
-(setq julia-repl-switches "-p4 -O3")
-(julia-repl-set-executable "/usr/bin/julia")
+(setq julia-repl-switches "-O3")
 
 ;; =======================
 ;; Emacs Speaks Statistics
@@ -330,7 +332,7 @@
  '(haskell-process-suggest-remove-import-lines t)
  '(package-selected-packages
    (quote
-    (unicode-fonts julia-repl stan-mode geiser racket-mode sml-mode tuareg solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc evil-numbers evil-mc evil-escape))))
+    (ein unicode-fonts julia-repl stan-mode geiser racket-mode sml-mode tuareg solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc evil-numbers evil-mc evil-escape))))
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -364,40 +366,13 @@
 ;; ==========
 (setq multi-term-program "/bin/bash")
 
-;; =====
-;; OCaml
-;; =====
-
-;; Add opam emacs directory to the load-path
-(setq opam-share (substring (shell-command-to-string
-                             "opam config var share 2> /dev/null") 0 -1))
-(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-;; Load merlin-mode
-(require 'merlin)
-;(require 'ocp-indent)
-;; Start merlin on ocaml files
-(add-hook 'tuareg-mode-hook 'merlin-mode t)
-(add-hook 'caml-mode-hook 'merlin-mode t)
-;; Use opam switch to lookup ocamlmerlin binary
-(setq merlin-command 'opam)
-;; Indentation
-(setq tuareg-indent-align-with-first-arg nil)
-
-;; ====
-;; AGDA
-;; ====
-
-(load-file (let ((coding-system-for-read 'utf-8))
-                (shell-command-to-string "agda-mode locate")))
-(put 'downcase-region 'disabled nil)
+;; ======
+;; OCTAVE
+;; ======
+(add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-;; ======
-;; OCTAVE
-;; ======
-(add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))

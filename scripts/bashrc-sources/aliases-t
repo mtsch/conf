@@ -1,5 +1,0 @@
-#!/bin/sh
-TODODIR=~/TODO
-T=~/git-stuff/t/t.py
-alias t="python2 $T --task-dir $TODODIR --list general"
-alias f="python2 $T --task-dir $TODODIR --list faks"
