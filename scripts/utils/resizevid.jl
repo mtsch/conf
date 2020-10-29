@@ -81,7 +81,6 @@ function main()
     if isdir(file) && args[:r]
         for (root, dir, files) in walkdir(file)
             for f in files
-                println(">> ", dir)
                 resize(joinpath(root, f))
             end
         end

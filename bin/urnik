@@ -1,2 +1,0 @@
-#!/bin/bash
-evince ~/faks/urnik.pdf &

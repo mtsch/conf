@@ -19,6 +19,7 @@ import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Grid
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.MouseResizableTile
 import XMonad.Layout.Spacing
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
@@ -50,8 +51,7 @@ main = xmonad $ xfceConfig
               , manageHook         = theManageHook
               , layoutHook         = theLayoutHook
               , logHook            = theLogHook
-              , startupHook        = startupHook xfceConfig
-                                       >> setWMName "LG3D"
+              , startupHook        = startupHook xfceConfig >> setWMName "LG3D"
 
               , mouseBindings      = theMouseBindings
               , keys               = windowMovementKeys
@@ -61,7 +61,7 @@ main = xmonad $ xfceConfig
 
 theTerminal   = "xrdb ~/.Xresources && urxvtc"
 theSpacing    = smartSpacing 5
-theWorkspaces = ["www","ii","iii","iv","v","vi","vii","viii","ix","NSP"]
+theWorkspaces = ["i","ii","iii","iv","v","vi","vii","viii","ix","NSP"]
 theColors     = [ "#D33682" -- focused border
                 , "#93A1A1" -- unfocused border
                 --, "#073642" -- tab foreground
@@ -69,7 +69,6 @@ theColors     = [ "#D33682" -- focused border
                 , "#051A20" -- tab background
                 , "#2AA198" -- inactive tab text
                 ]
-theTabFont    = "xft:sans:size=8"
 
 -- directory with executable scripts
 scriptDir = "/home/m/conf/scripts/"
@@ -81,8 +80,6 @@ theManageHook = composeAll
     , className =? "Emacs"         --> doF (W.swapDown)
     -- default workspaces
     , className =? "Firefox"       --> doF (W.shift $ theWorkspaces !! 0)
-    , className =? "Steam"         --> doF (W.shift $ theWorkspaces !! 2)
-    , className =? "dota_linux"    --> doF (W.shift $ theWorkspaces !! 3)
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
     , title     =? "Whisker Menu"  --> doFloat
@@ -103,85 +100,81 @@ theLogHook = ewmhDesktopsLogHookCustom scratchpadFilterOutWorkspace
            >> updatePointer (0.5, 0.5) (0, 0)
 
 -- layouts
-tabbedL = named "Tabbed" $ tabbedBottom shrinkText tabbedTheme
+theLayout = toggleLayouts tabbed (tall1 ||| tall2)
   where
-    tabbedTheme = def { activeBorderColor   = theColors !! 0
-                      , inactiveBorderColor = theColors !! 1
-                      , activeColor         = theColors !! 2
-                      , inactiveColor       = theColors !! 3
-                      , activeTextColor     = theColors !! 0
-                      , inactiveTextColor   = theColors !! 1
-                      , fontName            = theTabFont
-                      }
-
-threeCol = named "Three" $ ThreeCol 1 (3/100) (1/3)
-
--- create tall layout with ratio r
-normalL r = toggleLayouts tabbedL (theSpacing (tall ||| threeCol ||| Grid))
-  where
-    tall = named "Tall" $ Tall 1 (1/100) (r)
-
--- default layout used on all workspaces except "www"
-defaultLayout = normalL (4/7)
--- special "www" layout
-wwwLayout     = normalL (5/7)
+    tall1 = named "1" $ mouseResizableTile{ masterFrac = 4/7
+                                          , draggerType = FixedDragger 10 10
+                                          }
+    tall2 = named "2" $ mouseResizableTile{ masterFrac = 4/7
+                                          , draggerType = FixedDragger 10 10
+                                          , nmaster = 2
+                                          }
+    tabbed = named "t" $ tabbedBottom shrinkText theme
+      where
+        theme = def { activeBorderColor   = theColors !! 0
+                    , inactiveBorderColor = theColors !! 1
+                    , activeColor         = theColors !! 2
+                    , inactiveColor       = theColors !! 3
+                    , activeTextColor     = theColors !! 0
+                    , inactiveTextColor   = theColors !! 1
+                  --, fontName            = "xft:Ubuntu Mono:pixelsize=8"
+                  --, fontName            = "-*-profont-*-*-*-*-11-*-*-*-*-*-iso8859"
+                    }
 
 -- layout hook
 theLayoutHook = avoidStruts
               $ smartBorders
-              $ onWorkspace (theWorkspaces !! 0) wwwLayout
-              $ defaultLayout
+              $ theLayout
 
 keyMappings =
     -- focus and window rotation
-    [ ("M-x",       windows W.focusDown)
-    , ("M1-<Tab>",  windows W.focusDown)
-    , ("M-y",       windows W.focusUp)
-    , ("M-S-x",     rotSlavesDown)
-    , ("M-S-y",     rotSlavesUp)
-    , ("M-s",       dwmpromote)
-    , ("M-S-s",     windows W.focusMaster)
-    , ("M-C-y",     sendMessage Shrink)
-    , ("M-C-x",     sendMessage Expand)
-    , ("M-b",       sendMessage ToggleStruts)
-    , ("M-S-t",     withFocused $ windows . W.sink)
+    [ ("M-x",        windows W.focusDown)
+    , ("M1-<Tab>",   windows W.focusDown)
+    , ("M1-S-<Tab>", windows W.focusUp)
+    , ("M-y",        windows W.focusUp)
+    , ("M-z",        windows W.focusUp)
+    , ("M-S-x",      rotSlavesDown)
+    , ("M-S-y",      rotSlavesUp)
+    , ("M-S-z",      rotSlavesUp)
+    , ("M-s",        dwmpromote)
+    , ("M-S-s",      windows W.focusMaster)
+    , ("M-C-y",      sendMessage Shrink)
+    , ("M-C-z",      sendMessage Shrink)
+    , ("M-C-x",      sendMessage Expand)
+    , ("M-b",        sendMessage ToggleStruts)
+    , ("M-S-t",      withFocused $ windows . W.sink)
+    , ("M-C-k",      sendMessage ShrinkSlave)
+    , ("M-C-j",      sendMessage ExpandSlave)
+    , ("M-C-h",      sendMessage Shrink)
+    , ("M-C-l",      sendMessage Expand)
     -- workspaces
-    , ("M-<Tab>",   toggleWS)
-    , ("M-d",       moveTo Next EmptyWS)
-    , ("M-S-d",     shiftTo Next EmptyWS)
-    , ("M-w",       nextScreen)
-    , ("M-S-w",     shiftNextScreen)
-    , ("M-C-w",     swapNextScreen)
-    , ("M-M1-x",    moveTo Next NonEmptyWS)
-    , ("M-M1-y",    moveTo Prev NonEmptyWS)
-    , ("M-c",       moveTo Prev NonEmptyWS)
-    , ("M-v",       moveTo Next NonEmptyWS)
-    , ("M-S-c",     shiftToPrev)
-    , ("M-S-v",     shiftToNext)
+    , ("M-<Tab>",    toggleWS)
+    , ("M-d",        moveTo Next EmptyWS)
+    , ("M-S-d",      shiftTo Next EmptyWS)
+    , ("M-w",        nextScreen)
+    , ("M-S-w",      shiftNextScreen)
+    , ("M-C-w",      swapNextScreen)
+    , ("M-M1-x",     moveTo Next NonEmptyWS)
+    , ("M-M1-y",     moveTo Prev NonEmptyWS)
+    , ("M-M1-z",     moveTo Prev NonEmptyWS)
+    , ("M-c",        moveTo Prev NonEmptyWS)
+    , ("M-v",        moveTo Next NonEmptyWS)
+    , ("M-S-c",      shiftToPrev)
+    , ("M-S-v",      shiftToNext)
     -- killing
-    , ("M-q q",     kill1)
-    , ("M-q M-q",   kill)
-    , ("M-q a",     killAll)
-    , ("M-q M-a",   killAll)
+    , ("M-q q",      kill1)
+    , ("M-q M-q",    kill)
+    , ("M-q a",      killAll)
+    , ("M-q M-a",    killAll)
     -- layouts
-    , ("M-<Space>", sendMessage $ Toggle "Tabbed")
-    , ("M-<F1>",    sendMessage $ Toggle "Tabbed")
-    , ("M-<F2>",    sendMessage FirstLayout)
-    , ("M-<F3>",    sendMessage FirstLayout
-                      >> sendMessage NextLayout)
-    , ("M-<F4>",    sendMessage FirstLayout
-                      >> sendMessage NextLayout
-                      >> sendMessage NextLayout)
+    , ("M-<Space>",  sendMessage $ Toggle "Tabbed")
+    , ("M-<F1>",     sendMessage FirstLayout)
+    , ("M-<F2>",     sendMessage FirstLayout >> sendMessage NextLayout)
     -- misc
-    , ("M-S-r",     spawn $ scriptDir ++ "recompile-xmonad")
-    , ("M-i",       dynamicLogString def >>=
-                        \d -> spawn $ "notify-send \"" ++ d ++ "\"")
-    , ("M-S-q",     spawn "xfce4-session-logout")
-
-    -- audio volume
-    , ("<XF86AudioRaiseVolume>", spawn $ scriptDir ++ "pulse-volume '+'")
-    , ("<XF86AudioLowerVolume>", spawn $ scriptDir ++ "pulse-volume '-'")
-    , ("<XF86AudioMute>",        spawn $ scriptDir ++ "pulse-volume mute")
+    , ("M-S-r",      spawn $ scriptDir ++ "recompile-xmonad")
+    , ("M-i",        dynamicLogString def >>= \d -> spawn $ "notify-send \"" ++ d ++ "\"")
+    , ("M-S-q",      spawn "xfce4-session-logout")
+    , ("M-`",        scratchpadSpawnActionCustom "urxvtc -name scratchpad")
     ]
 
 windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
@@ -194,22 +187,16 @@ windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
         | (i, k) <- zip theWorkspaces [xK_1 ..]
         , (f, m) <- [ (W.view, 0)
                     , (\w -> W.greedyView w . W.shift w, shiftMask)
-                    , (copy, shiftMask .|. controlMask)]] ++
-
-    -- open scratchpad - cedilla not supported by EZConfig
-    [ ((mod, xK_cedilla), scratchpadSpawnActionCustom
-                            "urxvtc -name scratchpad") ]
+                    , (copy, shiftMask .|. controlMask)]]
 
 shortcuts =
-    [ ("M-r",         spawn "xfce4-popup-whiskermenu")
-    , ("M-e",         spawn "thunar")
-    , ("M-t",         spawn theTerminal)
-    , ("M-<Delete>",  spawn "xfce4-taskmanager")
-    , ("M-p",         spawn "pavucontrol")
-    , ("M-m",         spawn "emacsclient -c")
-    , ("M-g f",       runOrRaise "firefox" $ className =? "Firefox")
-    , ("M-g s",       runOrRaise "steam" $ className =? "Steam")
-    , ("M-g m",       runOrRaise "mumble" $ className =? "Mumble")
+    [ ("M-r",        spawn "xfce4-popup-whiskermenu")
+    , ("M-e",        spawn "thunar")
+    , ("M-t",        spawn theTerminal)
+    , ("M-<Delete>", spawn "xfce4-taskmanager")
+    , ("M-p",        spawn "pavucontrol")
+    , ("M-m",        spawn "emacsclient -c")
+    , ("M-g f",      runOrRaise "firefox" $ className =? "Firefox")
     ]
 
 theMouseBindings (XConfig {XMonad.modMask = mod}) = M.fromList $

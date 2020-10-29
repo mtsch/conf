@@ -1,0 +1,21 @@
+#!/bin/sh
+
+makelink () {
+    FULL=$1
+    PATTERN=$2
+    BASE=${FULL##*/}
+    #echo $FULL
+    #echo $BASE
+    #echo $PATTERN
+    #echo "ln -s $PWD/$FULL $PATTERN/$BASE"
+    ln -s "$PWD/$FULL" "$PATTERN/$BASE"
+}
+
+if [ -z $1 ]; then
+   echo "no pattern."
+else
+    PATTERN=${*: -1}
+    export -f makelink
+    mkdir -p $PATTERN
+    find . -type f | grep $@ | xargs -I{} bash -c 'makelink "$@"' _ {} $PATTERN
+fi

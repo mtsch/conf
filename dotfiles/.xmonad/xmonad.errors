@@ -1,7 +1,7 @@
 
-xmonad.hs:63:17: warning: [-Wdeprecations]
-    In the use of ‘smartSpacing’ (imported from XMonad.Layout.Spacing):
-    Deprecated: "Use spacingRaw instead."
-   |
-63 | theSpacing    = smartSpacing 5
-   |                 ^^^^^^^^^^^^
+xmonad.hs:113:45: error:
+    Not in scope: ‘ntoaster’
+    Perhaps you meant ‘nmaster’ (imported from XMonad.Layout.MouseResizableTile)
+    |
+113 |                                           , ntoaster = 10
+    |                                             ^^^^^^^^

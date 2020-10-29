@@ -1,0 +1,13 @@
+#!/bin/bash
+BASE=${2%.*}
+EXT=${2##*.}
+
+if [[ $1 == l ]]; then
+    D=2
+elif [[ $1 == r ]]; then
+    D=1
+else
+    exit
+fi
+
+ffmpeg -i "$BASE.$EXT" -vf "transpose=$D" "$BASE-$1.$EXT"

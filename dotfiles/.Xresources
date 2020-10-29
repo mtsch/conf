@@ -8,6 +8,7 @@ URxvt.iso14755    : false
 URxvt.iso14755_52 : false
 
 URxvt.font : xft:Ubuntu Mono:pixelsize=17
+!URxvt.font : xft:JuliaMono:pixelsize=17
 
 ! Solarized color scheme for the X Window System
 
