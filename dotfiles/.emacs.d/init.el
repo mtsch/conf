@@ -1,13 +1,8 @@
-(setq default-tab-width 4)
-(setq c-basic-offset 4)
-(setq c-indent-level 4)
-(setq mouse-autoselect-window t)
-(setq focus-follows-mouse t)
 ;; =================
 ;; Sources, packages
 ;; =================
 (add-to-list 'load-path "~/.emacs.d/plugins/")
-(require 'cl)
+(add-to-list 'load-path "~/.emacs.d/plugins/julia-repl")
 (require 'package)
 
 (add-to-list 'package-archives
@@ -22,59 +17,42 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-(defvar packages '(evil
-                   evil-numbers
-                   evil-escape
-                   evil-mc
-                   solarized-theme
-                   multi-term
-                   powerline
-                   powerline-evil
-                   auto-package-update
-                   helm
-
-                   julia-mode
-                   julia-repl
-
-                   ess
-
-                   haskell-mode
-                   ghc
-
-                   markdown-mode
-
+(defvar packages '(auto-package-update
                    unicode-fonts
-
-                   elpy
-                   pyvenv
-                   flycheck
-                   python-pytest
-                   py-isort
-
-                   magit
-                   magit-todos
-
+                   magit magit-todos
+                   evil evil-numbers evil-escape evil-mc
+                   helm
+                   powerline powerline-evil
+                   solarized-theme
                    fill-column-indicator
+                   julia-mode
+                   ess
+                   haskell-mode ghc
+                   markdown-mode
+                   elpy pyvenv flycheck python-pytest py-isort
                    ))
 
 (dolist (p packages)
   (when (not (package-installed-p p))
     (package-install p)))
 
-;; user info
-(setq user-full-name "mtsch"
-      user-mail-address "matijacufar@gmail.com")
-
-;; =======
-;; General
-;; =======
+;; ========================
+;; Appearance and usability
+;; ========================
+(setq default-tab-width 4)
+(setq c-basic-offset 4)
+(setq c-indent-level 4)
+(setq mouse-autoselect-window t)
+(setq focus-follows-mouse t)
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (show-paren-mode 1)
 (blink-cursor-mode 0)
 (setq backup-directory-alist '(("." . "~/.emacs-backups")))
-
 (global-set-key [C-tab] 'other-window)
+
+(setq user-full-name "mtsch"
+      user-mail-address "matijacufar@gmail.com")
 
 (setq-default
  inhibit-splash-screen t
@@ -110,36 +88,16 @@
  default-terminal-coding-system   'utf-8-unix
  )
 
-;; Y or N prompt
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Theme
 (load-theme 'solarized-light t)
 
-;; Font
-;(set-face-attribute 'default nil
-;                    :family "Ubuntu-Mono"
-;                    :height 110
-;                    :weight 'normal)
-;(set-face-attribute 'default nil
-;                    :family "Office Code Pro"
-;                    :height 110
-;                    :weight 'normal)
 (require 'unicode-fonts)
 (unicode-fonts-setup)
-;(set-frame-font "DejaVu Sans Mono 12")
-;(set-fontset-font "fontset-default" 'unicode "DejaVu Sans Mono")
-;(set-frame-font "Noto Sans Mono 11")
-;(set-fontset-font "fontset-default" 'unicode "Noto Sans Mono 11")
-(set-frame-font
- "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
- ;"-GOOG-Noto Mono-normal-normal-normal-*-16-*-*-*-*-0-iso10646-1"
- ;"-NATH-Office Code Pro-bold-normal-normal-*-15-*-*-*-*-0-iso10646-1"
- )
+(set-frame-font "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
 (set-fontset-font t 'unicode
-                  ;"-GOOG-Noto Mono-normal-normal-normal-*-16-*-*-*-*-0-iso10646-1"
                   "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
-                  ;"-NATH-Office Code Pro-bold-normal-normal-*-15-*-*-*-*-0-iso10646-1"
                   nil
                   'prepend
                   )
@@ -156,29 +114,12 @@
 (evil-mode 1)
 (add-to-list 'evil-insert-state-modes 'view-mode)
 
-;; Remap org-mode meta keys for convenience
-(mapcar (lambda (state)
-          (evil-declare-key state org-mode-map
-            (kbd "M-l") 'org-metaright
-            (kbd "M-h") 'org-metaleft
-            (kbd "M-k") 'org-metaup
-            (kbd "M-j") 'org-metadown
-            (kbd "M-L") 'org-shiftmetaright
-            (kbd "M-H") 'org-shiftmetaleft
-            (kbd "M-K") 'org-shiftmetaup
-            (kbd "M-J") 'org-shiftmetadown))
-        '(normal insert))
-
 ;; Increment or decrement numbers
 (require 'evil-numbers)
 (define-key evil-normal-state-map
   (kbd "C-c +") 'evil-numbers/inc-at-pt)
 (define-key evil-normal-state-map
   (kbd "C-c -") 'evil-numbers/dec-at-pt)
-
-;; Multicursor
-;(require 'evil-mc)
-;(global-evil-mc-mode 1)
 
 ;; =====================
 ;; Long lines and spaces
@@ -210,32 +151,6 @@
 
 ;; Highlight current line
 (global-hl-line-mode t)
-
-;; =====
-;; Julia
-;; =====
-(require 'julia-mode)
-(require 'julia-repl)
-(add-hook 'julia-mode-hook 'julia-repl-mode)
-(add-to-list 'auto-mode-alist '("\\.jl\\'" . julia-mode))
-(setq julia-repl-switches "-O3")
-(setq eglot-connect-timeout 99999)
-
-;; =======================
-;; Emacs Speaks Statistics
-;; =======================
-(require 'ess-site)
-(ess-disable-smart-S-assign nil)
-(add-hook 'ess-mode-hook
-          (lambda ()
-            (ess-set-style 'RStudio 'quiet)))
-
-;(add-hook 'ess-julia-mode-hook
-;          (lambda () (local-set-key (kbd "<tab>")
-;                                         'julia-latexsub-or-indent)))
-
-;(setq inferior-julia-program-name "/home/m/julia-latest/julia/bin/julia")
-;(setq inferior-julia-args "-O3 -pauto")
 
 ;; =========
 ;; Powerline
@@ -316,7 +231,33 @@
 (advice-add 'helm-execute-persistent-action
             :around #'dwim-helm-find-files-navigate-forward)
 
+;; =====
+;; Magit
+;; =====
 (require 'magit-todos)
+
+;; =====
+;; Julia
+;; =====
+(require 'julia-mode)
+(require 'julia-repl)
+(add-hook 'julia-mode-hook 'julia-repl-mode)
+(add-to-list 'auto-mode-alist '("\\.jl\\'" . julia-mode))
+(setq julia-repl-switches "-O3")
+(setq julia-repl-executable-records
+      '((master "julia")
+        (stable "julia-1.5")
+        (lts "~/julialts")))
+(julia-repl-set-terminal-backend 'vterm)
+
+;; =======================
+;; Emacs Speaks Statistics
+;; =======================
+(require 'ess-site)
+(ess-disable-smart-S-assign nil)
+(add-hook 'ess-mode-hook
+          (lambda ()
+            (ess-set-style 'RStudio 'quiet)))
 
 ;; =======
 ;; Haskell
@@ -348,7 +289,7 @@
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
  '(package-selected-packages
-   '(magit-todos hl-todo eglot-jl py-isort python-pytest lsp-clangd flycheck elpy unicode-fonts julia-repl stan-mode geiser solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc evil-numbers evil-mc evil-escape)))
+   '(magit-todos hl-todo eglot-jl py-isort python-pytest lsp-clangd flycheck elpy unicode-fonts stan-mode geiser solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc evil-numbers evil-mc evil-escape)))
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)

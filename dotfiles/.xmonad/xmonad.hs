@@ -44,31 +44,29 @@ main = xmonad $ xfceConfig
               , focusFollowsMouse  = True
               , workspaces         = theWorkspaces
 
-              , borderWidth        = 1
-              , focusedBorderColor = theColors !! 0
-              , normalBorderColor  = theColors !! 1
+              , borderWidth        = 2
+              , focusedBorderColor = focused theColors
+              , normalBorderColor  = unfocused theColors
 
               , manageHook         = theManageHook
               , layoutHook         = theLayoutHook
               , logHook            = theLogHook
               , startupHook        = startupHook xfceConfig >> setWMName "LG3D"
 
-              , mouseBindings      = theMouseBindings
-              , keys               = windowMovementKeys
+              , mouseBindings      = theMouse
+              , keys               = theWindowMovementKeys
               }
-              `additionalKeysP` (keyMappings ++ shortcuts)
-              --`additionalKeys`  windowMovementKeys
+              `additionalKeysP` theKeys
 
 theTerminal   = "xrdb ~/.Xresources && urxvtc"
-theSpacing    = smartSpacing 5
 theWorkspaces = ["i","ii","iii","iv","v","vi","vii","viii","ix","NSP"]
-theColors     = [ "#D33682" -- focused border
-                , "#93A1A1" -- unfocused border
-                --, "#073642" -- tab foreground
-                , "#002B36" -- tab foreground
-                , "#051A20" -- tab background
-                , "#2AA198" -- inactive tab text
-                ]
+
+data ColorScheme = ColorScheme { focused    :: String
+                               , unfocused  :: String
+                               , background :: String
+                               , foreground :: String
+                               }
+theColors = ColorScheme "#CB4B16" "#93A1A1" "#002B36" "#051A20"
 
 -- directory with executable scripts
 scriptDir = "/home/m/conf/scripts/"
@@ -79,54 +77,50 @@ theManageHook = composeAll
     , className =? "Thunar"        --> doF (W.swapDown)
     , className =? "Emacs"         --> doF (W.swapDown)
     -- default workspaces
-    , className =? "Firefox"       --> doF (W.shift $ theWorkspaces !! 0)
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
     , title     =? "Whisker Menu"  --> doFloat
     ]
     <+> manageDocks
-    <+> manageScratchpad
-
--- scratchpad thetings
-manageScratchpad = scratchpadManageHook (W.RationalRect l t w h)
-  where
-    h = 0.30 -- height
-    w = 0.60 -- width
-    t = 0.30 -- distance from top edge, avoiding the taskbar
-    l = 0    -- distance from left edge
+    <+> scratchpadManageHook (W.RationalRect l t w h)
+        where
+          h = 0.50 -- height
+          w = 0.50 -- width
+          t = 0.30 -- distance from top edge, avoiding the taskbar
+          l = 0.00 -- distance from left edge
 
 -- xfce integration, ignore scratchpad workspace, center mouse pointer on focus
 theLogHook = ewmhDesktopsLogHookCustom scratchpadFilterOutWorkspace
            >> updatePointer (0.5, 0.5) (0, 0)
 
--- layouts
-theLayout = toggleLayouts tabbed (tall1 ||| tall2)
-  where
-    tall1 = named "1" $ mouseResizableTile{ masterFrac = 4/7
-                                          , draggerType = FixedDragger 10 10
-                                          }
-    tall2 = named "2" $ mouseResizableTile{ masterFrac = 4/7
-                                          , draggerType = FixedDragger 10 10
-                                          , nmaster = 2
-                                          }
-    tabbed = named "t" $ tabbedBottom shrinkText theme
-      where
-        theme = def { activeBorderColor   = theColors !! 0
-                    , inactiveBorderColor = theColors !! 1
-                    , activeColor         = theColors !! 2
-                    , inactiveColor       = theColors !! 3
-                    , activeTextColor     = theColors !! 0
-                    , inactiveTextColor   = theColors !! 1
-                  --, fontName            = "xft:Ubuntu Mono:pixelsize=8"
-                  --, fontName            = "-*-profont-*-*-*-*-11-*-*-*-*-*-iso8859"
-                    }
-
--- layout hook
 theLayoutHook = avoidStruts
               $ smartBorders
-              $ theLayout
+              $ toggleLayouts tabbed (tall1 ||| tall2 ||| tall3)
+  where
+    tall1 = named "1" $ mouseResizableTile { masterFrac = 4/7
+                                           , draggerType = FixedDragger 10 10
+                                           }
+    tall2 = named "2" $ mouseResizableTile { masterFrac = 4/7
+                                           , draggerType = FixedDragger 10 10
+                                           , nmaster = 2
+                                           }
+    tall3 = named "3" $ mouseResizableTile { masterFrac = 4/7
+                                           , draggerType = FixedDragger 10 10
+                                           , nmaster = 3
+                                           }
+    tabbed = named "t" $ tabbedBottom shrinkText theme
+      where
+        theme = def { activeBorderColor   = focused theColors
+                    , inactiveBorderColor = unfocused theColors
+                    , activeColor         = background theColors
+                    , inactiveColor       = foreground theColors
+                    , activeTextColor     = unfocused theColors
+                    , inactiveTextColor   = unfocused theColors
+                    , fontName =
+                        "xft:Ubuntu:weight=bold:pixelsize=12:antialias=true:hinting=true"
+                    }
 
-keyMappings =
+theKeys =
     -- focus and window rotation
     [ ("M-x",        windows W.focusDown)
     , ("M1-<Tab>",   windows W.focusDown)
@@ -167,17 +161,30 @@ keyMappings =
     , ("M-q a",      killAll)
     , ("M-q M-a",    killAll)
     -- layouts
-    , ("M-<Space>",  sendMessage $ Toggle "Tabbed")
+    , ("M-<Space>",  sendMessage $ Toggle "t")
     , ("M-<F1>",     sendMessage FirstLayout)
-    , ("M-<F2>",     sendMessage FirstLayout >> sendMessage NextLayout)
+    , ("M-<F2>",     sendMessage FirstLayout >>
+                         sendMessage NextLayout)
+    , ("M-<F3>",     sendMessage FirstLayout >>
+                         sendMessage NextLayout >>
+                         sendMessage NextLayout)
     -- misc
-    , ("M-S-r",      spawn $ scriptDir ++ "recompile-xmonad")
-    , ("M-i",        dynamicLogString def >>= \d -> spawn $ "notify-send \"" ++ d ++ "\"")
-    , ("M-S-q",      spawn "xfce4-session-logout")
-    , ("M-`",        scratchpadSpawnActionCustom "urxvtc -name scratchpad")
+    , ("M-S-r",        spawn $ scriptDir ++ "recompile-xmonad")
+    , ("M-i",          dynamicLogString def >>= \d -> spawn $ "notify-send \"" ++ d ++ "\"")
+    , ("M-S-q",        spawn "xfce4-session-logout")
+    , ("M-`",          scratchpadSpawnActionTerminal "urxvtc")
+    -- application shortcuts
+    , ("M-r",          spawn "xfce4-popup-whiskermenu")
+    , ("M-e",          spawn "thunar")
+    , ("M-t",          spawn theTerminal)
+    , ("M-S-<Delete>", spawn "xfce4-taskmanager")
+    , ("M-<Delete>",   spawn "urxvtc -e htop")
+    , ("M-p",          spawn "pavucontrol")
+    , ("M-m",          spawn "emacsclient -c")
+    , ("M-g f",        runOrRaise "firefox" $ className =? "firefox")
     ]
 
-windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
+theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
     -- move windows between workspaces
     [ ((mod .|. controlMask, k), windows $ swapWithCurrent i)
         | (i, k) <- zip theWorkspaces [xK_1..]] ++
@@ -189,17 +196,8 @@ windowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
                     , (\w -> W.greedyView w . W.shift w, shiftMask)
                     , (copy, shiftMask .|. controlMask)]]
 
-shortcuts =
-    [ ("M-r",        spawn "xfce4-popup-whiskermenu")
-    , ("M-e",        spawn "thunar")
-    , ("M-t",        spawn theTerminal)
-    , ("M-<Delete>", spawn "xfce4-taskmanager")
-    , ("M-p",        spawn "pavucontrol")
-    , ("M-m",        spawn "emacsclient -c")
-    , ("M-g f",      runOrRaise "firefox" $ className =? "Firefox")
-    ]
 
-theMouseBindings (XConfig {XMonad.modMask = mod}) = M.fromList $
+theMouse (XConfig {XMonad.modMask = mod}) = M.fromList $
     [ ((mod, 1 :: Button), (\w ->
           focus w >> mouseMoveWindow w >> windows W.shiftMaster))
     , ((mod .|. controlMask, 1 :: Button), (\w ->

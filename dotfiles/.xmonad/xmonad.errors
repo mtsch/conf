@@ -1,7 +1,0 @@
-
-xmonad.hs:113:45: error:
-    Not in scope: ‘ntoaster’
-    Perhaps you meant ‘nmaster’ (imported from XMonad.Layout.MouseResizableTile)
-    |
-113 |                                           , ntoaster = 10
-    |                                             ^^^^^^^^

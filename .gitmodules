@@ -1,0 +1,3 @@
+[submodule "dotfiles/.emacs.d/plugins/julia-repl"]
+	path = dotfiles/.emacs.d/plugins/julia-repl
+	url = https://github.com/tpapp/julia-repl
