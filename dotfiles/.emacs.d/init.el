@@ -19,22 +19,32 @@
 
 (defvar packages '(auto-package-update
                    unicode-fonts
-                   magit magit-todos
+                   magit magit-todos hl-todo
                    evil evil-numbers evil-escape evil-mc
                    helm
-                   powerline powerline-evil
+		   smart-mode-line
                    solarized-theme
                    fill-column-indicator
                    julia-mode
                    ess
                    haskell-mode ghc
                    markdown-mode
+                   flycheck
                    elpy pyvenv flycheck python-pytest py-isort
                    ))
 
 (dolist (p packages)
   (when (not (package-installed-p p))
     (package-install p)))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(unicode-fonts magit magit-todos hl-todo evil evil-numbers evil-escape evil-mc helm solarized-theme fill-column-indicator julia-mode ess haskell-mode ghc markdown-mode flycheck elpy pyvenv flycheck python-pytest py-isort))
+)
 
 ;; ========================
 ;; Appearance and usability
@@ -90,9 +100,18 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Theme
 (load-theme 'solarized-light t)
 
+;; =========
+;; Powerline
+;; =========
+(require 'smart-mode-line)
+(sml/setup)
+(sml/apply-theme 'automatic)
+
+;; =====
+;; Fonts
+;; =====
 (require 'unicode-fonts)
 (unicode-fonts-setup)
 (set-frame-font "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
@@ -102,7 +121,8 @@
                   'prepend
                   )
 
-(add-to-list 'default-frame-alist '(font . "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
+(add-to-list 'default-frame-alist
+             '(font . "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
  ))
 (set-face-attribute 'default t :font "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
 )
@@ -151,13 +171,6 @@
 
 ;; Highlight current line
 (global-hl-line-mode t)
-
-;; =========
-;; Powerline
-;; =========
-(require 'powerline)
-(require 'powerline-evil)
-(powerline-default-theme)
 
 ;; ====
 ;; Helm
@@ -234,7 +247,16 @@
 ;; =====
 ;; Magit
 ;; =====
+(require 'magit)
 (require 'magit-todos)
+(global-hl-todo-mode 1)
+(global-magit-file-mode 1)
+(magit-todos-mode 1)
+(define-key magit-file-mode-map
+  (kbd "C-x t") 'helm-magit-todos)
+(setq hl-todo-keyword-faces
+      '(("TODO"   . "#2AA198")
+        ("FIXME"  . "#DC322F")))
 
 ;; =====
 ;; Julia
@@ -278,18 +300,6 @@
 (eval-after-load "haskell-cabal"
     '(define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-compile))
 
-
-;; interactive mode
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-suggest-remove-import-lines t)
- '(package-selected-packages
-   '(magit-todos hl-todo eglot-jl py-isort python-pytest lsp-clangd flycheck elpy unicode-fonts stan-mode geiser solarized-theme powerline-evil multi-term markdown-mode hindent helm-R ghc evil-numbers evil-mc evil-escape)))
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
