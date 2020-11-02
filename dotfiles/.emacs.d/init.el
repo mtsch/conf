@@ -18,6 +18,7 @@
   (package-refresh-contents))
 
 (defvar packages '(auto-package-update
+                   bind-key
                    unicode-fonts
                    magit magit-todos hl-todo
                    evil evil-numbers evil-escape evil-mc
@@ -25,7 +26,7 @@
 		   smart-mode-line
                    solarized-theme
                    fill-column-indicator
-                   julia-mode
+                   julia-mode vterm
                    ess
                    haskell-mode ghc
                    markdown-mode
@@ -59,7 +60,6 @@
 (show-paren-mode 1)
 (blink-cursor-mode 0)
 (setq backup-directory-alist '(("." . "~/.emacs-backups")))
-(global-set-key [C-tab] 'other-window)
 
 (setq user-full-name "mtsch"
       user-mail-address "matijacufar@gmail.com")
@@ -87,7 +87,7 @@
  mouse-wheel-follow-mouse 't
  mouse-wheel-scroll-amount '(1 ((shift) . 1))
 
- undo-limit 1000000
+ undo-limit 10000
 
  ;; Force utf encoding
  buffer-file-coding-system        'utf-8-unix
@@ -167,7 +167,6 @@
             (turn-on-auto-fill)))
 
 ;; Regex indent
-(global-set-key (kbd "C-x a r") 'align-regexp)
 
 ;; Highlight current line
 (global-hl-line-mode t)
@@ -185,16 +184,19 @@
 (helm-mode t)
 
 ;; Keymaps
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(require 'bind-key)
+(bind-key* "<C-tab>" 'other-window)
+(bind-key "M-y" 'helm-show-kill-ring)
+(bind-key (kbd "C-x a r") 'align-regexp)
 
 ;; Change prefix
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(bind-key "C-c h" 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
 
 ;; Buffers
-(global-set-key (kbd "C-x b") 'helm-mini)
+(bind-key "M-x" 'helm-M-x)
+(bind-key "C-x C-f" 'helm-find-files)
+(bind-key "C-x b" 'helm-mini)
 (setq helm-buffers-fuzzy-matching t
       helm-recentf-fuzzy-match    t)
 
