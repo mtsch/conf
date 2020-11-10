@@ -43,9 +43,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("c433c87bd4b64b8ba9890e8ed64597ea0f8eb0396f4c9a9e01bd20a04d15d358" "285d1bf306091644fb49993341e0ad8bafe57130d9981b680c1dbd974475c5c7" "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" default))
  '(package-selected-packages
-   '(unicode-fonts magit magit-todos hl-todo evil evil-numbers evil-escape evil-mc helm solarized-theme fill-column-indicator julia-mode ess haskell-mode ghc markdown-mode flycheck elpy pyvenv flycheck python-pytest py-isort))
-)
+   '(unicode-fonts magit magit-todos hl-todo evil evil-numbers evil-escape evil-mc helm solarized-theme fill-column-indicator julia-mode ess haskell-mode ghc markdown-mode flycheck elpy pyvenv flycheck python-pytest py-isort)))
 
 ;; ========================
 ;; Appearance and usability
@@ -252,10 +253,7 @@
 (require 'magit)
 (require 'magit-todos)
 (global-hl-todo-mode 1)
-(global-magit-file-mode 1)
 (magit-todos-mode 1)
-(define-key magit-file-mode-map
-  (kbd "C-x t") 'helm-magit-todos)
 (setq hl-todo-keyword-faces
       '(("TODO"   . "#2AA198")
         ("FIXME"  . "#DC322F")))
@@ -270,8 +268,8 @@
 (setq julia-repl-switches "-O3")
 (setq julia-repl-executable-records
       '((master "julia")
-        (stable "julia-1.5")
-        (lts "~/julialts")))
+        (stable "julia-stable")
+        (lts "julia-lts")))
 (julia-repl-set-terminal-backend 'vterm)
 
 ;; =======================
@@ -352,6 +350,66 @@
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
+
+;; =====
+;; EMAIL
+;; =====
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(require 'smtpmail)
+
+; smtp
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials
+      '(("imap.gmail.com" 993 nil nil))
+      smtpmail-default-smtp-server "imap.gmail.com"
+      smtpmail-smtp-server "imap.gmail.com"
+      smtpmail-smtp-service 993
+      smtpmail-stream-type 'starttls
+      smtpmail-debug-info t)
+
+(require 'mu4e)
+
+(setq mu4e-maildir (expand-file-name "~/email/main"))
+
+(setq mu4e-drafts-folder "/Drafts")
+(setq mu4e-sent-folder   "/Sent Items")
+(setq mu4e-trash-folder  "/Trash")
+(setq message-signature-file "~/.emacs.d/.signature") ; put your signature in this file
+
+; get mail
+(setq mu4e-get-mail-command "mbsync -a"
+      mu4e-html2text-command "w3m -T text/html"
+      mu4e-update-interval 120
+      mu4e-headers-auto-update t
+      mu4e-compose-signature-auto-include nil)
+
+(setq mu4e-maildir-shortcuts
+      '( ("/INBOX" . ?i)
+         ("/Sent Items" . ?s)
+         ("/Trash" . ?t)
+         ("/Drafts" . ?d)))
+
+;; show images
+(setq mu4e-show-images t)
+
+;; use imagemagick, if available
+(when (fboundp 'imagemagick-register-types)
+  (imagemagick-register-types))
+
+;; general emacs mail settings; used when composing e-mail
+;; the non-mu4e-* stuff is inherited from emacs/message-mode
+(setq mu4e-reply-to-address "matijacufar@gmail.com"
+    user-mail-address "matijacufar@gmail.com"
+    user-full-name "Matija Čufar")
+
+;; don't save message to Sent Messages, IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+;; spell check
+(add-hook 'mu4e-compose-mode-hook
+        (defun my-do-compose-stuff ()
+           "My settings for message composition."
+           (flyspell-mode)))
 
 (provide 'init)
 ;;; init ends here

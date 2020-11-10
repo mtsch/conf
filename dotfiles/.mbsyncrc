@@ -1,0 +1,24 @@
+IMAPAccount      main
+Host             imap.gmail.com
+User             matijacufar@gmail.com
+PassCmd          "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsyncpass.gpg"
+SSLType          IMAPS
+CertificateFile  /etc/ssl/certs/ca-certificates.crt
+CertificateFile  ~/email/gmail.crt
+CertificateFile  ~/email/google.crt
+
+IMAPStore  main-remote
+Account    main
+
+MaildirStore  main-local
+Path          ~/email/main/
+Inbox         ~/email/main/inbox
+
+Channel    main
+Far        :main-remote:
+Near       :main-local:
+Patterns   "Sent Items" "INBOX" "Deleted Items"
+Create     Near
+Sync       All
+Expunge    Both
+SyncState  *

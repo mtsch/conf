@@ -30,6 +30,7 @@ import XMonad.ManageHook
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 
 import XMonad.Util.Scratchpad
@@ -68,9 +69,6 @@ data ColorScheme = ColorScheme { focused    :: String
                                }
 theColors = ColorScheme "#CB4B16" "#93A1A1" "#002B36" "#051A20"
 
--- directory with executable scripts
-scriptDir = "/home/m/conf/scripts/"
-
 theManageHook = composeAll
     -- never open as master
     [ className =? "URxvt"         --> doF (W.swapDown)
@@ -79,15 +77,12 @@ theManageHook = composeAll
     -- default workspaces
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
+    , className =? "Pavucontrol"   --> doRectFloat (W.RationalRect 0.69 0.10 0.30 0.40)
     , title     =? "Whisker Menu"  --> doFloat
     ]
     <+> manageDocks
-    <+> scratchpadManageHook (W.RationalRect l t w h)
-        where
-          h = 0.50 -- height
-          w = 0.50 -- width
-          t = 0.30 -- distance from top edge, avoiding the taskbar
-          l = 0.00 -- distance from left edge
+    <+> scratchpadManageHook (W.RationalRect 0.01 0.30 0.50 0.50)
+        -- left, top, width, height
 
 -- xfce integration, ignore scratchpad workspace, center mouse pointer on focus
 theLogHook = ewmhDesktopsLogHookCustom scratchpadFilterOutWorkspace
@@ -169,7 +164,6 @@ theKeys =
                          sendMessage NextLayout >>
                          sendMessage NextLayout)
     -- misc
-    , ("M-S-r",        spawn $ scriptDir ++ "recompile-xmonad")
     , ("M-i",          dynamicLogString def >>= \d -> spawn $ "notify-send \"" ++ d ++ "\"")
     , ("M-S-q",        spawn "xfce4-session-logout")
     , ("M-`",          scratchpadSpawnActionTerminal "urxvtc")

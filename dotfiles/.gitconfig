@@ -1,0 +1,9 @@
+[user]
+	email = matijacufar@gmail.com
+	name = mtsch
+[credential]
+	helper = cache --timeout=86400
+[github]
+	user = mtsch
+[core]
+	excludesfile = /home/m/.gitignore

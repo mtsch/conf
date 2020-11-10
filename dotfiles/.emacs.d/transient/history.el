@@ -17,9 +17,8 @@
  (magit-merge nil)
  (magit-patch-apply nil)
  (magit-pull nil)
- (magit-push
-  ("--force-with-lease")
-  nil)
+ (magit-push nil
+             ("--force-with-lease"))
  (magit-rebase nil)
  (magit-reset nil)
  (magit-revert

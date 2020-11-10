@@ -2,42 +2,32 @@
 PS1='[\W]$ '
 shopt -s checkwinsize
 
-# additional sources - aliases, variables and scripts
-SOURCES=~/conf/scripts/bashrc-sources
+SOURCES=$HOME/conf/scripts/bashrc-sources
+ls $SOURCES/git-completion-bash
 source $SOURCES/git-completion-bash
-source $SOURCES/bashmarks.sh
 
-# added by travis gem
-[ -f /home/m/.travis/travis.sh ] && source /home/m/.travis/travis.sh
-
-# ======================================================================================== #
+# ===================
 # ALIASES & FUNCTIONS
-# ======================================================================================== #
+# =================== 
 # misc
 alias df='df -h'
 alias du='du -h'
-alias whereis='find . -iname'
 alias grep='egrep'
 alias tcpy='pwd | urxvtc'
 alias poogle='ping www.google.com'
-alias clr='clear'
 # restart
 alias rebash='source ~/.bashrc'
-alias remonad='xmonad --recompile && xmonad --restart'
 alias remacs='emacsclient -e "(kill-emacs)"; emacs --daemon'
 # ls
 alias ls='ls --color=auto -p'
-alias ll='ls -lah'
+alias ll='ls -lh'
 alias lf='ls -f'
 alias la='ls -a'
+alias lal='ls -lah'
 # why?
 alias al='sl -a'
 alias lll='sl -l'
-# rlwrap
-alias ocaml='rlwrap ocaml'
-alias octave=octave-cli
-# emacs client in terminal
-alias em="emacsclient -t"
+
 alias R="R --no-save"
 
 alias op="exo-open"
@@ -45,9 +35,7 @@ alias op.="exo-open ."
 alias op..="exo-open .."
 
 toup(){ touch $1 && op $1;}
-steam(){
-    LD_PRELOAD='/usr/$LIB/libstdc++.so.6 /usr/$LIB/libgcc_s.so.1 /usr/$LIB/libxcb.so.1 /usr/$LIB/libgpg-error.so' /bin/steam
-}
+
 mkcd (){ mkdir -p "$*"; cd "$*";}
 cs (){ cd "$*"; ls;}
 
@@ -70,18 +58,9 @@ function lekproxy() {
     fi
 }
 
-# ======================================================================================== #
+# ====
 # VARS
-# ======================================================================================== #
+# ====
 export EDITOR="emacsclient -c"
 export PAGER=vimpager
-export PATH=$PATH:/home/m/conf/bin
-
-# JULIA
-export CONDA_JL_VERSION=2
-export JULIA_NUM_THREADS=1
-
-thisroot(){ source /usr/bin/thisroot.sh;}
-[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
-
-export autotest_passwd=test1234
+export PATH=$PATH:$HOME/conf/bin

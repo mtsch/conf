@@ -1,5 +1,0 @@
-#!/bin/sh
-PREFIX="/home/m/.PlayOnLinux/wineprefix/reaper64/drive_c/"
-path=$(echo $* | sed "s#C:\\\\#$PREFIX#" | sed "s#\\\\#/#g" | sed "s# #\\ #")
-
-audacity "$path"
