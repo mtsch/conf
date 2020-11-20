@@ -1,0 +1,8 @@
+#!/bin/sh
+( dmenu -l 5 -F -n  ) << EOF | ${SHELL:-"/bin/sh"} &
+firefox
+reaper
+cadence
+jdownloader
+transmission
+EOF

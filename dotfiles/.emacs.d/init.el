@@ -21,7 +21,7 @@
                    bind-key
                    unicode-fonts
                    magit magit-todos hl-todo
-                   evil evil-numbers evil-escape evil-mc
+                   evil evil-escape
                    helm
 		   smart-mode-line
                    solarized-theme
@@ -115,9 +115,9 @@
 ;; =====
 (require 'unicode-fonts)
 (unicode-fonts-setup)
-(set-frame-font "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+(set-frame-font "-*-UbuntuMono Nerd Font-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
 (set-fontset-font t 'unicode
-                  "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
+                  "-*-UbuntuMono Nerd Font-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1"
                   nil
                   'prepend
                   )
@@ -134,13 +134,6 @@
 (require 'evil)
 (evil-mode 1)
 (add-to-list 'evil-insert-state-modes 'view-mode)
-
-;; Increment or decrement numbers
-(require 'evil-numbers)
-(define-key evil-normal-state-map
-  (kbd "C-c +") 'evil-numbers/inc-at-pt)
-(define-key evil-normal-state-map
-  (kbd "C-c -") 'evil-numbers/dec-at-pt)
 
 ;; =====================
 ;; Long lines and spaces

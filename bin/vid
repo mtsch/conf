@@ -1,0 +1,121 @@
+#!/bin/sh
+USAGE="""
+Usage:\n
+  vid split [FILE] [TIMES]
+  vid rotate [cw,ccw] [FILE]
+  vid join [-o FILE] [FILES...]
+  vid resolution [FILE]
+"""
+TIME="[0-9:]\+"
+CACHEDIR="$HOME/.cache/vidtools"
+FFMPEG="ffmpeg -v warning"
+mkdir -p "$CACHEDIR"
+
+split() {
+    file=$1
+    basename="${file%.*}"
+    ext="${file##*.}"
+    cmd="$FFMPEG -i \'$file\' -vcodec copy -acodec copy -ss \2 -to \3 \'$basename-\1.$ext\'"
+    shift
+    input="$*"
+
+    times=$(
+        echo "$input" |
+            sed -e "s/-\($TIME\)-/-\1 \1-/g" \
+                -e "s/-\($TIME\)-/-\1 \1-/g" \
+                -e 's/ /\n/g' |
+            nl -s' ' |
+            sed -ne "/^ *[0-9]\+ $TIME-$TIME/p"
+         )
+    if [ -z "$times" ]; then
+        echo "No valid times found"
+        exit 1
+    elif [ -z "$DEBUG" ]; then
+        echo Times:
+        echo "$times"
+    fi
+
+    echo "$times" | sed "s/ \+\([0-9]\)\+ \($TIME\)-\($TIME\)/$cmd/" > "$CACHEDIR/last_command"
+    process
+}
+
+rotate() {
+    case "$1" in
+        "cw")
+            direction=1
+        ;;
+        "ccw")
+            direction=2
+        ;;
+        *)
+            echo "Invalid direction $1"
+            echo 'Use "cw" or "ccw"'
+            exit 1
+        ;;
+    esac
+    file=$2
+    basename="${file%.*}"
+    ext="${file##*.}"
+    echo "$FFMPEG -i '$file' -vf transpose=$direction '$basename-$1.$ext'" > "$CACHEDIR/last_command"
+    process
+}
+
+join() {
+    rm "$CACHEDIR/filelist"
+    if [ "$1" = '-o' ]; then
+        target=$2
+        shift 2
+    else
+        ext="${1##*.}"
+        target="output.$ext"
+    fi
+    for i in "$@"; do
+        echo file "'$PWD/$i'" >> "$CACHEDIR/filelist"
+    done
+    echo "Target: $target"
+
+    echo "$FFMPEG -f concat -safe 0 -i '$CACHEDIR/filelist' -c copy '$target'" > "$CACHEDIR/last_command"
+    process
+}
+
+resolution() {
+    ffprobe -v warning -select_streams v:0 -show_entries stream=width,height \
+            -of default=nw=1:nk=1 "$1"
+}
+
+process() {
+    if [ -z "$DEBUG" ]; then
+        echo "Processing..."
+        sh "$CACHEDIR/last_command" && echo "Done."
+    else
+        cat "$CACHEDIR/last_command"
+    fi
+}
+
+if [ "$1" = '-d' ]; then
+    DEBUG="debug"
+    shift
+else
+    DEBUG=""
+fi
+action=$1
+shift
+
+case "$action" in
+    split)
+        split "$@"
+        ;;
+    resolution)
+        resolution "$@"
+        ;;
+    rotate)
+        rotate "$@"
+        ;;
+    join)
+        join "$@"
+        ;;
+    *)
+        echo "$USAGE"
+        exit 1
+        ;;
+esac

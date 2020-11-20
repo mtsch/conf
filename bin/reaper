@@ -1,0 +1,2 @@
+#!/bin/sh
+env WINEPREFIX="/home/m/.wine" wine C:\\windows\\command\\start.exe /Unix /home/m/.wine/dosdevices/c:/users/Public/Start\ Menu/Programs/REAPER\ \(x64\)/REAPER\ \(x64\).lnk

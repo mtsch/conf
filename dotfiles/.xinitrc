@@ -19,6 +19,7 @@ emacs --daemon &
 urxvtd &
 redshift -l -36.8:174.8 -t 6000:3500 &
 
+picom -b --config .picom.conf
 startxfce4
 #xmonad --replace &
 #sleep 1

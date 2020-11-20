@@ -1,0 +1,2 @@
+#!/bin/sh
+~/conf/scripts/utils/get-latexsubs | dmenu -l 10 -b | grep -o ^. | xargs -I{} xdotool type {}

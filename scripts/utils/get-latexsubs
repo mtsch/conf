@@ -1,0 +1,17 @@
+#!/bin/sh
+source="https://raw.githubusercontent.com/JuliaEditorSupport/julia-emacs/master/julia-mode-latexsubs.el"
+cachedir="${XDG_CACHE_HOME:-"$HOME/.cache/"}"/dmenu
+cache="$cachedir/latexsub"
+
+[ ! -e "$cachedir" ] && mkdir -p "$cachedir"
+
+if [ $1 = '-f' ]; then
+   rm "$cache"
+fi
+
+IFS=:
+if [ -f "$cache" ]; then
+    cat "$cache"
+else
+    curl "$source" | sed -n '/(puthash/p' | sed -s 's/.*"\\\\\(.\+\)" "\(.\)".*/\2 \1/' > "$cache"
+fi

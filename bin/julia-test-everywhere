@@ -1,0 +1,16 @@
+#!/bin/sh
+if [ -z "$1" ]; then
+    echo "Usage: julia-test-everywhere [PATH_TO_PROJECT]"
+else
+    JULIA=$HOME/programs/julia
+    SCRIPT="\"printstyled(VERSION, '\\n', color=:green); import Pkg; Pkg.test()\""
+    ARGS="--project=\"$1\" --startup-file=\"no\" --color=\"yes\" -e $SCRIPT"
+
+    eval "$JULIA/julia $ARGS" &&
+        eval "$JULIA-1.5.2/bin/julia $ARGS" &&
+        eval "$JULIA-1.4.2/bin/julia $ARGS" &&
+        eval "$JULIA-1.3.1/bin/julia $ARGS" &&
+        eval "$JULIA-1.2.0/bin/julia $ARGS" &&
+        eval "$JULIA-1.1.1/bin/julia $ARGS" &&
+        eval "$JULIA-1.0.5/bin/julia $ARGS"
+fi

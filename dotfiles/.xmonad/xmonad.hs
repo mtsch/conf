@@ -59,7 +59,7 @@ main = xmonad $ xfceConfig
               }
               `additionalKeysP` theKeys
 
-theTerminal   = "xrdb ~/.Xresources && urxvtc"
+theTerminal   = "st"
 theWorkspaces = ["i","ii","iii","iv","v","vi","vii","viii","ix","NSP"]
 
 data ColorScheme = ColorScheme { focused    :: String
@@ -72,6 +72,7 @@ theColors = ColorScheme "#CB4B16" "#93A1A1" "#002B36" "#051A20"
 theManageHook = composeAll
     -- never open as master
     [ className =? "URxvt"         --> doF (W.swapDown)
+    , className =? "st-256color"   --> doF (W.swapDown)
     , className =? "Thunar"        --> doF (W.swapDown)
     , className =? "Emacs"         --> doF (W.swapDown)
     -- default workspaces
@@ -109,10 +110,9 @@ theLayoutHook = avoidStruts
                     , inactiveBorderColor = unfocused theColors
                     , activeColor         = background theColors
                     , inactiveColor       = foreground theColors
-                    , activeTextColor     = unfocused theColors
+                    , activeTextColor     = focused theColors
                     , inactiveTextColor   = unfocused theColors
-                    , fontName =
-                        "xft:Ubuntu:weight=bold:pixelsize=12:antialias=true:hinting=true"
+                    , fontName = "xft:Ubuntu:pixelsize=12:antialias=true:hinting=true"
                     }
 
 theKeys =
@@ -168,14 +168,17 @@ theKeys =
     , ("M-S-q",        spawn "xfce4-session-logout")
     , ("M-`",          scratchpadSpawnActionTerminal "urxvtc")
     -- application shortcuts
-    , ("M-r",          spawn "xfce4-popup-whiskermenu")
-    , ("M-e",          spawn "thunar")
+    , ("M-r",          spawn "dmenu-frequent")
+    , ("M-g",          spawn "dmenu-frequent")
+    , ("M-S-r",        spawn "xfce4-popup-whiskermenu")
+    , ("M-S-e",        spawn "thunar")
+    , ("M-e",          spawn "st -e /bin/lf")
     , ("M-t",          spawn theTerminal)
     , ("M-S-<Delete>", spawn "xfce4-taskmanager")
-    , ("M-<Delete>",   spawn "urxvtc -e htop")
+    , ("M-<Delete>",   spawn "st -e htop")
     , ("M-p",          spawn "pavucontrol")
     , ("M-m",          spawn "emacsclient -c")
-    , ("M-g f",        runOrRaise "firefox" $ className =? "firefox")
+    , ("M-.",          spawn "dmenu-latexsub")
     ]
 
 theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
@@ -189,7 +192,6 @@ theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
         , (f, m) <- [ (W.view, 0)
                     , (\w -> W.greedyView w . W.shift w, shiftMask)
                     , (copy, shiftMask .|. controlMask)]]
-
 
 theMouse (XConfig {XMonad.modMask = mod}) = M.fromList $
     [ ((mod, 1 :: Button), (\w ->

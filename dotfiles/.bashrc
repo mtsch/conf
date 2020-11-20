@@ -1,14 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 PS1='[\W]$ '
 shopt -s checkwinsize
 
 SOURCES=$HOME/conf/scripts/bashrc-sources
-ls $SOURCES/git-completion-bash
-source $SOURCES/git-completion-bash
+source "$SOURCES"/git-completion-bash
 
 # ===================
 # ALIASES & FUNCTIONS
-# =================== 
+# ===================
 # misc
 alias df='df -h'
 alias du='du -h'
@@ -21,7 +20,6 @@ alias remacs='emacsclient -e "(kill-emacs)"; emacs --daemon'
 # ls
 alias ls='ls --color=auto -p'
 alias ll='ls -lh'
-alias lf='ls -f'
 alias la='ls -a'
 alias lal='ls -lah'
 # why?
@@ -31,30 +29,40 @@ alias lll='sl -l'
 alias R="R --no-save"
 
 alias op="exo-open"
-alias op.="exo-open ."
-alias op..="exo-open .."
 
-toup(){ touch $1 && op $1;}
+toup(){ touch "$1" && op "$1";}
 
 mkcd (){ mkdir -p "$*"; cd "$*";}
 cs (){ cd "$*"; ls;}
 
 # yaourt
-alias yaoupg='yaourt -Syu'
-alias yaoinst='yaourt -S'
-alias yaoinstnc='yaourt -S --noconfirm'
-alias yaoreps='yaourt -Ss'
-alias yaocre='yaourt -R'
-alias yaorem='yaourt -Rns'
+alias yaoupg='echo yay -Syu'
+alias yaoinst='echo yay -S'
+alias yaoreps='echo yay -Ss'
+alias yaorem='echo yay -Rns'
 
 # Toggle novartis proxy.
-function lekproxy() {
-    if [ -e $http_proxy ]; then
+lekproxy () {
+    if [ -e "$http_proxy" ]; then
         echo "lekproxy on"
         export {http,https,ftp}_proxy='http://simg-proxy.eu.novartis.net:2010'
     else
         echo "lekproxy off"
         unset {http,https,ftp}_proxy
+    fi
+}
+
+lfcd () {
+    tmp="$(mktemp)"
+    /bin/lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp"
+        if [ -d "$dir" ]; then
+            if [ "$dir" != "$(pwd)" ]; then
+                cd "$dir"
+            fi
+        fi
     fi
 }
 
