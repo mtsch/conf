@@ -21,7 +21,6 @@ import XMonad.Layout.Grid
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.MouseResizableTile
 import XMonad.Layout.Spacing
-import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.ThreeColumns
 
@@ -33,41 +32,41 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 
-import XMonad.Util.Scratchpad
 import XMonad.Util.EZConfig
+import XMonad.Util.Run
+import XMonad.Util.Scratchpad
 
 import qualified Data.Map        as M
 import qualified XMonad.StackSet as W
 
-main = xmonad $ xfceConfig
-              { terminal           = theTerminal
-              , modMask            = mod4Mask
-              , focusFollowsMouse  = True
-              , workspaces         = theWorkspaces
+import Theme
+import XMobarPowerline
 
-              , borderWidth        = 2
-              , focusedBorderColor = focused theColors
-              , normalBorderColor  = unfocused theColors
+main = do h <- spawnPipe "xmobar"
+          xmonad $ xfceConfig
+                     { terminal           = theTerminal
+                     , modMask            = mod4Mask
+                     , focusFollowsMouse  = True
+                     , workspaces         = theWorkspaces
 
-              , manageHook         = theManageHook
-              , layoutHook         = theLayoutHook
-              , logHook            = theLogHook
-              , startupHook        = startupHook xfceConfig >> setWMName "LG3D"
+                     , borderWidth        = 2
+                     , focusedBorderColor = orange
+                     , normalBorderColor  = base1
 
-              , mouseBindings      = theMouse
-              , keys               = theWindowMovementKeys
-              }
-              `additionalKeysP` theKeys
+                     , manageHook         = theManageHook
+                     , layoutHook         = theLayoutHook
+                     , logHook            = theLogHook <+> powerlinePP $ thePP h
+                     , startupHook        = startupHook xfceConfig >> setWMName "LG3D"
+
+                     , mouseBindings      = theMouse
+                     , keys               = theWindowMovementKeys
+                     }
+                     `additionalKeysP` theKeys
+
+
 
 theTerminal   = "st"
-theWorkspaces = ["i","ii","iii","iv","v","vi","vii","viii","ix","NSP"]
-
-data ColorScheme = ColorScheme { focused    :: String
-                               , unfocused  :: String
-                               , background :: String
-                               , foreground :: String
-                               }
-theColors = ColorScheme "#CB4B16" "#93A1A1" "#002B36" "#051A20"
+theWorkspaces = ["일","이","삼","사","오","육","칠","팔","구","NSP"]
 
 theManageHook = composeAll
     -- never open as master
@@ -86,8 +85,8 @@ theManageHook = composeAll
         -- left, top, width, height
 
 -- xfce integration, ignore scratchpad workspace, center mouse pointer on focus
-theLogHook = ewmhDesktopsLogHookCustom scratchpadFilterOutWorkspace
-           >> updatePointer (0.5, 0.5) (0, 0)
+theLogHook h = (ewmhDesktopsLogHookCustom scratchpadFilterOutWorkspace
+               >> updatePointer (0.5, 0.5) (0, 0))
 
 theLayoutHook = avoidStruts
               $ smartBorders
@@ -104,16 +103,7 @@ theLayoutHook = avoidStruts
                                            , draggerType = FixedDragger 10 10
                                            , nmaster = 3
                                            }
-    tabbed = named "t" $ tabbedBottom shrinkText theme
-      where
-        theme = def { activeBorderColor   = focused theColors
-                    , inactiveBorderColor = unfocused theColors
-                    , activeColor         = background theColors
-                    , inactiveColor       = foreground theColors
-                    , activeTextColor     = focused theColors
-                    , inactiveTextColor   = unfocused theColors
-                    , fontName = "xft:Ubuntu:pixelsize=12:antialias=true:hinting=true"
-                    }
+    tabbed = named "t" $ Full
 
 theKeys =
     -- focus and window rotation
@@ -168,8 +158,8 @@ theKeys =
     , ("M-S-q",        spawn "xfce4-session-logout")
     , ("M-`",          scratchpadSpawnActionTerminal "urxvtc")
     -- application shortcuts
-    , ("M-r",          spawn "dmenu-frequent")
-    , ("M-g",          spawn "dmenu-frequent")
+    , ("M-r",          spawn "dmenu-launch")
+    , ("M-g",          spawn "dmenu-launch")
     , ("M-S-r",        spawn "xfce4-popup-whiskermenu")
     , ("M-S-e",        spawn "thunar")
     , ("M-e",          spawn "st -e /bin/lf")
@@ -179,6 +169,14 @@ theKeys =
     , ("M-p",          spawn "pavucontrol")
     , ("M-m",          spawn "emacsclient -c")
     , ("M-.",          spawn "dmenu-latexsub")
+    , ("M-f",          spawn "dmenu-open")
+    -- audio
+    , ("M-<KP_Add>",        spawn "pulsemixer --change-volume +5")
+    , ("M-<KP_Subtract>",   spawn "pulsemixer --change-volume -5")
+    , ("M-C-<KP_Add>",      spawn "pulsemixer --change-volume +1")
+    , ("M-C-<KP_Subtract>", spawn "pulsemixer --change-volume -1")
+    , ("M-S-<KP_Add>",      spawn "pulsemixer --set-volume 100")
+    , ("M-S-<KP_Subtract>", spawn "pulsemixer --toggle-mute")
     ]
 
 theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $
@@ -198,3 +196,5 @@ theMouse (XConfig {XMonad.modMask = mod}) = M.fromList $
           focus w >> mouseMoveWindow w >> windows W.shiftMaster))
     , ((mod .|. controlMask, 1 :: Button), (\w ->
           focus w >> mouseResizeWindow w >> windows W.shiftMaster))]
+
+thePP h = def { outputHandler = hPutStrLn h }
