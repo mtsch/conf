@@ -11,15 +11,12 @@ import XMonad.Hooks.UrgencyHook
 import XMonad.Util.NamedWindows
 import XMonad.Util.WorkspaceCompare
 
+import XMonad.Hooks.DynamicLog
 import qualified XMonad.StackSet as S
 
 import Theme
 
 type ColorString = String
-
-wrap :: String -> String -> String -> String
-wrap _ _ "" = ""
-wrap l r m  = l ++ m ++ r
 
 colored :: ColorString -> ColorString -> String -> String
 colored fg bg = wrap ("<fc=" ++ fg ++ "," ++ bg ++ ":0>") "</fc>"
@@ -30,9 +27,13 @@ font i = wrap ("<fn=" ++ (show i) ++ ">") "</fn>"
 box :: Int -> ColorString -> String -> String
 box w c = wrap ("<box width=" ++ (show w) ++ " color=" ++ c ++ ">") "</box>"
 
+action :: String -> String -> String
+action a = wrap ("<action=`" ++ a ++ "`>") "</action>"
+
 forceLength :: Int -> String -> String
 forceLength n s | length s < n = take n (s ++ repeat ' ')
                 | otherwise    = take (n - 3) s ++ "..."
+
 --
 --
 --
@@ -59,17 +60,13 @@ data PowerlineSep = PowerlineSep { fontNumber   :: Int
   deriving (Eq, Show)
 
 powerlineJoin :: PowerlineSep -> Seg -> Seg -> Seg
-powerlineJoin sep s1 s2 = Seg { text = text s1 ++ (format sepString) ++ text s2
-                              , startColor = startColor s1
-                              , endColor = endColor s2
-                              }
+powerlineJoin sep s1 s2 = Seg  (startColor s1) (endColor s2) text'
   where
     s1End = endColor s1
     s2Start = startColor s2
-    fn = fontNumber sep
+    text' = text s1 ++ (format sepString) ++ text s2
     sepString = if s1End == s2Start
                 then colored (sameColor sep) s1End $ sameSep sep
-                --else colored s1End s2Start $ differentSep sep
                 else colored s2Start s1End $ differentSep sep
     format = font (fontNumber sep)
 
@@ -79,30 +76,31 @@ data PowerlinePP = PowerlinePP { segCurrent          :: String -> Seg
                                , segHiddenNoWindows  :: String -> Seg
                                , segVisibleNoWindows :: Maybe (String -> Seg)
                                , segUrgent           :: String -> Seg
-                               , sepWs            :: PowerlineSep
+                               , sepWs               :: PowerlineSep
                                , segBeforeWorkspaces :: Seg
 
-                               , sepTabs           :: PowerlineSep
-                               , isTabbed       :: String -> Bool
-                               , tabAreaWidth         :: Int
+                               , sepTabs             :: PowerlineSep
+                               , isTabbed            :: String -> Bool
+                               , tabAreaWidth        :: Int
+                               , segNoWindows        :: String -> Seg
                                , segNormalView       :: String -> Seg
                                , segActiveTab        :: String -> Seg
                                , segInactiveTab      :: String -> Seg
                                , segBeforeTabs       :: Seg
                                , segAfterTabs        :: Seg
 
-                               , segSepWsTabs              :: PowerlineSep
+                               , segSepWsTabs        :: PowerlineSep
 
-                               , extraLoggers           :: [X (Maybe String)]
-                               , wsSort             :: X WorkspaceSort
-                               , outputHandler           :: String -> IO ()
+                               , extraLoggers        :: [X (Maybe String)]
+                               , wsSort              :: X WorkspaceSort
+                               , outputHandler       :: String -> IO ()
                                }
 
 instance Default PowerlinePP where
   def = PowerlinePP { segCurrent          = textSeg base03 magenta . font 2
                     , segVisible          = textSeg base0 base03 . font 2
                     , segHidden           = textSeg base1 base02 . font 2
-                    , segHiddenNoWindows  = textSeg base01 base03 . font 2
+                    , segHiddenNoWindows  = textSeg base01 base04 . font 2
                     , segVisibleNoWindows = Just $ const $ textSeg base03 base03 ""
                     , segUrgent           = textSeg base03 red
                     , sepWs               = PowerlineSep 3 "\57534" "\57529" base04
@@ -110,11 +108,12 @@ instance Default PowerlinePP where
                     , wsSort              = getSortByIndex
 
                     , sepTabs             = PowerlineSep 3 "\57534" "\57529" base04
-                    , tabAreaWidth        = 100
+                    , tabAreaWidth        = 71
                     , isTabbed            = (== "t")
-                    , segNormalView       = textSeg base0 base03
-                    , segActiveTab        = textSeg base03 cyan
-                    , segInactiveTab      = textSeg base0 base03
+                    , segNoWindows        = textSeg base04 base04
+                    , segNormalView       = textSeg base01 base04
+                    , segActiveTab        = textSeg base1 base02
+                    , segInactiveTab      = textSeg base0 base04
                     , segBeforeTabs       = textSeg base04 base04 " "
                     , segAfterTabs        = textSeg base04 base04 " "
 
@@ -139,20 +138,21 @@ powerlinePPString pp = do
   allWindows <- sequence $ map getName $ S.index winset
   let tabs = powerlineTabs layoutDesc focusedWindow allWindows pp
 
-  return $ encodeString $ show $ powerlineJoin (segSepWsTabs pp) workspaces tabs
+  return . encodeString . show $ powerlineJoin (segSepWsTabs pp) workspaces tabs
 
 powerlinePP :: PowerlinePP -> X ()
 powerlinePP pp = powerlinePPString pp >>= io . outputHandler pp
 
 powerlineWorkspaces :: WorkspaceSort -> [Window] -> PowerlinePP -> WindowSet -> Seg
 powerlineWorkspaces sort' urgents pp s =
-  foldl (powerlineJoin sep) (segBeforeWorkspaces pp) . map format . sort' $
-  map S.workspace (S.current s : S.visible s) ++ S.hidden s
+  foldl joinSep (segBeforeWorkspaces pp) . map format . sort' . filter notNSP $ workspaces
   where
-    sep      = sepWs pp
-    current  = S.currentTag s
-    visibles = map (S.tag . S.workspace) (S.visible s)
-    format w = printer pp (S.tag w)
+    workspaces = map S.workspace (S.current s : S.visible s) ++ S.hidden s
+    notNSP     = (/= "NSP") . S.tag
+    joinSep    = powerlineJoin $ sepWs pp
+    current    = S.currentTag s
+    visibles   = map (S.tag . S.workspace) (S.visible s)
+    format w   = printer pp (S.tag w)
       where
         printer | any (\x -> maybe False (== S.tag w) (S.findTag x s)) urgents = segUrgent
                 | S.tag w == current = segCurrent
@@ -162,23 +162,33 @@ powerlineWorkspaces sort' urgents pp s =
                 | otherwise = segHiddenNoWindows
 
 powerlineTabs :: String -> Maybe NamedWindow -> [NamedWindow] -> PowerlinePP -> Seg
-powerlineTabs l f ws pp = if (isTabbed pp) l
-                          then powerlineJoin sep tabbedView postfix
-                          else powerlineJoin sep normalView postfix
+powerlineTabs l f ws pp = joinSep prefix $ joinSep view postfix
   where
-    sep = sepTabs pp
-    prefix = segBeforeTabs pp
+    joinSep = powerlineJoin $ sepTabs pp
     postfix = segAfterTabs pp
-    normalView = powerlineJoin sep prefix . segNormalView pp . forceLength width $ name
-      where
-        width = tabAreaWidth pp
-        name = fromMaybe "" (fmap show f)
-    tabbedView = foldl (powerlineJoin sep) prefix $ map format ws
-      where
-        format w = if maybe False (== unName w) (fmap unName f)
-                   then (segActiveTab pp) . forceLength activeLen $ show w
-                   else (segInactiveTab pp) . forceLength inactiveLen $ show w
-          where
-            width = tabAreaWidth pp - length ws + 1
-            inactiveLen = width `div` length ws
-            activeLen = inactiveLen + width `rem` length ws
+    prefix  = segAfterTabs pp
+    view    = if (isTabbed pp) l
+              then joinSep (tabbedView pp f ws) postfix
+              else joinSep (normalView pp f) postfix
+
+noWindows :: PowerlinePP -> Seg
+noWindows pp = segNoWindows pp . forceLength (tabAreaWidth pp) $ ""
+
+normalView :: PowerlinePP -> Maybe NamedWindow -> Seg
+normalView pp = fromMaybe (noWindows pp) . fmap (format . (' ':) . show)
+    where
+      format = segNormalView pp . xmobarRaw . forceLength (tabAreaWidth pp)
+
+tabbedView :: PowerlinePP -> Maybe NamedWindow -> [NamedWindow] -> Seg
+tabbedView pp _ [] = noWindows pp
+tabbedView pp f (w:ws) = foldl joinSep w' $ ws'
+    where
+      joinSep  = powerlineJoin $ sepTabs pp
+      w'       = format w
+      ws'      = map format ws
+      width    = tabAreaWidth pp - length ws
+      l        = width `div` (length ws + 1)
+      l'       = l + width `rem` (length ws + 1)
+      format w = if maybe False (== unName w) (fmap unName f)
+                 then (segActiveTab pp) . xmobarRaw . forceLength l' $ ' ':(show w)
+                 else (segInactiveTab pp) . xmobarRaw . forceLength l $ ' ':(show w)

@@ -74,3 +74,6 @@ lfcd () {
 export EDITOR="emacsclient -c"
 export PAGER=vimpager
 export PATH=$PATH:$HOME/conf/bin
+
+PROMPT_COMMAND='printf "\033]0;%s\007" "${PWD/#$HOME/"~"}"'
+

@@ -41,6 +41,7 @@ import qualified XMonad.StackSet as W
 
 import Theme
 import XMobarPowerline
+import WithSlaves
 
 main = do h <- spawnPipe "xmobar"
           xmonad $ xfceConfig
@@ -66,7 +67,11 @@ main = do h <- spawnPipe "xmobar"
 
 
 theTerminal   = "st"
-theWorkspaces = ["일","이","삼","사","오","육","칠","팔","구","NSP"]
+theWorkspaces = clickable ["일","이","삼","사","오","육","칠","팔","구"] ++ ["NSP"]
+    where
+      clickable ws = map action $ zip ws [1..]
+      action (w, i) = wrap ("<action=`xdotool key super+" ++ show i ++ "`>") "</action>" w
+           --"<action=`xdotool key super+" ++ show (n) ++ "`>" ++ ws ++ "</action>" | (i,ws) <- zip [1..9] l, let n = i ]
 
 theManageHook = composeAll
     -- never open as master
@@ -145,6 +150,8 @@ theKeys =
     , ("M-q M-q",    kill)
     , ("M-q a",      killAll)
     , ("M-q M-a",    killAll)
+    , ("M-q s",      killSlaves)
+    , ("M-q M-s",    killSlaves)
     -- layouts
     , ("M-<Space>",  sendMessage $ Toggle "t")
     , ("M-<F1>",     sendMessage FirstLayout)
@@ -171,12 +178,10 @@ theKeys =
     , ("M-.",          spawn "dmenu-latexsub")
     , ("M-f",          spawn "dmenu-open")
     -- audio
-    , ("M-<KP_Add>",        spawn "pulsemixer --change-volume +5")
-    , ("M-<KP_Subtract>",   spawn "pulsemixer --change-volume -5")
-    , ("M-C-<KP_Add>",      spawn "pulsemixer --change-volume +1")
-    , ("M-C-<KP_Subtract>", spawn "pulsemixer --change-volume -1")
-    , ("M-S-<KP_Add>",      spawn "pulsemixer --set-volume 100")
-    , ("M-S-<KP_Subtract>", spawn "pulsemixer --toggle-mute")
+    , ("M-<KP_Add>",        spawn "volume up")
+    , ("M-<KP_Subtract>",   spawn "volume down")
+    , ("M-C-<KP_Add>",      spawn "volume max")
+    , ("M-C-<KP_Subtract>", spawn "volume mute")
     ]
 
 theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) = M.fromList $

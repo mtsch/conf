@@ -1,0 +1,21 @@
+#!/bin/sh
+
+USAGE="Usage: volume [up/down/mute/max]"
+
+case $1 in
+    up) pulsemixer --unmute; pulsemixer --change-volume +5;;
+    down) pulsemixer --unmute; pulsemixer --change-volume -5;;
+    mute) pulsemixer --mute;;
+    max) pulsemixer --unmute; pulsemixer --set-volume 100;;
+    *) echo $USAGE; exit 1;;
+esac
+
+mute=$(pulsemixer --get-mute)
+if [ $mute = "1" ]; then
+    icon="ﱝ"
+else
+    icon="墳"
+fi
+
+pulsemixer --get-volume | grep -o "^[0-9]\+" | { printf "$icon "; cat -; } |
+    dzen2 -p 1 -w 200 -x 1800 -y 25 -fn "FiraCode Nerd Font Mono:pixelsize=20"

@@ -5,7 +5,7 @@ firefox (private window)	firefox --private-window
 reaper	reaper
 cadence	cadence
 web search	dmenu-websearch
-transmission	transmission
+transmission	transmission-gtk
 jdownloader	jdownloader
 restart xmonad	remonad
 restart emacs	remacs
