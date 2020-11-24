@@ -28,7 +28,7 @@
                    fill-column-indicator
                    julia-mode vterm
                    ess
-                   haskell-mode ghc
+                   haskell-mode ghc dhall-mode
                    markdown-mode
                    flycheck
                    elpy pyvenv flycheck python-pytest py-isort

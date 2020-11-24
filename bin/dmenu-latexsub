@@ -1,2 +1,15 @@
 #!/bin/sh
-~/conf/scripts/utils/get-latexsubs | dmenu -l 10 -b | grep -o ^. | xargs -I{} xdotool type {}
+source="https://raw.githubusercontent.com/JuliaEditorSupport/julia-emacs/master/julia-mode-latexsubs.el"
+cachedir="${XDG_CACHE_HOME:-"$HOME/.cache/"}"/dmenu
+cache="$cachedir/latexsub"
+
+[ ! -e "$cachedir" ] && mkdir -p "$cachedir"
+
+if [ "$1" = '-f' ]; then
+   rm "$cache"
+fi
+if [ ! -f "$cache" ]; then
+    curl "$source" | sed -n '/(puthash/p' | sed -s 's/.*"\\\\\(.\+\)" "\(.\)".*/\2 \1/' > "$cache"
+fi
+
+dmenu -b -l 10 < "$cache" | grep -o ^. | xargs -I{} xdotool type {}

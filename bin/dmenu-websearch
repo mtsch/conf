@@ -1,0 +1,4 @@
+#!/bin/sh
+search="https://duckduckgo.com/?t=ffab&q="
+
+dmenu -b -F -p "ddg:" </dev/null | xargs -I{} firefox --new-tab "$search{}"

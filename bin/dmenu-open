@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# Config
+cache="${XDG_CACHE_HOME:-"$HOME/.cache/"}"/dmenu/lastopened
+
+# If run with -e, echo result and don't show the terminal icon.
+if [ "$1" = '-e' ]; then
+    open() { echo "$*"; }
+    ECHO=true
+    shift
+else
+    open() { exo-open "$*"; }
+fi
+term() { st -d "$*"; }
+
+# Set current path; make sure it ends with only one /
+curr=$(realpath "${1-$PWD}" | sed s%/$%%)/
+show_recent=true
+
+list() {
+    echo "  [open in file manager]\t!open"
+    [ -z "$ECHO" ] && echo "  [open in terminal]\t!term"
+    [ "$show_recent" = "true" ] && echo "  [last opened]\t!recent"
+    echo ".."
+
+    find "$1" -mindepth 1 -maxdepth 1 -type d -name "[^.]*" -exec basename {} ';' | sed "s%$%/%"
+    find "$1" -mindepth 1 -maxdepth 1 -type d -name ".*" -exec basename {} ';' | sed "s%$%/%"
+    find "$1" -mindepth 1 -maxdepth 1 -type f -name "[^.]*" -exec basename {} ';'
+    find "$1" -mindepth 1 -maxdepth 1 -type f -name ".*" -exec basename {} ';'
+}
+
+while true; do
+    sel=$(list "$curr" | cat - | dmenu -i -b -l 10 -p "$curr" )
+    show_recent=false
+
+    case "$sel" in
+        "") exit;;
+        *) open "$curr"; exit;;
+        *) term "$curr"; exit;;
+        ..) curr="${curr%/*/}/";;
+        *) curr=$(cat "$cache");;
+        *)
+            file=$curr$sel
+            if [ -d "$file" ]; then
+                curr="$file"
+            elif [ -f "$file" ]; then
+                open "$file"
+                exit
+            else
+                dmenu-yesno -p "$file does not exist. Create?" && touch "$file" && open "$file" &
+                exit
+            fi
+            ;;
+    esac
+    echo "$curr" > "$cache"
+done

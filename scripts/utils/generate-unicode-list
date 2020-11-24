@@ -1,6 +1,4 @@
 #!/bin/sh
 SOURCE="https://raw.githubusercontent.com/JuliaEditorSupport/julia-emacs/master/julia-mode-latexsubs.el"
 
-curl $SOURCE |
-    sed -n '/(puthash/p' |
-    sed -s 's/puthash/lel/'
+curl $SOURCE | sed -n '/(puthash/p' | sed -s 's/puthash/lel/'

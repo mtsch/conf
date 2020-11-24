@@ -1,21 +1,23 @@
 #!/bin/sh
 USAGE="""
 Usage:\n
-  vid split [FILE] [TIMES]
+  vid split [FILE] [TIMES...]
   vid rotate [cw,ccw] [FILE]
   vid join [-o FILE] [FILES...]
+  vid audio [-o FILE] [FILE] [TIMES]
   vid resolution [FILE]
 """
 TIME="[0-9:]\+"
-CACHEDIR="$HOME/.cache/vidtools"
+CACHEDIR=${XDG_CACHE_HOME:-"$HOME/.cache/"}/vid
 FFMPEG="ffmpeg -v warning"
 mkdir -p "$CACHEDIR"
+CMD="$CACHEDIR/cmd"
 
 split() {
-    file=$1
-    basename="${file%.*}"
-    ext="${file##*.}"
-    cmd="$FFMPEG -i \'$file\' -vcodec copy -acodec copy -ss \2 -to \3 \'$basename-\1.$ext\'"
+    input=$1
+    base="${input%.*}"
+    ext="${input##*.}"
+    cmd="$FFMPEG -i \'$input\' -vcodec copy -acodec copy -ss \2 -to \3 \'$base-\1.$ext\'"
     shift
     input="$*"
 
@@ -35,7 +37,7 @@ split() {
         echo "$times"
     fi
 
-    echo "$times" | sed "s/ \+\([0-9]\)\+ \($TIME\)-\($TIME\)/$cmd/" > "$CACHEDIR/last_command"
+    echo "$times" | sed "s/ \+\([0-9]\)\+ \($TIME\)-\($TIME\)/$cmd/" > "$CMD"
     process
 }
 
@@ -53,10 +55,10 @@ rotate() {
             exit 1
         ;;
     esac
-    file=$2
-    basename="${file%.*}"
-    ext="${file##*.}"
-    echo "$FFMPEG -i '$file' -vf transpose=$direction '$basename-$1.$ext'" > "$CACHEDIR/last_command"
+    input=$2
+    base="${input%.*}"
+    ext="${input##*.}"
+    echo "$FFMPEG -i '$input' -vf transpose=$direction '$base-$1.$ext'" > "$CMD"
     process
 }
 
@@ -74,7 +76,25 @@ join() {
     done
     echo "Target: $target"
 
-    echo "$FFMPEG -f concat -safe 0 -i '$CACHEDIR/filelist' -c copy '$target'" > "$CACHEDIR/last_command"
+    echo "$FFMPEG -f concat -safe 0 -i '$CACHEDIR/filelist' -c copy '$target'" > "$CMD"
+    process
+}
+
+audio() {
+    if [ "$1" = '-o' ]; then
+        target=$2
+        shift 2
+    else
+        base="${1%.*}"
+        target="$base.mp3"
+    fi
+    input=$1
+    shift
+    if [ -n "$1" ]; then
+        echo "$FFMPEG -i '$input' -ss ${1%-*} -to ${1##*-} -vn '$target'" > "$CMD"
+    else
+        echo "$FFMPEG -i '$input' -vn '$target'" > "$CMD"
+    fi
     process
 }
 
@@ -86,9 +106,9 @@ resolution() {
 process() {
     if [ -z "$DEBUG" ]; then
         echo "Processing..."
-        sh "$CACHEDIR/last_command" && echo "Done."
+        sh "$CMD" && echo "Done."
     else
-        cat "$CACHEDIR/last_command"
+        cat "$CMD"
     fi
 }
 
@@ -102,20 +122,10 @@ action=$1
 shift
 
 case "$action" in
-    split)
-        split "$@"
-        ;;
-    resolution)
-        resolution "$@"
-        ;;
-    rotate)
-        rotate "$@"
-        ;;
-    join)
-        join "$@"
-        ;;
-    *)
-        echo "$USAGE"
-        exit 1
-        ;;
+    split) split "$@";;
+    resolution) resolution "$@";;
+    rotate) rotate "$@";;
+    join) join "$@";;
+    audio) audio "$@";;
+    *) echo "$USAGE"; exit 1;;
 esac

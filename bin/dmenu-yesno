@@ -1,0 +1,2 @@
+#!/bin/sh
+echo "yes\nno" | dmenu -b -F -n -p "$*" | grep -q ^yes$

@@ -1,0 +1,13 @@
+#!/bin/sh
+( dmenu -b -l 10  ) << EOF | cut -f2 | ${SHELL:-"/bin/sh"} &
+firefox	firefox
+firefox (private window)	firefox --private-window
+reaper	reaper
+cadence	cadence
+web search	dmenu-websearch
+transmission	transmission
+jdownloader	jdownloader
+restart xmonad	remonad
+restart emacs	remacs
+youtube-dl clipboard	youtube-dl-clipboard
+EOF

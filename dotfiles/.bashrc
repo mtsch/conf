@@ -26,6 +26,8 @@ alias lal='ls -lah'
 alias al='sl -a'
 alias lll='sl -l'
 
+alias grep='grep --color=auto'
+
 alias R="R --no-save"
 
 alias op="exo-open"
