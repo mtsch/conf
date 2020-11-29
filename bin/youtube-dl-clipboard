@@ -1,3 +1,4 @@
 #!/bin/sh
 url=$(xclip -o -selection clipboard)
-dmenu-yesno "Download '$url'?" && youtube-dl -c -o "$HOME/downloads/%(title)s.%(ext)s" "$url" &
+dmenu-yesno "Download '$url'?" &&
+    youtube-dl -c -o "$HOME/downloads/%(title)s.%(ext)s" "$url" || notify-send "Error" &

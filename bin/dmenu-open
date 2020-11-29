@@ -23,14 +23,14 @@ list() {
     [ "$show_recent" = "true" ] && echo "  [last opened]\t!recent"
     echo ".."
 
-    find "$1" -mindepth 1 -maxdepth 1 -type d -name "[^.]*" -exec basename {} ';' | sed "s%$%/%"
-    find "$1" -mindepth 1 -maxdepth 1 -type d -name ".*" -exec basename {} ';' | sed "s%$%/%"
-    find "$1" -mindepth 1 -maxdepth 1 -type f -name "[^.]*" -exec basename {} ';'
-    find "$1" -mindepth 1 -maxdepth 1 -type f -name ".*" -exec basename {} ';'
+    find "$1" -mindepth 1 -maxdepth 1 -type d -name "[^.]*" -exec basename {} ';' | sort | sed "s%$%/%"
+    find "$1" -mindepth 1 -maxdepth 1 -type d -name ".*" -exec basename {} ';' | sort | sed "s%$%/%"
+    find "$1" -mindepth 1 -maxdepth 1 -type f -name "[^.]*" -exec basename {} ';' | sort
+    find "$1" -mindepth 1 -maxdepth 1 -type f -name ".*" -exec basename {} ';' | sort
 }
 
 while true; do
-    sel=$(list "$curr" | cat - | dmenu -i -b -l 10 -p "$curr" )
+    sel=$(list "$curr" | cat - | dmenu -f -i -b -l 10 -p "$curr" )
     show_recent=false
 
     case "$sel" in

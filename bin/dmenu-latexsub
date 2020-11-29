@@ -1,5 +1,6 @@
 #!/bin/sh
-source="https://raw.githubusercontent.com/JuliaEditorSupport/julia-emacs/master/julia-mode-latexsubs.el"
+latexsource="https://raw.githubusercontent.com/JuliaEditorSupport/julia-emacs/master/julia-mode-latexsubs.el"
+emojisource="https://raw.githubusercontent.com/LukeSmithxyz/voidrice/master/.local/share/larbs/emoji"
 cachedir="${XDG_CACHE_HOME:-"$HOME/.cache/"}"/dmenu
 cache="$cachedir/latexsub"
 
@@ -9,7 +10,8 @@ if [ "$1" = '-f' ]; then
    rm "$cache"
 fi
 if [ ! -f "$cache" ]; then
-    curl "$source" | sed -n '/(puthash/p' | sed -s 's/.*"\\\\\(.\+\)" "\(.\)".*/\2 \1/' > "$cache"
+    curl "$latexsource" | sed -n '/(puthash/p' | sed -s 's/.*"\\\\\(.\+\)" "\(.\+\)".*/\2 \1/' > "$cache"
+    curl "$emojisource" >> "$cache"
 fi
 
 dmenu -b -l 10 < "$cache" | grep -o ^. | xargs -I{} xdotool type {}

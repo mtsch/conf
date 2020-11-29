@@ -1,0 +1,11 @@
+#!/bin/sh
+temp=$(mktemp /tmp/screenshotXXXX.png)
+
+import -window root $temp
+
+action=$(printf "Open in GIMP\nMove to pictures" | dmenu -b -n -F)
+case $action in
+    O*) gimp "$temp" &;;
+    M*) mv --backup=numbered "$temp" -t ~/pictures/;;
+    *) exit 1;;
+esac

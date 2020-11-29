@@ -1,2 +1,2 @@
 #!/bin/sh
-xmonad --recompile && { pkill trayer; pkill xmobar; xmonad --restart; sleep 1; start-trayer; }
+xmonad --recompile && { pkill xmobar; xmonad --restart; }

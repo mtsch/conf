@@ -5,10 +5,10 @@ Config { font = "xft:FiraCode Nerd Font Mono:pixelsize=17"
                            ]
        , bgColor = "#001e26"
        , fgColor = "#839496"
-       , position = Top -- TopSize L 100 20
+       , position = TopW L 95
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "<box width=1 color=#001e26>%UnsafeStdinReader%</box> }{%NZAA% %multicpu%%memory%<fc=#073642></fc>%date%<fc=#001e26,#073642></fc>           "
+       , template = "<box type=Bottom width=4 color=#001e26><box width=1 color=#001e26>%UnsafeStdinReader%</box></box> }{%NZAA% %multicpu%%memory%%date% "
 
        , lowerOnStart = False
        , commands = [ Run UnsafeStdinReader
@@ -21,7 +21,7 @@ Config { font = "xft:FiraCode Nerd Font Mono:pixelsize=17"
                                    ] 10
 
                     , Run Memory ["--template", "<usedvbar>"] 10
-                    , Run Date "<fc=#839496,#073642> %a %b %_d </fc><fc=#93a1a1,#073642>%H:%M:%S </fc>" "date" 10
+                    , Run Date "<box type=Bottom width=4 color=#001e26><fc=#073642></fc><fc=#2aa198,#073642> %a %b %_d </fc><fc=#b58900,#073642>%H:%M:%S </fc><fc=#001e26,#073642></fc></box>" "date" 10
                     , Run Weather "NZAA" [ "--template", "<tempC>°C"] 18000
                     ]
        }

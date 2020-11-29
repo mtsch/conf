@@ -2,7 +2,7 @@
 USAGE="""
 Usage:\n
   vid split [FILE] [TIMES...]
-  vid rotate [cw,ccw] [FILE]
+  vid rotate [cw,ccw,f] [FILE]
   vid join [-o FILE] [FILES...]
   vid audio [-o FILE] [FILE] [TIMES]
   vid resolution [FILE]
@@ -43,15 +43,12 @@ split() {
 
 rotate() {
     case "$1" in
-        "cw")
-            direction=1
-        ;;
-        "ccw")
-            direction=2
-        ;;
+        "cw") direction=1 ;;
+        "ccw") direction=2 ;;
+        "f") direction="2,transpose=2" ;;
         *)
             echo "Invalid direction $1"
-            echo 'Use "cw" or "ccw"'
+            echo 'Use "cw", "ccw", or "f"'
             exit 1
         ;;
     esac

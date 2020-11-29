@@ -1,21 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
-makelink () {
-    FULL=$1
-    PATTERN=$2
-    BASE=${FULL##*/}
-    #echo $FULL
-    #echo $BASE
-    #echo $PATTERN
-    #echo "ln -s $PWD/$FULL $PATTERN/$BASE"
-    ln -s "$PWD/$FULL" "$PATTERN/$BASE"
-}
+USAGE="Usage: greplink [pattern]"
 
 if [ -z $1 ]; then
-   echo "no pattern."
+   echo $USAGE
+   exit 1
 else
-    PATTERN=${*: -1}
-    export -f makelink
-    mkdir -p $PATTERN
-    find . -type f | grep $@ | xargs -I{} bash -c 'makelink "$@"' _ {} $PATTERN
+    pattern=$1
+    mkdir -p $pattern
+    find . -iname "*$pattern*" -type f -print0 | while read -d $'\0' file
+    do
+        file=$(realpath "$file")
+        base=$(basename "$file")
+        ln -s "$file" "$PWD/$pattern/$base"
+    done
 fi
