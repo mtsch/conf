@@ -1,14 +1,0 @@
-;; Emacs-W3 HTTP cookies file
-;; Automatically generated file!!! DO NOT EDIT!!!
-
-(setq url-cookie-storage
- '(("www.homecaremedical.co.nz"
-  [url-cookie "SC_ANALYTICS_GLOBAL_COOKIE" "2ad89ddccaf94497933d89032bd05d23|False" "Tue, 02-Apr-2030 08:04:20 GMT" "/" "www.homecaremedical.co.nz" nil]))
-)
-(setq url-cookie-secure-storage
- 'nil)
-
-;; Local Variables:
-;; version-control: never
-;; no-byte-compile: t
-;; End:
