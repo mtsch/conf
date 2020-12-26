@@ -1,417 +1,273 @@
-;; =================
-;; Sources, packages
-;; =================
-(add-to-list 'load-path "~/.emacs.d/plugins/")
-(add-to-list 'load-path "~/.emacs.d/plugins/julia-repl")
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+
+(setq user-full-name "Matija Čufar"
+      user-mail-address "matijacufar@gmail.com")
+
 (require 'package)
-
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
-(setq auto-package-update-interval 1)
-(auto-package-update-maybe)
 
-(when (not package-archive-contents)
+(unless package-archive-contents
   (package-refresh-contents))
 
-(defvar packages '(auto-package-update
-                   bind-key
-                   unicode-fonts
-                   magit magit-todos hl-todo
-                   evil evil-escape
-                   helm
-		   smart-mode-line
-                   solarized-theme
-                   fill-column-indicator
-                   julia-mode vterm
-                   ess
-                   haskell-mode ghc dhall-mode
-                   markdown-mode
-                   flycheck
-                   elpy pyvenv flycheck python-pytest py-isort
-                   ))
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
 
-(dolist (p packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
+(require 'use-package)
+(setq use-package-always-ensure t)
 
-; gc cons to 100mb for performance
-(setq gc-cons-threshold 100000000)
+(setq backup-directory-alist '(("." . "~/.cache/emacs")))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("c433c87bd4b64b8ba9890e8ed64597ea0f8eb0396f4c9a9e01bd20a04d15d358" "285d1bf306091644fb49993341e0ad8bafe57130d9981b680c1dbd974475c5c7" "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" default))
- '(package-selected-packages
-   '(unicode-fonts magit magit-todos hl-todo evil evil-numbers evil-escape evil-mc helm solarized-theme fill-column-indicator julia-mode ess haskell-mode ghc markdown-mode flycheck elpy pyvenv flycheck python-pytest py-isort)))
+;  (if (daemonp)
+;      (add-hook 'after-make-frame-functions
+;                (lambda (frame) (setq doom-modeline-icon t))))
 
-;; ========================
-;; Appearance and usability
-;; ========================
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(set-fringe-mode 10)
+(menu-bar-mode -1)
+(blink-cursor-mode 0)
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+
+(show-paren-mode t)
+(global-hl-line-mode t)
+
 (setq default-tab-width 4)
 (setq c-basic-offset 4)
 (setq c-indent-level 4)
-(setq mouse-autoselect-window t)
-(setq focus-follows-mouse t)
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-(show-paren-mode 1)
-(blink-cursor-mode 0)
-(setq backup-directory-alist '(("." . "~/.emacs-backups")))
 
-(setq user-full-name "mtsch"
-      user-mail-address "matijacufar@gmail.com")
-
-(setq-default
- inhibit-splash-screen t
- inhibit-startup-message t
- inhibit-startup-screen t
- inhibit-startup-buffer-menu t
- initial-scratch-message ""
- menu-prompting nil
- confirm-kill-emacs 'y-or-n-p
- line-number-mode t
- column-number-mode t
-
- ;; Scrolling
- mouse-wheel-mode t
- echo-keystrokes 0.1
-
- redisplay-dont-pause t
- scroll-margin 1
- scroll-step 1
- scroll-conservatively 10000
- scroll-preserve-screen-position 1
- mouse-wheel-follow-mouse 't
- mouse-wheel-scroll-amount '(1 ((shift) . 1))
-
- undo-limit 10000
-
- ;; Force utf encoding
- buffer-file-coding-system        'utf-8-unix
- default-file-name-coding-system  'utf-8-unix
- default-keyboard-coding-system   'utf-8-unix
- default-process-coding-system    '(utf-8-unix . utf-8-unix)
- default-sendmail-coding-system   'utf-8-unix
- default-terminal-coding-system   'utf-8-unix
- )
-
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-(load-theme 'solarized-light t)
-
-;; =========
-;; Powerline
-;; =========
-(require 'smart-mode-line)
-(sml/setup)
-(sml/apply-theme 'automatic)
-
-;; =====
-;; Fonts
-;; =====
-(require 'unicode-fonts)
-(unicode-fonts-setup)
-(set-frame-font "-*-UbuntuMono Nerd Font-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-(set-fontset-font t 'unicode
-                  "-*-UbuntuMono Nerd Font-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1"
-                  nil
-                  'prepend
-                  )
-
-(add-to-list 'default-frame-alist
-             '(font . "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
- ))
-(set-face-attribute 'default t :font "-ADBO-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"
-)
-
-;; ==================
-;; Evil mode settings
-;; ==================
-(require 'evil)
-(evil-mode 1)
-(add-to-list 'evil-insert-state-modes 'view-mode)
-
-;; =====================
-;; Long lines and spaces
-;; =====================
-(require 'fill-column-indicator)
-(setq-default fci-rule-column 92)
-(setq-default fill-column 92)
-(setq fci-rule-width 1)
-(add-hook 'after-change-major-mode-hook 'fci-mode)
-
-;; Auto indent
-(define-key global-map (kbd "RET") 'newline-and-indent)
-
-;; Tabs
-(standard-display-ascii ?\t "→   ")
-(setq-default indent-tabs-mode nil)
-
-;; Trailing whitespace
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq require-final-newline 't)
 
-;; Wrap lines when in text mode
-(add-hook 'text-mode-hook
-          (lambda ()
-            (turn-on-auto-fill)))
+(setq mouse-autoselect-window t)
+(setq focus-follows-mouse t)
 
-;; Regex indent
+(use-package all-the-icons)
+(use-package doom-modeline
+  :after all-the-icons
+  :init
+  (doom-modeline-mode 1)
+  (column-number-mode 1)
+  :config
+  (setq doom-modeline-icon nil))
 
-;; Highlight current line
-(global-hl-line-mode t)
+(use-package solarized-theme
+  :init
+  (setq solarized-scale-org-headlines nil)
+  :config
+  (load-theme 'solarized-light t))
 
-;; ====
-;; Helm
-;; ====
-(require 'helm-config)
-(require 'helm-R)
-(require 'helm-misc)
-(require 'helm-locate)
-(setq helm-quick-update t)
-(setq helm-bookmark-show-location t)
-(setq helm-buffers-fuzzy-matching t)
-(helm-mode t)
+(use-package heaven-and-hell
+  :init
+  (setq heaven-and-hell-themes
+        '((light . solarized-light)
+          (dark . solarized-dark)))
+  (setq heaven-and-hell-load-theme-no-confirm t)
+  :hook (after-init . heaven-and-hell-init-hook)
+  :bind (("C-c <f6>" . heaven-and-hell-load-default-theme)
+         ("<f6>" . heaven-and-hell-toggle-theme)))
 
-;; Keymaps
-(require 'bind-key)
-(bind-key* "<C-tab>" 'other-window)
-(bind-key "M-y" 'helm-show-kill-ring)
-(bind-key (kbd "C-x a r") 'align-regexp)
+(set-face-attribute 'default nil
+                    :family "Hack Nerd Font Mono"
+                    :height 120
+                    :weight 'medium
+                    :width 'normal)
+(set-face-attribute 'fixed-pitch nil
+                    :family "Hack Nerd Font Mono"
+                    :height 120
+                    :weight 'medium
+                    :width 'normal)
+(set-face-attribute 'variable-pitch nil :font "DejaVu Sans" :height 120)
 
-;; Change prefix
-(bind-key "C-c h" 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
 
-;; Buffers
-(bind-key "M-x" 'helm-M-x)
-(bind-key "C-x C-f" 'helm-find-files)
-(bind-key "C-x b" 'helm-mini)
-(setq helm-buffers-fuzzy-matching t
-      helm-recentf-fuzzy-match    t)
+(define-key global-map (kbd "<C-tab>") 'other-window)
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-;; Use TAB in helm
-(define-key helm-map (kbd "<tab>") 'helm-select-action)
-(define-key helm-map (kbd "C-i") 'helm-select-action)
-(define-key helm-map (kbd "C-z")  'helm-execute-persistent-action)
+(setq-default fill-column 92)
+(use-package visual-fill-column
+  :init
+  (setq visual-fill-column-width 92)
+  :config
+  (global-visual-fill-column-mode))
 
-;; Helm shrinks
-(helm-autoresize-mode t)
+(use-package helm
+  :diminish
+  :preface
+  (defun dwim-helm-find-files-up-one-level-maybe ()
+    (interactive)
+    (if (looking-back "/" 1)
+        (call-interactively 'helm-find-files-up-one-level)
+      (delete-backward-char 1)))
+  (defun dwim-helm-find-files-navigate-forward (orig-fun &rest args)
+    "Adjust how helm-execute-persistent actions behaves"
+    (if (file-directory-p (helm-get-selection))
+        (apply orig-fun args)
+      (helm-maybe-exit-minibuffer)))
 
-;; Make helm behave like ido
-(defun dwim-helm-find-files-up-one-level-maybe ()
-  (interactive)
-  (if (looking-back "/" 1)
-      (call-interactively 'helm-find-files-up-one-level)
-    (delete-backward-char 1)))
+  :bind
+  (("M-x" . helm-M-x)
+   ("C-x C-f" . helm-find-files)
+   ("C-x b" . helm-mini)
+   (:map helm-map
+         ("<tab>" . helm-select-action)
+         ("<backspace>" . dwim-helm-find-files-up-one-level-maybe)
+         ))
 
-(define-key helm-read-file-map (kbd "<backsqpace>")
-  'dwim-helm-find-files-up-one-level-maybe)
-(define-key helm-read-file-map (kbd "DEL")
-  'dwim-helm-find-files-up-one-level-maybe)
-(define-key helm-find-files-map (kbd "<backspace>")
-  'dwim-helm-find-files-up-one-level-maybe)
-(define-key helm-find-files-map (kbd "DEL")
-  'dwim-helm-find-files-up-one-level-maybe)
+  :config
+  (require 'helm-config)
+  (require 'helm-misc)
+  (require 'helm-locate)
+  (setq helm-quick-update t)
+  (setq helm-buffers-fuzzy-matching t)
+  (setq helm-recentf-fuzzy-match t)
+  (setq helm-ff-keep-cached-candidates nil) ; fix for memory leak?
+  (helm-autoresize-mode t)
+  (helm-mode t))
 
-(defun dwim-helm-find-files-navigate-forward (orig-fun &rest args)
-  "Adjust how helm-execute-persistent actions behaves"
-  (if (file-directory-p (helm-get-selection))
-      (apply orig-fun args)
-    (helm-maybe-exit-minibuffer)))
+(use-package evil
+  :after undo-tree
+  :init
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode t)
+  (evil-set-undo-system 'undo-tree))
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
-(define-key helm-map (kbd "<return>")
-  'helm-maybe-exit-minibuffer)
-(define-key helm-map (kbd "RET")
-  'helm-maybe-exit-minibuffer)
-(define-key helm-find-files-map (kbd "<return>")
-  'helm-execute-persistent-action)
-(define-key helm-read-file-map (kbd "<return>")
-  'helm-execute-persistent-action)
-(define-key helm-find-files-map (kbd "RET")
-  'helm-execute-persistent-action)
-(define-key helm-read-file-map (kbd "RET")
-  'helm-execute-persistent-action)
+(use-package which-key
+  :init
+  (which-key-mode)
+  :diminish
+  :config
+  (setq which-key-idle-delay 0.3))
 
-(advice-add 'helm-execute-persistent-action
-            :around #'dwim-helm-find-files-navigate-forward)
+(use-package magit
+  :bind ((:map magit-status-mode-map)
+         ("C-<tab>" . nil)))
+(use-package magit-todos
+  :diminish
+  :after magit
+  :config
+  (global-hl-todo-mode 1)
+  (magit-todos-mode 1)
+  (setq hl-todo-keyword-faces
+        '(("TODO" . "#2AA198")
+          ("FIXME" . "#DC322F"))))
 
-;; =====
-;; Magit
-;; =====
-(require 'magit)
-(require 'magit-todos)
-(global-hl-todo-mode 1)
-(magit-todos-mode 1)
-(setq hl-todo-keyword-faces
-      '(("TODO"   . "#2AA198")
-        ("FIXME"  . "#DC322F")))
+(use-package vterm)
 
-;; =====
-;; Julia
-;; =====
-(require 'julia-mode)
-(require 'julia-repl)
-(add-hook 'julia-mode-hook 'julia-repl-mode)
-(add-to-list 'auto-mode-alist '("\\.jl\\'" . julia-mode))
-(setq julia-repl-switches "-O3")
-(setq julia-repl-executable-records
-      '((master "julia")
-        (stable "julia-stable")
-        (lts "julia-lts")))
-(julia-repl-set-terminal-backend 'vterm)
+(use-package flycheck
+  :diminish flycheck-mode
+  :init (global-flycheck-mode)
+  :config
+  (setq flycheck-check-syntax-automatically '(mode-enabled save))) ; only run after saving
+(use-package flyspell
+  :hook markdown-mode)
 
-;; =======================
-;; Emacs Speaks Statistics
-;; =======================
-(require 'ess-site)
-(ess-disable-smart-S-assign nil)
-(add-hook 'ess-mode-hook
-          (lambda ()
-            (ess-set-style 'RStudio 'quiet)))
+(defun m/org-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
+  (setq evil-auto-indent nil))
 
-;; =======
-;; Haskell
-;; =======
-(require 'haskell-mode)
+(use-package org
+  :hook (org-mode . m/org-setup)
+  :config
+  (setq org-ellipsis " ▾")
+  (setq org-src-tab-acts-natively t)
+  (setq org-src-preserve-indentation nil)
+  (setq org-src-fontify-natively t))
 
-;; interactive
-(require 'haskell-interactive-mode)
-(require 'haskell-process)
-(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+;; Heading fonts
+(dolist (face '((org-level-1 . 1.5)
+                (org-level-2 . 1.3)
+                (org-level-3 . 1.15)
+                (org-level-4 . 1.1)
+                (org-level-5 . 1.1)
+                (org-level-6 . 1.1)
+                (org-level-7 . 1.1)
+                (org-level-8 . 1.1)))
+  (set-face-attribute (car face) nil :font "Ubuntu" :height (cdr face)))
 
-;; indentation
-(add-hook 'haskell-mode-hook 'haskell-indent-mode)
+(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+(set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-table nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
-;; compilation
-(eval-after-load "haskell-mode"
-    '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
-(eval-after-load "haskell-cabal"
-    '(define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-compile))
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("⦿" "⊚" "⊙" "⚪" "⚪" "⚪" "⚪" "⚪"))) ;
 
-(eval-after-load 'haskell-mode '(progn
-  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
-  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
-  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
-(eval-after-load 'haskell-cabal '(progn
-  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+(font-lock-add-keywords
+ 'org-mode
+ '(("^ *\\([-]\\) "
+    (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-;; ghc-mod
-(autoload 'ghc-init "ghc" nil t)
-(autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+(defun m/org-babel-tangle-config ()
+  (when (string-equal (buffer-file-name)
+                      (expand-file-name "~/.emacs.d/init.org"))
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
 
-;; ========
-;; Markdown
-;; ========
-(require 'markdown-mode)
-(autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-hook 'org-mode-hook
+          (lambda () (add-hook 'after-save-hook #'m/org-babel-tangle-config)))
 
-;; ==========
-;; Multi term
-;; ==========
-(setq multi-term-program "/bin/bash")
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("jl" . "src julia"))
 
-;; ======
-;; PYTHON
-;; ======
-(elpy-enable)
-(setq elpy-rpc-backend "jedi")
-(setenv "WORKON_HOME" "/home/m/.conda/envs")
-(pyvenv-mode 1)
-(eval-after-load "elpy"
-  '(progn
-     (define-key elpy-mode-map (kbd "M-d") 'elpy-goto-definition)
-     (define-key elpy-mode-map (kbd "C-x t") 'python-pytest-popup)
-     (define-key elpy-mode-map (kbd "C-x C-t") 'python-pytest-file-dwim)
-     ;(add-hook 'before-save-hook 'py-isort-before-save)
-     ))
+(use-package julia-mode)
+(use-package julia-repl
+  :ensure nil
+  :load-path "~/.emacs.d/plugins/julia-repl"
+  :config
+  (add-hook 'julia-mode-hook 'julia-repl-mode)
+  (setq julia-repl-switches "-O3")
+  (setq julia-repl-executable-records
+        '((master "julia")
+          (stable "julia-stable")
+          (lts "julia-lts")))
+  (julia-repl-set-terminal-backend 'vterm))
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(setq flycheck-check-syntax-automatically '(mode-enabled save))
+(use-package haskell-mode)
 
-;; =====
-;; EMAIL
-;; =====
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-(require 'smtpmail)
-
-; smtp
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials
-      '(("imap.gmail.com" 993 nil nil))
-      smtpmail-default-smtp-server "imap.gmail.com"
-      smtpmail-smtp-server "imap.gmail.com"
-      smtpmail-smtp-service 993
-      smtpmail-stream-type 'starttls
-      smtpmail-debug-info t)
+(use-package markdown-mode
+  :mode
+  (("README\\.md\\'" . gfm-mode)
+   ("\\.md\\'" . markdown-mode)
+   ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "multimarkdown"))
+(use-package edit-indirect)
 
 (require 'mu4e)
+(setq mu4e-get-mail-command "mbsync -c ~/.config/mu4e/mbsyncrc main"
+      mu4e-update-interval 300))
 
-(setq mu4e-maildir (expand-file-name "~/email/main"))
-
-(setq mu4e-drafts-folder "/Drafts")
-(setq mu4e-sent-folder   "/Sent Items")
-(setq mu4e-trash-folder  "/Trash")
-(setq message-signature-file "~/.emacs.d/.signature") ; put your signature in this file
-
-; get mail
-(setq mu4e-get-mail-command "mbsync -a"
-      mu4e-html2text-command "w3m -T text/html"
-      mu4e-update-interval 120
-      mu4e-headers-auto-update t
-      mu4e-compose-signature-auto-include nil)
-
-(setq mu4e-maildir-shortcuts
-      '( ("/INBOX" . ?i)
-         ("/Sent Items" . ?s)
-         ("/Trash" . ?t)
-         ("/Drafts" . ?d)))
-
-;; show images
-(setq mu4e-show-images t)
-
-;; use imagemagick, if available
-(when (fboundp 'imagemagick-register-types)
-  (imagemagick-register-types))
-
-;; general emacs mail settings; used when composing e-mail
-;; the non-mu4e-* stuff is inherited from emacs/message-mode
-(setq mu4e-reply-to-address "matijacufar@gmail.com"
-    user-mail-address "matijacufar@gmail.com"
-    user-full-name "Matija Čufar")
-
-;; don't save message to Sent Messages, IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
-
-;; spell check
-(add-hook 'mu4e-compose-mode-hook
-        (defun my-do-compose-stuff ()
-           "My settings for message composition."
-           (flyspell-mode)))
-
-(provide 'init)
-;;; init ends here
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(use-package smtpmail
+  :config
+  (setq message-send-mail-function 'smtpmail-send-it
+        starttls-use-gnutls t
+        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+        smtpmail-auth-credentials
+        '(("smtp.gmail.com" 587 "matijacufar@gmail.com" nil))
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587))

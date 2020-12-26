@@ -6,8 +6,9 @@
                          (or (file-name-directory #$) (car load-path))))
 
 
-;;;### (autoloads nil "solarized" "solarized.el" (0 0 0 0))
-;;; Generated autoloads from solarized.el
+;;;### (autoloads nil "solarized" "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized.el"
+;;;;;;  "21a50d8ced50cba26697ef1a7d6c7ea2")
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized.el
 
 (autoload 'solarized-color-blend "solarized" "\
 Blends COLOR1 onto COLOR2 with ALPHA.
@@ -30,100 +31,131 @@ The Returned color-palette has the same format as `solarized-color-palette'
 \(fn CORE-PALETTE)" nil nil)
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+;;;### (autoloads "actual autoloads are elsewhere" "solarized" "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized" '("solarized-")))
 
 ;;;***
+
+;;;***
 
-;;;### (autoloads nil "solarized-dark-high-contrast-theme" "solarized-dark-high-contrast-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-dark-high-contrast-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-dark-high-contrast-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-dark-high-contrast-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-dark-high-contrast-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-dark-high-contrast-theme" '("solarized-dark-high-contrast")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-dark-theme" "solarized-dark-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-dark-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-dark-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-dark-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-dark-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-dark-theme" '("solarized-dark")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-faces" "solarized-faces.el" (0 0
-;;;;;;  0 0))
-;;; Generated autoloads from solarized-faces.el
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-faces"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-faces.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-faces.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-faces" '("solarized-definition")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-gruvbox-dark-theme" "solarized-gruvbox-dark-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-gruvbox-dark-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-gruvbox-dark-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-gruvbox-dark-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-gruvbox-dark-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-gruvbox-dark-theme" '("solarized-gruvbox-dark")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-gruvbox-light-theme" "solarized-gruvbox-light-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-gruvbox-light-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-gruvbox-light-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-gruvbox-light-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-gruvbox-light-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-gruvbox-light-theme" '("solarized-gruvbox-light")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-light-high-contrast-theme" "solarized-light-high-contrast-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-light-high-contrast-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-light-high-contrast-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-light-high-contrast-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-light-high-contrast-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-light-high-contrast-theme" '("solarized-light-high-contrast")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-light-theme" "solarized-light-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-light-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-light-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-light-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-light-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-light-theme" '("solarized-light")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-palettes" "solarized-palettes.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-palettes"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-palettes.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-palettes.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-palettes.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-palettes" '("solarized-")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-theme-utils" "solarized-theme-utils.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-theme-utils"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-theme-utils.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-theme-utils.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-theme-utils.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-theme-utils" '("solarized-import-faces")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-wombat-dark-theme" "solarized-wombat-dark-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-wombat-dark-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-wombat-dark-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-wombat-dark-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-wombat-dark-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-wombat-dark-theme" '("solarized-wombat-dark")))
 
 ;;;***
 
-;;;### (autoloads nil "solarized-zenburn-theme" "solarized-zenburn-theme.el"
+;;;### (autoloads "actual autoloads are elsewhere" "solarized-zenburn-theme"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-zenburn-theme.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from solarized-zenburn-theme.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-zenburn-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "solarized-zenburn-theme" '("solarized-zenburn")))
 
 ;;;***
 
-;;;### (autoloads nil nil ("solarized-theme-pkg.el" "solarized-theme.el")
+;;;### (autoloads nil nil ("../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-dark-high-contrast-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-dark-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-faces.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-gruvbox-dark-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-gruvbox-light-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-light-high-contrast-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-light-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-palettes.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-theme-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-theme-pkg.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-theme-utils.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-wombat-dark-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized-zenburn-theme.el"
+;;;;;;  "../../../../../.emacs.d/elpa/solarized-theme-20201121.1736/solarized.el")
 ;;;;;;  (0 0 0 0))
 
 ;;;***

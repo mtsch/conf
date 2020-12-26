@@ -1,9 +1,0 @@
-#!/bin/bash
-ln -s dotfiles/.bashrc ~/.bashrc
-ln -s dotfiles/.themes ~/.themes
-ln -s dotfiles/.xinitrc ~/.xinitrc
-ln -s dotfiles/.Xresources ~/.Xresources
-ln -s dotfiles/.emacs.d ~/.emacs.d
-ln -s dotfiles/.vim ~/.vim
-ln -s dotfiles/.xmonad ~/.xmonad
-ln -s dotfiles/.xmodmap ~/.xmodmap

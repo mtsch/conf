@@ -7,29 +7,27 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
   unset f
 fi
 
+export QT_QPA_PLATFORMTHEME=gtk2
+
 # Keyboard stuff
-setxkbmap us
-setxkbmap -option compose:ralt
-setxkbmap -option ctrl:nocaps
 syndaemon -t -k -i 1 -d & # disable touchpad when typing
 xset -b # disable beep
 
 # Daemons
 emacs --daemon &
 redshift -l -36.8:174.8 -t 6000:3500 &
-picom -b --config .picom.conf &
-feh --bg-fill ~/conf/wallpapers/solarized-carpet.jpg
+picom -b --config .config/picom.conf &
+/usr/lib/xfce4/notifyd/xfce4-notifyd &
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+xwallpaper --zoom ~/conf/wallpapers/colorful.jpg
 
 # Tray stuff
-#trayer --align right --width 5 --transparent true --alpha 0 --tint 0x001E26 --edge top &
-#cadence-session --maybe-system-start &
-#cadence &
-#nm-applet &
-#/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-#xfce4-power-manager &
-#pasystray --notify=all &
-#/usr/lib/xfce4/notifyd/xfce4-notifyd &
+trayer --align right --width 7 --transparent true --alpha 0 --tint 0x001E26 --edge top &
+cadence &
+nm-applet &
+pasystray --notify=sink_default &
+xfce4-power-manager &
 
 # WM
-exec startxfce4
-#exec xmonad
+#exec startxfce4
+exec xmonad

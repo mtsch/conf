@@ -1,5 +1,5 @@
-#!/bin/sh
-( dmenu -b -l 10  ) << EOF | cut -f2 | ${SHELL:-"/bin/sh"} &
+#/bin/sh
+( dmenu -f -b -l 10  ) << EOF | cut -f2 | ${SHELL:-"/bin/sh"} &
 firefox	firefox
 firefox (private window)	firefox --private-window
 reaper	reaper
@@ -10,4 +10,6 @@ jdownloader	jdownloader
 restart xmonad	remonad
 restart emacs	remacs
 youtube-dl clipboard	youtube-dl-clipboard
+mpv clipboard	mpv-clipboard
+wget clipboard	wget-clipboard
 EOF

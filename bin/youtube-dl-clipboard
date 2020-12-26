@@ -1,4 +1,10 @@
 #!/bin/sh
+ICON="/usr/share/icons/Papirus/64x64/apps/youtube-dl.svg"
+CACHE="$HOME/.cache/youtube-dl-clipboard"
+rm "$CACHE"
+
 url=$(xclip -o -selection clipboard)
-dmenu-yesno "Download '$url'?" &&
-    youtube-dl -c -o "$HOME/downloads/%(title)s.%(ext)s" "$url" || notify-send "Error" &
+notify-send -i $ICON "Downloading" "$url"
+youtube-dl --no-warnings -c -o "$HOME/downloads/%(title)s.%(ext)s" "$url" --exec \
+	   "notify-send -i $ICON Downloaded" 2>"$CACHE" ||
+    notify-send -i $ICON Error "$(sed 's/ERROR://' $CACHE)" &

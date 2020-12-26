@@ -6,8 +6,9 @@
                          (or (file-name-directory #$) (car load-path))))
 
 
-;;;### (autoloads nil "pcre2el" "pcre2el.el" (0 0 0 0))
-;;; Generated autoloads from pcre2el.el
+;;;### (autoloads nil "pcre2el" "../../../../../.emacs.d/elpa/pcre2el-20161120.2103/pcre2el.el"
+;;;;;;  "8f1157110842ffd587913477896271fd")
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/pcre2el-20161120.2103/pcre2el.el
 
 (defvar pcre-mode nil "\
 Non-nil if PCRE mode is enabled.
@@ -206,8 +207,20 @@ Rxt mode is enabled in all buffers where
 See `rxt-mode' for more information on Rxt mode.
 
 \(fn &optional ARG)" t nil)
+
+;;;### (autoloads "actual autoloads are elsewhere" "pcre2el" "../../../../../.emacs.d/elpa/pcre2el-20161120.2103/pcre2el.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/pcre2el-20161120.2103/pcre2el.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pcre2el" '("pcre-" "rxt-")))
+
+;;;***
+
+;;;***
+
+;;;### (autoloads nil nil ("../../../../../.emacs.d/elpa/pcre2el-20161120.2103/pcre2el-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/elpa/pcre2el-20161120.2103/pcre2el.el")
+;;;;;;  (0 0 0 0))
 
 ;;;***
 

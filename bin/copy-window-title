@@ -1,0 +1,4 @@
+#!/bin/sh
+ICON=~/conf/icons/xmonad.svg
+xdotool getwindowfocus | xargs -I{} xprop -id "{}" WM_NAME | cut -d'"' -f2 | xclip -selection clipboard
+notify-send -i "$ICON" "Title copied"

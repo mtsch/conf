@@ -6,13 +6,21 @@
                          (or (file-name-directory #$) (car load-path))))
 
 
-;;;### (autoloads nil "hl-todo" "hl-todo.el" (0 0 0 0))
-;;; Generated autoloads from hl-todo.el
+;;;### (autoloads nil "hl-todo" "../../../../../.emacs.d/elpa/hl-todo-20200813.1419/hl-todo.el"
+;;;;;;  "327d9e9a17534f7fadda6a9bbf19c383")
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/hl-todo-20200813.1419/hl-todo.el
 
 (autoload 'hl-todo-mode "hl-todo" "\
 Highlight TODO and similar keywords in comments and strings.
 
+If called interactively, enable Hl-Todo mode if ARG is positive,
+and disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it if
+ARG is `toggle'; disable the mode otherwise.
+
 \(fn &optional ARG)" t nil)
+
+(put 'global-hl-todo-mode 'globalized-minor-mode t)
 
 (defvar global-hl-todo-mode nil "\
 Non-nil if Global Hl-Todo mode is enabled.
@@ -55,9 +63,7 @@ Use `occur' to find all TODO or similar keywords.
 This actually finds a superset of the highlighted keywords,
 because it uses a regexp instead of a more sophisticated
 matcher.  It also finds occurrences that are not within a
-string or comment.
-
-\(fn)" t nil)
+string or comment." t nil)
 
 (autoload 'hl-todo-insert "hl-todo" "\
 Insert TODO or similar keyword.
@@ -67,8 +73,20 @@ comment there, otherwise insert it as a new line before the
 current line.
 
 \(fn KEYWORD)" t nil)
+
+;;;### (autoloads "actual autoloads are elsewhere" "hl-todo" "../../../../../.emacs.d/elpa/hl-todo-20200813.1419/hl-todo.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/hl-todo-20200813.1419/hl-todo.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hl-todo" '("hl-todo-")))
+
+;;;***
+
+;;;***
+
+;;;### (autoloads nil nil ("../../../../../.emacs.d/elpa/hl-todo-20200813.1419/hl-todo-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/elpa/hl-todo-20200813.1419/hl-todo.el")
+;;;;;;  (0 0 0 0))
 
 ;;;***
 

@@ -6,8 +6,9 @@
                          (or (file-name-directory #$) (car load-path))))
 
 
-;;;### (autoloads nil "julia-mode" "julia-mode.el" (0 0 0 0))
-;;; Generated autoloads from julia-mode.el
+;;;### (autoloads nil "julia-mode" "../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode.el"
+;;;;;;  "7a93b579b6ddd698153e7f318c7b18ab")
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode.el
 
 (add-to-list 'auto-mode-alist '("\\.jl\\'" . julia-mode))
 
@@ -21,20 +22,31 @@ Run an inferior instance of julia inside Emacs." t nil)
 
 (defalias 'run-julia #'inferior-julia "\
 Run an inferior instance of julia inside Emacs.")
+
+;;;### (autoloads "actual autoloads are elsewhere" "julia-mode" "../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "julia-mode" '("inferior-julia-" "julia-")))
 
 ;;;***
+
+;;;***
 
-;;;### (autoloads nil "julia-mode-latexsubs" "julia-mode-latexsubs.el"
+;;;### (autoloads "actual autoloads are elsewhere" "julia-mode-latexsubs"
+;;;;;;  "../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode-latexsubs.el"
 ;;;;;;  (0 0 0 0))
-;;; Generated autoloads from julia-mode-latexsubs.el
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode-latexsubs.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "julia-mode-latexsubs" '("julia-mode-latexsubs")))
 
 ;;;***
 
-;;;### (autoloads nil nil ("julia-mode-pkg.el") (0 0 0 0))
+;;;### (autoloads nil nil ("../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode-latexsubs.el"
+;;;;;;  "../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode-pkg.el"
+;;;;;;  "../../../../../.emacs.d/elpa/julia-mode-20200917.713/julia-mode.el")
+;;;;;;  (0 0 0 0))
 
 ;;;***
 

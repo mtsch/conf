@@ -6,8 +6,9 @@
                          (or (file-name-directory #$) (car load-path))))
 
 
-;;;### (autoloads nil "magit-todos" "magit-todos.el" (0 0 0 0))
-;;; Generated autoloads from magit-todos.el
+;;;### (autoloads nil "magit-todos" "../../../../../.emacs.d/elpa/magit-todos-20201101.2240/magit-todos.el"
+;;;;;;  "7c98635a4c6f700b68cbbc460c2537ad")
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/magit-todos-20201101.2240/magit-todos.el
 
 (defvar magit-todos-mode nil "\
 Non-nil if Magit-Todos mode is enabled.
@@ -39,8 +40,21 @@ With prefix, prompt for repository.
 Open buffer showing to-do list of repository at DIRECTORY.
 
 \(fn DIRECTORY)" nil nil)
+
+;;;### (autoloads "actual autoloads are elsewhere" "magit-todos"
+;;;;;;  "../../../../../.emacs.d/elpa/magit-todos-20201101.2240/magit-todos.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/magit-todos-20201101.2240/magit-todos.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "magit-todos" '("magit-todos-")))
+
+;;;***
+
+;;;***
+
+;;;### (autoloads nil nil ("../../../../../.emacs.d/elpa/magit-todos-20201101.2240/magit-todos-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/elpa/magit-todos-20201101.2240/magit-todos.el")
+;;;;;;  (0 0 0 0))
 
 ;;;***
 

@@ -1,0 +1,8 @@
+#!/bin/sh
+ICON=/usr/share/icons/Papirus/64x64/apps/mpv.svg
+CACHE="$HOME/.cache/mpv-clipboard"
+rm "$CACHE"
+
+url=$(xclip -o -selection clipboard)
+notify-send -i $ICON Playing "$url"
+mpv "$url" 1>"$CACHE" || notify-send -i $ICON Error "$(cat $CACHE)"

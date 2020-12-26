@@ -9,7 +9,6 @@ import XMonad.Layout (splitHorizontallyBy)
 import XMonad.StackSet (integrate)
 
 -- TODO: Add the extra pixel to the top window
--- TODO: Add option to resize secondary window
 
 data Cantor a = Cantor Rational Rational
                 deriving (Read, Show)

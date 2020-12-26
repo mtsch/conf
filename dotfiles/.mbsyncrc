@@ -1,11 +1,10 @@
 IMAPAccount      main
 Host             imap.gmail.com
+Port             993
 User             matijacufar@gmail.com
-PassCmd          "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsyncpass.gpg"
+PassCmd          "gpg2 -q --for-your-eyes-only --no-tty -d ~/.config/mu4e/main.gpg"
 SSLType          IMAPS
 CertificateFile  /etc/ssl/certs/ca-certificates.crt
-CertificateFile  ~/email/gmail.crt
-CertificateFile  ~/email/google.crt
 
 IMAPStore  main-remote
 Account    main
@@ -14,11 +13,29 @@ MaildirStore  main-local
 Path          ~/email/main/
 Inbox         ~/email/main/inbox
 
-Channel    main
+Channel    main-default
 Far        :main-remote:
 Near       :main-local:
-Patterns   "Sent Items" "INBOX" "Deleted Items"
+Patterns   * ![Gmail]*
 Create     Near
+SyncState  *
 Sync       All
 Expunge    Both
-SyncState  *
+
+#Channel main-sent
+#Far     :main-remote:"[Gmail]/Sent Mail"
+#Near    :main-local:sent
+#Create  Near
+#Sync    Pull
+
+#Channel main-trash
+#Far     :main-remote:"[Gmail]/Trash"
+#Near    :main-local:trash
+#Create  Near
+#Sync    Pull
+
+# Get all the channels together into a group.
+Group   main
+Channel main-default
+#Channel main-sent
+#Channel main-trash

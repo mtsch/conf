@@ -15,7 +15,6 @@ import XMonad.Actions.WithAll
 
 import XMonad.Config.Desktop
 
-import XMonad.Layout.Gaps
 import XMonad.Layout.Grid
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.Named
@@ -35,16 +34,19 @@ import XMonad.Hooks.SetWMName
 
 import XMonad.Util.EZConfig
 import XMonad.Util.Run
-import XMonad.Util.Scratchpad
+import XMonad.Util.NamedScratchpad
 
 import qualified Data.Map        as M
 import qualified XMonad.StackSet as S
 
 import Theme
-import XMobarPowerline
+-- import XMobarPowerline
+import FancyXMobar
 import WithSlaves
+import BlurWallpaper
 import XMonad.Layout.Cantor
 import XMonad.Layout.ZoomSecondary
+import XMonad.Action.SwapSlaves
 
 main = do h <- spawnPipe "xmobar"
           xmonad $ docks $ ewmh def
@@ -53,7 +55,7 @@ main = do h <- spawnPipe "xmobar"
                      , focusFollowsMouse  = True
                      , workspaces         = theWorkspaces
 
-                     , borderWidth        = 2
+                     , borderWidth        = 3
                      , focusedBorderColor = yellow
                      , normalBorderColor  = base02
 
@@ -68,8 +70,11 @@ main = do h <- spawnPipe "xmobar"
                      }
                      `additionalKeysP` theKeys
 
-theTerminal   = "st"
-theWorkspaces = clickable ["일","이","삼","사","오","육","칠","팔","구"] ++ ["NSP"]
+theTerminal = "st"
+
+theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
+--theWorkspaces = clickable [" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "]
+                ++ ["NSP"]
     where
       clickable ws = map action $ zip ws [1..]
       action (w, i) = wrap ("<action=`xdotool key super+" ++ show i ++ "`>") "</action>" w
@@ -83,36 +88,49 @@ theManageHook = composeAll
     -- default workspaces
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
-    , className =? "Pavucontrol"   --> doRectFloat (S.RationalRect 0.69 0.10 0.30 0.40)
     , title     =? "Whisker Menu"  --> doFloat
     ]
     <+> manageDocks
-    <+> scratchpadManageHook (S.RationalRect 0.01 0.30 0.50 0.50) -- l, t, w, h
+    <+> namedScratchpadManageHook scratchpads
 
-theLogHook h = (ewmhDesktopsLogHookCustom scratchpadFilterOutWorkspace
-               >> updatePointer (0.5, 0.5) (0, 0))
-               <+> (powerlinePP $ thePP h)
+scratchpads = [ NS "htop" "st -A 0.9 -C -e htop" (title =? "htop")
+                nonFloating
+              , NS "taskmgr" "xfce4-taskmanager" (className =? "Xfce4-taskmanager")
+                nonFloating
+              , NS "scratch" "st -A 0.9 -C -c scratch" (className =? "scratch") $
+                customFloating (S.RationalRect 0.0 0.70 0.50 0.30)
+              , NS "julia" "st -A 0.9 -C -c julia -e julia" (className =? "julia") $
+                customFloating (S.RationalRect 0.0 0.10 0.50 0.30)
+              , NS "pavucontrol" "pavucontrol" (className =? "Pavucontrol") $
+                customFloating (S.RationalRect 0.69 0.10 0.30 0.40)
+              ]
 
-theLayoutHook = avoidStruts $ smartBorders $ toggleLayouts tabbed cantors
+theLogHook h = blurWallpaper wallpapers
+               <+> (ewmhDesktopsLogHook >> updatePointer (0.5, 0.5) (0, 0))
+               <+> (fancyPP $ thePP h)
+
+theLayoutHook = avoidStruts $ toggleLayouts tabbed cantors
   where
     hints'   = layoutHintsWithPlacement (0.5, 0.0)
-    spacing' = spacingRaw True (Border 0 0 0 0) False (Border 10 10 10 10) True
-    gaps'    = gaps [(L, 5), (R, 5), (D, 5), (U, 5)]
+    spacing' = spacingRaw False (Border 5 10 10 10) True (Border 10 10 10 10) True
     tall     = TallCantor (3/100) (1/2) (3/100) (1/2)
     mirror   = Cantor (3/100) (1/2)
     zoom     = zoomSecondary (9/10) False
-    cantors  = hints' . spacing' . gaps' . zoom $ (tall ||| mirror)
-    tabbed   = named "t" $ Full
+    cantors  = hints' . spacing' . zoom $ (tall ||| mirror)
+    tabbed   = named "t" $ noBorders Full
+    full     = named "f" $ noBorders Full
 
 theHandleEventHook = hintsEventHook
 
 theStartupHook = setWMName "LG3D"
 
-thePP h = def { outputHandler = hPutStrLn h }
-
 --------------
 -- Keyboard --
 --------------
+deprecated :: String -> X ()
+deprecated k = spawn $ "notify-send -i " ++ icon ++ " \"Use " ++ k ++ ".\""
+  where
+    icon = "\"/usr/share/icons/Papirus/128x128/apps/abrt.svg\""
 
 -- Execute `action` if current layout name == `name`, otherwise execute `default`.
 onLayout :: String -> X () -> X () -> X ()
@@ -124,90 +142,87 @@ onLayout name action def = do
   else def
 
 rotUp' :: X ()
-rotUp' = onLayout "t" (windows S.swapUp) rotSlavesUp
+rotUp' = onLayout "t" (windows S.swapUp) (windows swapSlavesUp)
 
 rotDown' :: X ()
-rotDown' = onLayout "t" (windows S.swapDown) rotSlavesDown
+rotDown' = onLayout "t" (windows S.swapDown) (windows swapSlavesDown)
 
 theKeys =
     -- focus and window rotation
-    [ ("M-x",        windows S.focusDown)
-    , ("M1-<Tab>",   windows S.focusDown)
-    , ("M1-S-<Tab>", windows S.focusUp)
-    , ("M-y",        windows S.focusUp)
-    , ("M-z",        windows S.focusUp)
-    , ("M-S-x",      rotDown')
-    , ("M-S-y",      rotUp')
-    , ("M-S-z",      rotUp')
-    , ("M-s",        dwmpromote)
-    , ("M-S-s",      windows S.focusMaster)
-
-    , ("M-C-x",      sendMessage Expand)
-    , ("M-C-y",      sendMessage Shrink)
-    , ("M-C-z",      sendMessage Shrink)
-    , ("M-M1-x",     sendMessage ExpandSecondary)
-    , ("M-M1-y",     sendMessage ShrinkSecondary)
-    , ("M-M1-z",     sendMessage ShrinkSecondary)
-    , ("M-C-l",      sendMessage Expand)
-    , ("M-C-h",      sendMessage Shrink)
-    , ("M-C-j",      sendMessage ExpandSecondary)
-    , ("M-C-k",      sendMessage ShrinkSecondary)
-    , ("M-C-v",      decScreenWindowSpacing 1)
-    , ("M-C-c",      incScreenWindowSpacing 1)
-
-    , ("M-b",        sendMessage ToggleStruts)
-    , ("M-S-t",      withFocused $ windows . S.sink)
-    -- workspaces
-    , ("M-<Tab>",    toggleWS)
-    , ("M-d",        moveTo Next EmptyWS)
-    , ("M-S-d",      shiftTo Next EmptyWS)
-    , ("M-w",        nextScreen)
-    , ("M-S-w",      shiftNextScreen)
-    , ("M-C-w",      swapNextScreen)
-    , ("M-c",        moveTo Prev NonEmptyWS)
-    , ("M-v",        moveTo Next NonEmptyWS)
-    , ("M-S-c",      shiftToPrev)
-    , ("M-S-v",      shiftToNext)
-    -- killing
-    , ("M-q q",      kill1)
-    , ("M-q M-q",    kill)
-    , ("M-q a",      killAll)
-    , ("M-q M-a",    killAll)
-    , ("M-q s",      killSlaves)
-    , ("M-q M-s",    killSlaves)
-    -- layouts
-    , ("M-<Space>",  sendMessage $ Toggle "t")
-    , ("M-C-<Space>",  sendMessage ZoomToggle)
-    , ("M-<F1>",     sendMessage FirstLayout)
-    , ("M-<F2>",     sendMessage FirstLayout >> sendMessage NextLayout)
-    , ("M-<F3>",     sendMessage FirstLayout >>
-                         sendMessage NextLayout >>
-                         sendMessage NextLayout)
+    [ ("M-x",               windows S.focusDown)
+    , ("M1-<Tab>",          windows S.focusDown)
+    , ("M1-S-<Tab>",        windows S.focusUp)
+    , ("M-y",               windows S.focusUp)
+    , ("M-z",               windows S.focusUp)
+    , ("M-S-x",             rotDown')
+    , ("M-S-y",             rotUp')
+    , ("M-S-z",             rotUp')
+    , ("M-s",               dwmpromote)
+    , ("M-C-s",             dwmPromoteSlaves)
+    , ("M-S-s",             windows S.focusMaster)
+    -- window sizing and gaps
+    , ("M-C-x",             sendMessage Expand)
+    , ("M-C-y",             sendMessage Shrink)
+    , ("M-C-z",             sendMessage Shrink)
+    , ("M-M1-x",            sendMessage ExpandSecondary)
+    , ("M-M1-y",            sendMessage ShrinkSecondary)
+    , ("M-M1-z",            sendMessage ShrinkSecondary)
+    , ("M-C-l",             sendMessage Expand)
+    , ("M-C-h",             sendMessage Shrink)
+    , ("M-C-j",             sendMessage ExpandSecondary)
+    , ("M-C-k",             sendMessage ShrinkSecondary)
+    --, ("M-C-v",             decScreenWindowSpacing 1)
+    --, ("M-C-c",             incScreenWindowSpacing 1)
     -- misc
-    , ("M-i",          dynamicLogString def >>= \d -> spawn $ "notify-send \"" ++ d ++ "\"")
-    , ("M-S-q",        spawn "xfce4-session-logout")
-    , ("M-`",          scratchpadSpawnActionTerminal "st -C")
-    -- application shortcuts
-    , ("M-r",          spawn "dmenu-launch")
-    , ("M-g",          spawn "dmenu-launch")
-    , ("M-S-r",        spawn "xfce4-popup-whiskermenu")
-    , ("M-S-e",        spawn "thunar")
-    , ("M-e",          spawn "st -e /bin/lf")
-    , ("M-t",          spawn theTerminal)
-    , ("M-S-<Delete>", spawn "xfce4-taskmanager")
-    , ("M-<Delete>",   spawn "st -C -e htop")
-    , ("M-p",          spawn "pavucontrol")
-    , ("M-m",          spawn "emacsclient -c")
-    , ("M-.",          spawn "dmenu-latexsub")
-    , ("M-f",          spawn "dmenu-open")
-    -- audio
-    , ("M->",               spawn "pulsemixer --change-volume +5")
-    , ("M-<",               spawn "pulsemixer --change-volume -5")
-    , ("M-<KP_Add>",        spawn "pulsemixer --change-volume +5")
-    , ("M-<KP_Subtract>",   spawn "pulsemixer --change-volume -5")
-    , ("M-C-<KP_Add>",      spawn "pulsemixer --set-volume 100")
-    , ("M-C-<KP_Subtract>", spawn "pulsemixer --toggle-mute")
+    , ("M-b",               sendMessage ToggleStruts)
+    , ("M-S-t",             withFocused $ windows . S.sink)
+    -- workspaces
+    , ("M-<Tab>",           toggleWS' ["NSP"])
+    , ("M-d",               moveTo Next EmptyWS)
+    , ("M-S-d",             shiftTo Next EmptyWS)
+    , ("M-w",               nextScreen)
+    , ("M-S-w",             shiftNextScreen)
+    , ("M-C-w",             swapNextScreen)
+    , ("M-c",               moveTo Prev NonEmptyWS)
+    , ("M-v",               moveTo Next NonEmptyWS)
+    , ("M-S-c",             shiftToPrev)
+    , ("M-S-v",             shiftToNext)
+    -- killing
+    , ("M-q q",             kill1)
+    , ("M-q M-q",           kill)
+    , ("M-q a",             killAll)
+    , ("M-q s",             killSlaves)
+    -- layouts
+    , ("M-<Space>",         sendMessage $ Toggle "t")
+    , ("M-C-<Space>",       sendMessage ZoomToggle)
+    , ("M-<F1>",            sendMessage FirstLayout)
+    , ("M-<F2>",            sendMessage FirstLayout >> sendMessage NextLayout)
+    -- application shortcuts and scratchpads
     , ("M-S-p",             spawn "screenshot")
+    , ("M-`",               namedScratchpadAction scratchpads "scratch")
+    , ("M-C-`",             namedScratchpadAction scratchpads "julia")
+    , ("M-i",               spawn "notify-window-title")
+    , ("M-C-i",             spawn "copy-window-title")
+    , ("M-<Delete>",        namedScratchpadAction scratchpads "htop")
+    , ("M-S-<Delete>",      namedScratchpadAction scratchpads "taskmgr")
+    , ("M-r",               spawn "dmenu-launch")
+    , ("M-e",               deprecated "M-f")
+    , ("M-t",               spawn theTerminal)
+    , ("M-M1-t",            spawn "terminal-at-window-title")
+    , ("M-p",               namedScratchpadAction scratchpads "pavucontrol")
+    , ("M-m",               spawn "emacsclient -c")
+    , ("M-.",               spawn "dmenu-latexsub")
+    , ("M-f",               spawn "dmenu-open")
+    -- actions
+    , ("M-g",               spawn "dmenu-find-window")
+    -- audio
+    , ("M-=",               spawn "pulsemixer --change-volume +5")
+    , ("M--",               spawn "pulsemixer --change-volume -5")
+    , ("M-S-=",             spawn "pulsemixer --change-volume +1")
+    , ("M-S--",             spawn "pulsemixer --change-volume -1")
+    , ("M-C-=",             spawn "pulsemixer --set-volume 100")
+    , ("M-C--",             spawn "pulsemixer --toggle-mute")
+    , ("<XF86AudioMute>",   spawn "pulsemixer --toggle-mute")
     ]
 
 theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) =

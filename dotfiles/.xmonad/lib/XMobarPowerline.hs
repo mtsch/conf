@@ -27,6 +27,9 @@ font i = wrap ("<fn=" ++ show i ++ ">") "</fn>"
 box :: Int -> ColorString -> String -> String
 box w c = wrap ("<box width=" ++ show w ++ " color=" ++ c ++ ">") "</box>"
 
+underline :: ColorString -> String -> String
+underline color s = "<box type=Bottom width=4 color=" ++ color ++ ">" ++ s ++ "</box>"
+
 action :: String -> String -> String
 action a = wrap ("<action=`" ++ a ++ "`>") "</action>"
 
@@ -96,23 +99,24 @@ data PowerlinePP = PowerlinePP { segCurrent          :: String -> Seg
                                }
 
 instance Default PowerlinePP where
-  def = PowerlinePP { segCurrent          = textSeg base03 magenta . font 2
+  def = PowerlinePP { --segCurrent          = textSeg base03 red . font 2
+                      segCurrent          = textSeg base01 base2 . font 2 . underline red
                     , segVisible          = textSeg magenta base02 . font 2
                     , segHidden           = textSeg base1 base02 . font 2
                     , segHiddenNoWindows  = textSeg base01 base04 . font 2
                     , segVisibleNoWindows = Just $ const $ textSeg magenta base03 ""
                     , segUrgent           = textSeg base03 red
-                    , sepWs               = PowerlineSep 3 "\57534" "\57529" base04
+                    , sepWs               = PowerlineSep 3 "▐" "│" base04
                     , segBeforeWorkspaces = textSeg base04 base04 " "
                     , wsSort              = getSortByIndex
 
-                    , sepTabs             = PowerlineSep 3 "\57534" "\57529" base04
-                    , tabAreaWidth        = 71
+                    , sepTabs             = PowerlineSep 3 "▐" "│" base04
+                    , tabAreaWidth        = 92
                     , isTabbed            = (== "t")
                     , segNoWindows        = textSeg base04 base04
                     , segNormalView       = textSeg base1 base03
-                    , segActiveTab        = textSeg yellow base02
-                    , segInactiveTab      = textSeg base0 base03
+                    , segActiveTab        = textSeg base04 base01 . underline magenta
+                    , segInactiveTab      = textSeg base01 base04
                     , segBeforeTabs       = textSeg base04 base04 " "
                     , segAfterTabs        = textSeg base04 base04 " "
 
@@ -188,6 +192,7 @@ tabbedView pp f (w:ws) = foldl joinSep w' ws'
       width    = tabAreaWidth pp - length ws
       l        = width `div` (length ws + 1)
       l'       = l + width `rem` (length ws + 1)
+      click w  = wrap ("<action=`xdotool windowactivate " ++ show (unName w) ++ "`>") "</action>"
       format w = if maybe False ((== unName w) . unName) f
-                 then segActiveTab pp . xmobarRaw . forceLength l' $ ' ':show w
-                 else segInactiveTab pp . xmobarRaw . forceLength l $ ' ':show w
+                 then segActiveTab pp . click w . xmobarRaw . forceLength l' $ ' ':show w
+                 else segInactiveTab pp . click w . xmobarRaw . forceLength l $ ' ':show w

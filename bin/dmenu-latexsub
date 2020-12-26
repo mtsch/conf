@@ -14,4 +14,4 @@ if [ ! -f "$cache" ]; then
     curl "$emojisource" >> "$cache"
 fi
 
-dmenu -b -l 10 < "$cache" | grep -o ^. | xargs -I{} xdotool type {}
+dmenu -f -b -l 10 < "$cache" | grep -o ^. | xargs -I{} xdotool type {}

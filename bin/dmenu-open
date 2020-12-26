@@ -18,18 +18,15 @@ curr=$(realpath "${1-$PWD}" | sed s%/$%%)/
 show_recent=true
 
 list() {
-    echo "  [open in file manager]\t!open"
-    [ -z "$ECHO" ] && echo "  [open in terminal]\t!term"
-    [ "$show_recent" = "true" ] && echo "  [last opened]\t!recent"
-    echo ".."
-
-    find "$1" -mindepth 1 -maxdepth 1 -type d -name "[^.]*" -exec basename {} ';' | sort | sed "s%$%/%"
-    find "$1" -mindepth 1 -maxdepth 1 -type d -name ".*" -exec basename {} ';' | sort | sed "s%$%/%"
-    find "$1" -mindepth 1 -maxdepth 1 -type f -name "[^.]*" -exec basename {} ';' | sort
-    find "$1" -mindepth 1 -maxdepth 1 -type f -name ".*" -exec basename {} ';' | sort
+    printf " [file manager]\t!open\n"
+    [ -z "$ECHO" ] && printf " [terminal]\t!term\n"
+    [ "$show_recent" = "true" ] && printf " [recent]\t!recent\n"
+    echo ..
+    ls -1Ap --group-directories-first "$1"
 }
 
 while true; do
+    curr=$(realpath "$curr")/
     sel=$(list "$curr" | cat - | dmenu -f -i -b -l 10 -p "$curr" )
     show_recent=false
 
@@ -37,7 +34,6 @@ while true; do
         "") exit;;
         *) open "$curr"; exit;;
         *) term "$curr"; exit;;
-        ..) curr="${curr%/*/}/";;
         *) curr=$(cat "$cache");;
         *)
             file=$curr$sel
@@ -47,7 +43,7 @@ while true; do
                 open "$file"
                 exit
             else
-                dmenu-yesno -p "$file does not exist. Create?" && touch "$file" && open "$file" &
+                dmenu-yesno "$file does not exist. Create?" && touch "$file" && open "$file" &
                 exit
             fi
             ;;

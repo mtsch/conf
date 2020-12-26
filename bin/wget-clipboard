@@ -1,0 +1,12 @@
+#!/bin/sh
+ICON=/usr/share/icons/Papirus/64x64/apps/downloader-arrow.svg
+
+url=$(xclip -o -selection clipboard)
+notify-send -i $ICON Downloading "$url"
+if
+    wget -P "$HOME/downloads" "$url"
+then
+    notify-send -i $ICON "Download done" "$url"
+else
+    notify-send -i $ICON "Download failed" "$url"
+fi

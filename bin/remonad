@@ -1,2 +1,3 @@
 #!/bin/sh
-xmonad --recompile && { pkill xmobar; xmonad --restart; }
+ICON=~/conf/icons/xmonad.svg
+xmonad --recompile && { pkill xmobar; xmonad --restart; } && notify-send -i $ICON "Restarted successfully."

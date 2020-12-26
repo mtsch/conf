@@ -11,12 +11,10 @@ source "$SOURCES"/git-completion-bash
 # misc
 alias df='df -h'
 alias du='du -h'
-alias grep='egrep'
-alias tcpy='pwd | urxvtc'
+alias grep='egrep --color=auto'
 alias poogle='ping www.google.com'
 # restart
 alias rebash='source ~/.bashrc'
-alias remacs='emacsclient -e "(kill-emacs)"; emacs --daemon'
 # ls
 alias ls='ls --color=auto -p'
 alias ll='ls -lh'
@@ -26,18 +24,14 @@ alias lal='ls -lah'
 alias al='sl -a'
 alias lll='sl -l'
 
-alias grep='grep --color=auto'
-
 alias R="R --no-save"
 
 alias op="exo-open"
 
 toup(){ touch "$1" && op "$1";}
-
 mkcd (){ mkdir -p "$*"; cd "$*";}
-cs (){ cd "$*"; ls;}
 
-# yaourt
+# yaourt reminders
 alias yaoupg='echo yay -Syu'
 alias yaoinst='echo yay -S'
 alias yaoreps='echo yay -Ss'
@@ -54,26 +48,4 @@ lekproxy () {
     fi
 }
 
-lfcd () {
-    tmp="$(mktemp)"
-    /bin/lf -last-dir-path="$tmp" "$@"
-    if [ -f "$tmp" ]; then
-        dir="$(cat "$tmp")"
-        rm -f "$tmp"
-        if [ -d "$dir" ]; then
-            if [ "$dir" != "$(pwd)" ]; then
-                cd "$dir"
-            fi
-        fi
-    fi
-}
-
-# ====
-# VARS
-# ====
-export EDITOR="emacsclient -c"
-export PAGER=vimpager
-export PATH=$PATH:$HOME/conf/bin
-
 PROMPT_COMMAND='printf "\033]0;%s\007" "${PWD/#$HOME/"~"}"'
-

@@ -1,2 +1,2 @@
 #!/bin/sh
-echo "yes\nno" | dmenu -sf "#002b36" -sb "#cb4b16" -F -n -p "$*" | grep -q ^yes$
+printf "yes\nno\n" | dmenu -b -f -sf "#002b36" -sb "#cb4b16" -F -n -p "$*" | grep -q ^yes$
