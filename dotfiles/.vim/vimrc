@@ -16,12 +16,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'godlygeek/tabular'
 Plugin 'altercation/vim-colors-solarized'
 
-"Plugin 'xolox/vim-misc'
-
 Plugin 'tpope/vim-fireplace'
-Plugin 'guns/vim-clojure-static'
-
-Plugin 'vim-scripts/Conque-Shell'
 
 Plugin 'vim-pandoc/vim-pandoc'
 Plugin 'vim-pandoc/vim-pandoc-syntax'
@@ -164,10 +159,6 @@ let g:syntastic_haskell_checkers = ['nothing:ghc-mod']
 let g:pandoc#modules#disabled     = ["folding"]
 let g:pandoc#formatting#textwidth = 79
 let g:pandoc#spell#enabled        = 0
-
-" clojure
-nnoremap <C-E> :Eval<CR>
-vnoremap <C-E> :Eval<CR>
 
 " asm
 autocmd FileType asm set shiftwidth=8

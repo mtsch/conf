@@ -76,15 +76,15 @@ theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠
 --theWorkspaces = clickable [" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "]
                 ++ ["NSP"]
     where
-      clickable ws = map action $ zip ws [1..]
+      clickable ws = zipWith (curry action) ws [1..]
       action (w, i) = wrap ("<action=`xdotool key super+" ++ show i ++ "`>") "</action>" w
 
 theManageHook = composeAll
     -- never open as master
-    [ className =? "URxvt"         --> doF (S.swapDown)
-    , className =? "st-256color"   --> doF (S.swapDown)
-    , className =? "Thunar"        --> doF (S.swapDown)
-    , className =? "Emacs"         --> doF (S.swapDown)
+    [ className =? "URxvt"         --> doF S.swapDown
+    , className =? "st-256color"   --> doF S.swapDown
+    , className =? "Thunar"        --> doF S.swapDown
+    , className =? "Emacs"         --> doF S.swapDown
     -- default workspaces
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
@@ -107,7 +107,7 @@ scratchpads = [ NS "htop" "st -A 0.9 -C -e htop" (title =? "htop")
 
 theLogHook h = blurWallpaper wallpapers
                <+> (ewmhDesktopsLogHook >> updatePointer (0.5, 0.5) (0, 0))
-               <+> (fancyPP $ thePP h)
+               <+> fancyPP (thePP h)
 
 theLayoutHook = avoidStruts $ toggleLayouts tabbed cantors
   where
@@ -225,8 +225,8 @@ theKeys =
     , ("<XF86AudioMute>",   spawn "pulsemixer --toggle-mute")
     ]
 
-theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) =
-    M.fromList $
+theWindowMovementKeys c@XConfig {XMonad.modMask = mod} =
+    M.fromList
          -- move windows between workspaces
          [ ((mod .|. controlMask, k), windows $ swapWithCurrent i)
                | (i, k) <- zip theWorkspaces [xK_1..]
@@ -238,12 +238,12 @@ theWindowMovementKeys c@(XConfig {XMonad.modMask = mod}) =
                      , (copy, shiftMask .|. controlMask)]
          ]
 
-theMouse (XConfig {XMonad.modMask = mod}) =
-    M.fromList $
+theMouse XConfig {XMonad.modMask = mod} =
+    M.fromList
          [ ( (mod, 1 :: Button)
-           , (\w -> focus w >> mouseMoveWindow w >> windows S.shiftMaster)
+           , \w -> focus w >> mouseMoveWindow w >> windows S.shiftMaster
            )
          , ( (mod .|. controlMask, 1 :: Button)
-           , (\w -> focus w >> mouseResizeWindow w >> windows S.shiftMaster)
+           , \w -> focus w >> mouseResizeWindow w >> windows S.shiftMaster
            )
          ]
