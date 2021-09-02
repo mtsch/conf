@@ -7,3 +7,7 @@
 	user = mtsch
 [core]
 	excludesfile = /home/m/.gitignore
+[pull]
+	rebase = false
+[init]
+	defaultBranch = master

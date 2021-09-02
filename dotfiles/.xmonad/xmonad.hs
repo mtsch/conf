@@ -1,34 +1,24 @@
 import XMonad
 
-import Data.Char
-import Data.Monoid
-import System.Exit
+import Data.Map (fromList)
+import GHC.IO.Handle.Types (Handle)
 
 import XMonad.Actions.CopyWindow
 import XMonad.Actions.CycleWS
 import XMonad.Actions.DwmPromote
-import XMonad.Actions.RotSlaves
 import XMonad.Actions.SwapWorkspaces
 import XMonad.Actions.UpdatePointer
-import XMonad.Actions.WindowGo
 import XMonad.Actions.WithAll
 
-import XMonad.Config.Desktop
-
-import XMonad.Layout.Grid
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Spacing
 import XMonad.Layout.ToggleLayouts
-import XMonad.Layout.ThreeColumns
-
-import XMonad.ManageHook
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
 
@@ -36,11 +26,9 @@ import XMonad.Util.EZConfig
 import XMonad.Util.Run
 import XMonad.Util.NamedScratchpad
 
-import qualified Data.Map        as M
 import qualified XMonad.StackSet as S
 
 import Theme
--- import XMobarPowerline
 import FancyXMobar
 import WithSlaves
 import BlurWallpaper
@@ -48,63 +36,74 @@ import XMonad.Layout.Cantor
 import XMonad.Layout.ZoomSecondary
 import XMonad.Action.SwapSlaves
 
-main = do h <- spawnPipe "xmobar"
-          xmonad $ docks $ ewmh def
-                     { terminal           = theTerminal
-                     , modMask            = mod4Mask
-                     , focusFollowsMouse  = True
-                     , workspaces         = theWorkspaces
+main :: IO ()
+main = do
+  h <- spawnPipe "xmobar"
+  xmonad . docks $ ewmh def { terminal           = theTerminal
+                            , modMask            = mod4Mask
+                            , focusFollowsMouse  = True
+                            , workspaces         = theWorkspaces
 
-                     , borderWidth        = 3
-                     , focusedBorderColor = yellow
-                     , normalBorderColor  = base02
+                            , borderWidth        = 3
+                            , focusedBorderColor = yellow
+                            , normalBorderColor  = base02
 
-                     , manageHook         = theManageHook
-                     , layoutHook         = theLayoutHook
-                     , logHook            = theLogHook h
-                     , handleEventHook    = theHandleEventHook
-                     , startupHook        = theStartupHook
+                            , manageHook         = theManageHook
+                            , layoutHook         = theLayoutHook
+                            , logHook            = theLogHook h
+                            , handleEventHook    = theHandleEventHook
+                            , startupHook        = theStartupHook
 
-                     , mouseBindings      = theMouse
-                     , keys               = theWindowMovementKeys
-                     }
-                     `additionalKeysP` theKeys
+                            , mouseBindings      = theMouse
+                            , keys               = theWindowMovementKeys
+                            }
+    `additionalKeysP` theKeys
 
+theTerminal :: String
 theTerminal = "st"
 
+theWorkspaces :: [String]
 theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
---theWorkspaces = clickable [" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "]
                 ++ ["NSP"]
     where
-      clickable ws = zipWith (curry action) ws [1..]
-      action (w, i) = wrap ("<action=`xdotool key super+" ++ show i ++ "`>") "</action>" w
+      clickable ws = zipWith action ws [1..]
+      action w i = wrap ("<action=`xdotool key super+" ++ show i ++ "`>") "</action>" w
 
+theManageHook :: ManageHook
 theManageHook = composeAll
     -- never open as master
-    [ className =? "URxvt"         --> doF S.swapDown
-    , className =? "st-256color"   --> doF S.swapDown
-    , className =? "Thunar"        --> doF S.swapDown
-    , className =? "Emacs"         --> doF S.swapDown
+    [ className =? "URxvt"       --> doF S.swapDown
+    , className =? "st-256color" --> doF S.swapDown
+    , className =? "Thunar"      --> doF S.swapDown
+    , className =? "Emacs"       --> doF S.swapDown
     -- default workspaces
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
-    , title     =? "Whisker Menu"  --> doFloat
+    -- zrythm autosave
+    , title =? "Project Progress" --> doIgnore
     ]
     <+> manageDocks
     <+> namedScratchpadManageHook scratchpads
 
-scratchpads = [ NS "htop" "st -A 0.9 -C -e htop" (title =? "htop")
-                nonFloating
-              , NS "taskmgr" "xfce4-taskmanager" (className =? "Xfce4-taskmanager")
-                nonFloating
+scratchpads :: [NamedScratchpad]
+scratchpads = [ NS "htop" "st -A 0.9 -C -e htop" (title =? "htop") $
+                customFloating (S.RationalRect 0.16 0.1 0.68 0.78)
+              , NS "taskmgr" "xfce4-taskmanager" (className =? "Xfce4-taskmanager") $
+                customFloating (S.RationalRect 0.16 0.1 0.68 0.78)
               , NS "scratch" "st -A 0.9 -C -c scratch" (className =? "scratch") $
-                customFloating (S.RationalRect 0.0 0.70 0.50 0.30)
+                customFloating (S.RationalRect 0.0 0.70 0.40 0.30)
               , NS "julia" "st -A 0.9 -C -c julia -e julia" (className =? "julia") $
-                customFloating (S.RationalRect 0.0 0.10 0.50 0.30)
+                customFloating (S.RationalRect 0.60 0.70 0.40 0.30)
               , NS "pavucontrol" "pavucontrol" (className =? "Pavucontrol") $
-                customFloating (S.RationalRect 0.69 0.10 0.30 0.40)
+                customFloating (S.RationalRect 0.25 0.25 0.50 0.50)
+              , NS "weather" "st -A 0.9 -C -c weather -e links wttr.in"
+                (className =? "weather") $
+                customFloating (S.RationalRect 0.16 0.1 0.68 0.78)
+              , NS "calendar" "gsimplecal" (className =? "Gsimplecal") $
+                customFloating (S.RationalRect 0.77 0.03 0.2 0.15)
               ]
 
+theLogHook :: Handle -> X ()
 theLogHook h = blurWallpaper wallpapers
                <+> (ewmhDesktopsLogHook >> updatePointer (0.5, 0.5) (0, 0))
                <+> fancyPP (thePP h)
@@ -122,7 +121,9 @@ theLayoutHook = avoidStruts $ toggleLayouts tabbed cantors
 
 theHandleEventHook = hintsEventHook
 
-theStartupHook = setWMName "LG3D"
+theStartupHook = setWMName "LG3D" >>
+  (spawn $ "xwallpaper --center " ++ sharpWallpaper) >>
+  spawn "picom -b --config .config/picom.conf"
 
 --------------
 -- Keyboard --
@@ -179,7 +180,9 @@ theKeys =
     -- workspaces
     , ("M-<Tab>",           toggleWS' ["NSP"])
     , ("M-d",               moveTo Next EmptyWS)
+    , ("M-C-d",             moveTo Prev EmptyWS)
     , ("M-S-d",             shiftTo Next EmptyWS)
+    , ("M-S-C-d",           shiftTo Prev EmptyWS)
     , ("M-w",               nextScreen)
     , ("M-S-w",             shiftNextScreen)
     , ("M-C-w",             swapNextScreen)
@@ -205,6 +208,9 @@ theKeys =
     , ("M-C-i",             spawn "copy-window-title")
     , ("M-<Delete>",        namedScratchpadAction scratchpads "htop")
     , ("M-S-<Delete>",      namedScratchpadAction scratchpads "taskmgr")
+    , ("M-C-S-w",           namedScratchpadAction scratchpads "weather")
+    , ("M-C-S-c",           namedScratchpadAction scratchpads "calendar")
+
     , ("M-r",               spawn "dmenu-launch")
     , ("M-e",               deprecated "M-f")
     , ("M-t",               spawn theTerminal)
@@ -222,28 +228,30 @@ theKeys =
     , ("M-S--",             spawn "pulsemixer --change-volume -1")
     , ("M-C-=",             spawn "pulsemixer --set-volume 100")
     , ("M-C--",             spawn "pulsemixer --toggle-mute")
-    , ("<XF86AudioMute>",   spawn "pulsemixer --toggle-mute")
+
+
+    , ("<XF86AudioLowerVolume>", spawn "pulsemixer --change-volume -5")
+    , ("<XF86AudioRaiseVolume>", spawn "pulsemixer --change-volume +5")
+    , ("<XF86AudioMute>",        spawn "pulsemixer --toggle-mute")
     ]
 
-theWindowMovementKeys c@XConfig {XMonad.modMask = mod} =
-    M.fromList
+theWindowMovementKeys XConfig {XMonad.modMask = mod} =
+    fromList $
          -- move windows between workspaces
          [ ((mod .|. controlMask, k), windows $ swapWithCurrent i)
                | (i, k) <- zip theWorkspaces [xK_1..]
          ] ++
          -- copy windows between workspaces
-         [ ((m .|. mod, k), windows $ f i) | (i, k) <- zip theWorkspaces [xK_1 ..]
+         [ ((m .|. mod, k), windows $ f i) | (i, k) <- zip theWorkspaces [xK_1..]
          , (f, m) <- [ (S.view, 0)
                      , (\w -> S.greedyView w . S.shift w, shiftMask)
-                     , (copy, shiftMask .|. controlMask)]
+                     , (copy, shiftMask .|. controlMask)
+                     ]
          ]
 
 theMouse XConfig {XMonad.modMask = mod} =
-    M.fromList
-         [ ( (mod, 1 :: Button)
-           , \w -> focus w >> mouseMoveWindow w >> windows S.shiftMaster
-           )
-         , ( (mod .|. controlMask, 1 :: Button)
-           , \w -> focus w >> mouseResizeWindow w >> windows S.shiftMaster
-           )
-         ]
+    fromList [ ((mod, 1 :: Button), \w -> mouseMoveWindow w >> master)
+             , ((mod .|. controlMask, 1 :: Button), \w -> mouseResizeWindow w >> master)
+             ]
+  where
+    master = windows S.shiftMaster

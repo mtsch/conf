@@ -9,25 +9,26 @@ fi
 
 export QT_QPA_PLATFORMTHEME=gtk2
 
+xrdb ~/.Xresources
+
 # Keyboard stuff
-syndaemon -t -k -i 1 -d & # disable touchpad when typing
+syndaemon -t -k -i 1 -d # disable touchpad when typing
 xset -b # disable beep
 
 # Daemons
-emacs --daemon &
+emacs --daemon
 redshift -l -36.8:174.8 -t 6000:3500 &
-picom -b --config .config/picom.conf &
 /usr/lib/xfce4/notifyd/xfce4-notifyd &
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-xwallpaper --zoom ~/conf/wallpapers/colorful.jpg
+~/.dropbox-dist/dropboxd &
 
 # Tray stuff
-trayer --align right --width 7 --transparent true --alpha 0 --tint 0x001E26 --edge top &
-cadence &
+trayer --align right --width 10 --transparent true --alpha 0 --tint 0x001E26 --edge top &
+xfce4-power-manager --daemon
 nm-applet &
 pasystray --notify=sink_default &
-xfce4-power-manager &
+cadence &
+lxappearance &
 
-# WM
-#exec startxfce4
-exec xmonad
+# Recompile xmonad in case it was updated recently
+xmonad --recompile && exec xmonad

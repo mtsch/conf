@@ -1,15 +1,24 @@
 #/bin/sh
-( dmenu -f -b -l 10  ) << EOF | cut -f2 | ${SHELL:-"/bin/sh"} &
+IMG="$HOME/conf/icons/xmonad.svg"
+
+launch() {
+    read input
+    $input || [ $? -ne 127 ] || notify-send -i $IMG "$input" "command not found"
+}
+
+( dmenu -f -b -l 10  ) << EOF | cut -f2 | launch &
 firefox	firefox
 firefox (private window)	firefox --private-window
 reaper	reaper
-cadence	cadence
 web search	dmenu-websearch
 transmission	transmission-gtk
-jdownloader	jdownloader
 restart xmonad	remonad
 restart emacs	remacs
 youtube-dl clipboard	youtube-dl-clipboard
 mpv clipboard	mpv-clipboard
 wget clipboard	wget-clipboard
+slsk	soulseekqt
+zrythm	zrythm_launch
+ardour	ardour6
+vcvrack	vcvrack
 EOF

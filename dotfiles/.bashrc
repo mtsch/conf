@@ -26,7 +26,9 @@ alias lll='sl -l'
 
 alias R="R --no-save"
 
-alias op="exo-open"
+#alias op="exo-open"
+op() { setsid ${OPENER:-exo-open} "$@" & disown; }
+opc() { setsid ${OPENER:-exo-open} "$@" & disown; exit; }
 
 toup(){ touch "$1" && op "$1";}
 mkcd (){ mkdir -p "$*"; cd "$*";}
@@ -49,3 +51,8 @@ lekproxy () {
 }
 
 PROMPT_COMMAND='printf "\033]0;%s\007" "${PWD/#$HOME/"~"}"'
+
+export HISTSIZE=-1
+export HISTFILESIZE=-1
+
+export RACK_DIR=~/programs/Rack-SDK

@@ -1,0 +1,2 @@
+swapoff -a
+swapon -a

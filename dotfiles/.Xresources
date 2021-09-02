@@ -1,6 +1,6 @@
 URxvt.iconFile: /usr/share/icons/Papirus/64x64/apps/xfce-terminal.svg
 
-font : xft:Hack Nerd Font Mono:pixelsize=17
+font : xft:Hack Nerd Font Mono:pixelsize=18
 !! drop in Solarized colorscheme for Xresources/Xdefaults
 
 !!SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      RGB         HSB

@@ -3,14 +3,14 @@ Config { font = "xft:Hack Nerd Font Mono:pixelsize=18"
                            , "xft:Nanum Gothic Coding:pixelsize=16:weight=bold"
                            , "xft:Hack Nerd Font Mono:pixelsize=18:antialias=true:weight=Bold"
                            ]
+       --, bgColor = "#001e26"
        , bgColor = "#001e26"
        , fgColor = "#839496"
        , alpha = 255
-       , position = TopW L 94
+       , position = TopW L 90
        , sepChar = "%"
        , alignSep = "}{"
-       -- , template = "<box type=Bottom width=4 color=#001e26><box width=1 color=#001e26>%UnsafeStdinReader%</box></box> }{%NZAA% %multicpu%%memory%%date%"
-       , template = "<box width=3 type=Top color=#001e26>%UnsafeStdinReader%</box> }{%NZAA% %multicpu%%memory% %date% "
+       , template = "%UnsafeStdinReader%}{%NZAA%<action=`xdotool key super+Delete`>%multicpu%%memory%</action> %date%"
 
        , lowerOnStart = True
        , commands = [ Run UnsafeStdinReader
@@ -23,8 +23,8 @@ Config { font = "xft:Hack Nerd Font Mono:pixelsize=18"
                                    ] 10
 
                     , Run Memory ["--template", "<usedvbar>"] 10
-                    , Run Date "<box type=Bottom width=4 color=#001e26><fc=#839496,#073642> %a %b %d </fc><fc=#93a1a1,#073642>%H:%M:%S  </fc></box>" "date" 10
-                    , Run Weather "NZAA" [ "--template", "<tempC>°C"] 18000
+                    , Run Date "<action=`xdotool key super+shift+control+c`><box type=Bottom width=4 color=#001e26><fc=#839496,#073642> %a %b %d </fc><fc=#93a1a1,#073642>%H:%M:%S </fc></box></action>" "date" 10
+                    , Run Weather "NZAA" [ "--template", "<action=`xdotool key super+shift+control+w`><tempC>°C</action>"] 18000
                     ]
        }
 

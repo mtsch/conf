@@ -3,3 +3,5 @@
 *-linux
 *~
 *\#
+dotfiles/.xmonad/*.o
+dotfiles/.xmonad/*.hi

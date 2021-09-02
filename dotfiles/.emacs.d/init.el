@@ -60,6 +60,7 @@
 (use-package solarized-theme
   :init
   (setq solarized-scale-org-headlines nil)
+  (setq solarized-distinct-fringe-background t)
   :config
   (load-theme 'solarized-light t))
 
@@ -89,7 +90,9 @@
   :config
   (global-undo-tree-mode))
 
-(define-key global-map (kbd "<C-tab>") 'other-window)
+(define-key global-map (kbd "<C-tab>") (lambda () (interactive) (other-window -1)))
+(define-key global-map (kbd "<C-iso-lefttab>") (lambda () (interactive) (other-window 1)))
+(windmove-default-keybindings)
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
 (setq-default fill-column 92)
@@ -150,7 +153,7 @@
   (which-key-mode)
   :diminish
   :config
-  (setq which-key-idle-delay 0.3))
+  (setq which-key-idle-delay 1))
 
 (use-package magit
   :bind ((:map magit-status-mode-map)
@@ -189,6 +192,7 @@
   (setq org-src-tab-acts-natively t)
   (setq org-src-preserve-indentation nil)
   (setq org-src-fontify-natively t))
+  (setq org-replace-disputed-keys t)
 
 ;; Heading fonts
 (dolist (face '((org-level-1 . 1.5)
@@ -233,16 +237,19 @@
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
 
+(use-package org-chef)
+
 (use-package julia-mode)
 (use-package julia-repl
   :ensure nil
   :load-path "~/.emacs.d/plugins/julia-repl"
   :config
   (add-hook 'julia-mode-hook 'julia-repl-mode)
-  (setq julia-repl-switches "-O3")
+  (setq julia-repl-switches "-O3 -t2")
   (setq julia-repl-executable-records
-        '((master "julia")
+        '((master "julia-master")
           (stable "julia-stable")
+          (remote "julia-remote")
           (lts "julia-lts")))
   (julia-repl-set-terminal-backend 'vterm))
 
@@ -257,9 +264,11 @@
   (setq markdown-command "multimarkdown"))
 (use-package edit-indirect)
 
+(use-package yaml-mode)
+
 (require 'mu4e)
 (setq mu4e-get-mail-command "mbsync -c ~/.config/mu4e/mbsyncrc main"
-      mu4e-update-interval 300))
+      mu4e-update-interval 300)
 
 (use-package smtpmail
   :config

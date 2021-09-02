@@ -1,3 +1,5 @@
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el
+
 * Core
 ** Custom Variables
 Use a different file for auto-generated custom variables.
@@ -92,17 +94,15 @@ Make sure missing packages get auto installed.
   :config
   (setq doom-modeline-icon nil))
 #+end_src
-
-#+RESULTS:
-: t
-
 *** Solarized
 #+begin_src emacs-lisp
 (use-package solarized-theme
   :init
   (setq solarized-scale-org-headlines nil)
+  (setq solarized-distinct-fringe-background t)
   :config
   (load-theme 'solarized-light t))
+
 #+end_src
 *** Color scheme switching
 #+begin_src emacs-lisp
@@ -136,10 +136,11 @@ Make sure missing packages get auto installed.
   :config
   (global-undo-tree-mode))
 #+end_src
-
 ** Keys
 #+begin_src emacs-lisp
-(define-key global-map (kbd "<C-tab>") 'other-window)
+(define-key global-map (kbd "<C-tab>") (lambda () (interactive) (other-window -1)))
+(define-key global-map (kbd "<C-iso-lefttab>") (lambda () (interactive) (other-window 1)))
+(windmove-default-keybindings)
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 #+end_src
 ** Fill Column
@@ -208,7 +209,7 @@ Make sure missing packages get auto installed.
   (which-key-mode)
   :diminish
   :config
-  (setq which-key-idle-delay 0.3))
+  (setq which-key-idle-delay 1))
 #+end_src
 * Dev
 ** Magit
@@ -259,6 +260,7 @@ Make sure missing packages get auto installed.
   (setq org-src-tab-acts-natively t)
   (setq org-src-preserve-indentation nil)
   (setq org-src-fontify-natively t))
+  (setq org-replace-disputed-keys t)
 #+end_src
 *** Fonts
 #+begin_src emacs-lisp
@@ -297,9 +299,6 @@ Make sure missing packages get auto installed.
 #+end_src
 *** Tangle
 Make this file tangle to ~init.el~ on save.
-
-#+PROPERTY: header-args:emacs-lisp :tangle ./init.el
-
 #+begin_src emacs-lisp
 (defun m/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
@@ -317,6 +316,11 @@ Make this file tangle to ~init.el~ on save.
 (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
 #+end_src
 
+*** Org Chef
+#+begin_src emacs-lisp
+(use-package org-chef)
+#+end_src
+
 ** Julia
 #+begin_src emacs-lisp
 (use-package julia-mode)
@@ -325,10 +329,11 @@ Make this file tangle to ~init.el~ on save.
   :load-path "~/.emacs.d/plugins/julia-repl"
   :config
   (add-hook 'julia-mode-hook 'julia-repl-mode)
-  (setq julia-repl-switches "-O3")
+  (setq julia-repl-switches "-O3 -t2")
   (setq julia-repl-executable-records
-        '((master "julia")
+        '((master "julia-master")
           (stable "julia-stable")
+          (remote "julia-remote")
           (lts "julia-lts")))
   (julia-repl-set-terminal-backend 'vterm))
 #+end_src
@@ -347,12 +352,15 @@ Make this file tangle to ~init.el~ on save.
   (setq markdown-command "multimarkdown"))
 (use-package edit-indirect)
 #+end_src
+** Yaml
+#+begin_src emacs-lisp
+(use-package yaml-mode)
+#+end_src
 ** Email
-
 #+begin_src emacs-lisp
   (require 'mu4e)
   (setq mu4e-get-mail-command "mbsync -c ~/.config/mu4e/mbsyncrc main"
-        mu4e-update-interval 300))
+        mu4e-update-interval 300)
 
   (use-package smtpmail
     :config
