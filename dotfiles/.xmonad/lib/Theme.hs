@@ -26,8 +26,8 @@ blue    = "#268bd2"
 cyan    = "#2aa198"
 green   = "#859900"
 
-sharpWallpaper   = "/home/m/conf/wallpapers/Fractal-Picture.jpg"
-blurredWallpaper = "/home/m/conf/wallpapers/Fractal-Picture-blur.jpg"
+sharpWallpaper   = "~/conf/wallpapers/Fractal-Picture.jpg"
+blurredWallpaper = "~/conf/wallpapers/Fractal-Picture-blur.jpg"
 
 barBg = base04
 underline' = underline 4

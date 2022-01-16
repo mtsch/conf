@@ -63,7 +63,9 @@ theTerminal :: String
 theTerminal = "st"
 
 theWorkspaces :: [String]
-theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
+--theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
+--                ++ ["NSP"]
+theWorkspaces = clickable [" ⅰ "," ⅱ "," ⅲ "," ⅳ "," ⅴ "," ⅵ "," ⅶ "," ⅷ "," ⅸ "]
                 ++ ["NSP"]
     where
       clickable ws = zipWith action ws [1..]
@@ -86,17 +88,17 @@ theManageHook = composeAll
     <+> namedScratchpadManageHook scratchpads
 
 scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "htop" "st -A 0.9 -C -e htop" (title =? "htop") $
+scratchpads = [ NS "htop" "st -A 0.95 -C -e htop" (title =? "htop") $
                 customFloating (S.RationalRect 0.16 0.1 0.68 0.78)
               , NS "taskmgr" "xfce4-taskmanager" (className =? "Xfce4-taskmanager") $
                 customFloating (S.RationalRect 0.16 0.1 0.68 0.78)
-              , NS "scratch" "st -A 0.9 -C -c scratch" (className =? "scratch") $
+              , NS "scratch" "st -A 0.95 -C -c scratch" (className =? "scratch") $
                 customFloating (S.RationalRect 0.0 0.70 0.40 0.30)
-              , NS "julia" "st -A 0.9 -C -c julia -e julia" (className =? "julia") $
+              , NS "julia" "st -A 0.95 -C -c julia -e julia" (className =? "julia") $
                 customFloating (S.RationalRect 0.60 0.70 0.40 0.30)
               , NS "pavucontrol" "pavucontrol" (className =? "Pavucontrol") $
                 customFloating (S.RationalRect 0.25 0.25 0.50 0.50)
-              , NS "weather" "st -A 0.9 -C -c weather -e links wttr.in"
+              , NS "weather" "st -A 0.95 -C -c weather -e links wttr.in"
                 (className =? "weather") $
                 customFloating (S.RationalRect 0.16 0.1 0.68 0.78)
               , NS "calendar" "gsimplecal" (className =? "Gsimplecal") $
@@ -114,7 +116,7 @@ theLayoutHook = avoidStruts $ toggleLayouts tabbed cantors
     spacing' = spacingRaw False (Border 5 10 10 10) True (Border 10 10 10 10) True
     tall     = TallCantor (3/100) (1/2) (3/100) (1/2)
     mirror   = Cantor (3/100) (1/2)
-    zoom     = zoomSecondary (9/10) False
+    zoom     = zoomSecondary 0.95 False
     cantors  = hints' . spacing' . zoom $ (tall ||| mirror)
     tabbed   = named "t" $ noBorders Full
     full     = named "f" $ noBorders Full
@@ -243,7 +245,7 @@ theWindowMovementKeys XConfig {XMonad.modMask = mod} =
          ] ++
          -- copy windows between workspaces
          [ ((m .|. mod, k), windows $ f i) | (i, k) <- zip theWorkspaces [xK_1..]
-         , (f, m) <- [ (S.view, 0)
+         , (f, m) <- [ (S.greedyView, 0)
                      , (\w -> S.greedyView w . S.shift w, shiftMask)
                      , (copy, shiftMask .|. controlMask)
                      ]
