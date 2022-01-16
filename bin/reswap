@@ -1,2 +1,2 @@
-swapoff -a
-swapon -a
+sudo swapoff -a
+sudo swapon -a
