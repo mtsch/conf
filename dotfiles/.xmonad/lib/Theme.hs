@@ -41,7 +41,7 @@ wallpapers = WallpaperSetup { mode    = "center"
 thePP h = FancyPP { backgroundColor    = barBg
                   , sameSeparator      = underline' barBg ""
                   , diffSeparator      = underline' barBg ""
-                  , separatorFont      = 3
+                  , separatorFont      = 0
 
                   , wsPrefix           = fancy barBg barBg " "
                   , tabWSSeparator     = fancy barBg barBg " "

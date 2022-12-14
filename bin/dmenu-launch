@@ -9,7 +9,6 @@ launch() {
 ( dmenu -f -b -l 10  ) << EOF | cut -f2 | launch &
 firefox	firefox
 firefox (private window)	firefox --private-window
-reaper	reaper
 web search	dmenu-websearch
 transmission	transmission-gtk
 restart xmonad	remonad
@@ -18,7 +17,7 @@ youtube-dl clipboard	youtube-dl-clipboard
 mpv clipboard	mpv-clipboard
 wget clipboard	wget-clipboard
 slsk	soulseekqt
-zrythm	zrythm_launch
-ardour	ardour6
-vcvrack	vcvrack
+morrowind	openmw-launcher
+bitwig	bitwig-studio
+zoom	zoom
 EOF

@@ -1,3 +1,12 @@
 [submodule "dotfiles/.emacs.d/plugins/julia-repl"]
 	path = dotfiles/.emacs.d/plugins/julia-repl
 	url = https://github.com/tpapp/julia-repl
+[submodule "dotfiles/.xmonad/xmonad-git"]
+	path = dotfiles/.xmonad/xmonad-git
+	url = https://github.com/xmonad/xmonad
+[submodule "dotfiles/.xmonad/xmonad-contrib-git"]
+	path = dotfiles/.xmonad/xmonad-contrib-git
+	url = https://github.com/xmonad/xmonad-contrib
+[submodule "dotfiles/.xmonad/xmobar-git"]
+	path = dotfiles/.xmonad/xmobar-git
+	url = https://codeberg.org/xmobar/xmobar

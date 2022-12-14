@@ -4,7 +4,7 @@ export INPUTRC=~/.inputrc
 
 export EDITOR="emacsclient -c"
 export PAGER=vimpager
-export PATH=$PATH:$HOME/conf/bin
+export PATH=$PATH:$HOME/conf/bin:$HOME/.local/bin
 
 export XDG_DESKTOP_DIR="$HOME/desktop"
 export XDG_DOCUMENTS="$HOME/docs"

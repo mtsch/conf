@@ -1,10 +1,11 @@
 #!/bin/sh
 USAGE="""
-Usage:\n
+Usage:
   vid split [FILE] [TIMES...]
   vid rotate [cw,ccw,f] [FILE]
   vid join [-o FILE] [FILES...]
   vid audio [-o FILE] [FILE] [TIMES]
+  vid deborder [-s skip_frames | -m w:h:x:y] [FILE]
   vid resolution [FILE]
 """
 TIME="[0-9:]\+"
@@ -95,6 +96,32 @@ audio() {
     process
 }
 
+deborder() {
+    if [ "$1" = "-m" ]; then
+	crop="crop=$2"
+	shift 2
+    else
+	if [ "$1" = "-s" ]; then
+	    skip=$2
+	    shift 2
+	else
+	    skip=150
+	fi
+
+	crop=$(ffmpeg -ss $skip -i "$input" -vframes 10 -vf cropdetect -f null - 2>&1 | grep -E -o -m1 'crop=[0-9:]+')
+
+	if [ -z "$crop" ]; then
+	    echo "Nothing to crop. Try setting -s 0"
+	    exit
+	fi
+    fi
+    input="$1"
+    target="${1%.*}-deb.${1##*.}"
+    echo "Cropping with $crop."
+    echo "$FFMPEG -i '$input' -vf '$crop' '$target'" > "$CMD"
+    process
+}
+
 resolution() {
     ffprobe -v warning -select_streams v:0 -show_entries stream=width,height \
             -of default=nw=1:nk=1 "$1"
@@ -124,5 +151,6 @@ case "$action" in
     rotate) rotate "$@";;
     join) join "$@";;
     audio) audio "$@";;
+    deborder) deborder "$@";;
     *) echo "$USAGE"; exit 1;;
 esac

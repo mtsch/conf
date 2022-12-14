@@ -27,7 +27,6 @@ trayer --align right --width 10 --transparent true --alpha 0 --tint 0x001E26 --e
 xfce4-power-manager --daemon
 nm-applet &
 pasystray --notify=sink_default &
-cadence &
 lxappearance &
 
 # Recompile xmonad in case it was updated recently

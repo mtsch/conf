@@ -1,0 +1,2 @@
+forticlientsslvpn_cli --server sslvpn.massey.ac.nz:443 --vpnuser mcufar
+forticlientsslvpn_cli --server sslvpn.massey.ac.nz:443 --vpnuser mcufar

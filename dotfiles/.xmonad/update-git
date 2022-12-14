@@ -1,0 +1,10 @@
+#!/bin/sh
+pushd xmonad-git
+git pull
+popd
+pushd xmobar-git
+git pull
+popd
+pushd xmonad-contrib-git
+git pull
+popd

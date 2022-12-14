@@ -1,6 +1,7 @@
 import XMonad
 
 import Data.Map (fromList)
+import System.Exit
 import GHC.IO.Handle.Types (Handle)
 
 import XMonad.Actions.CopyWindow
@@ -11,7 +12,7 @@ import XMonad.Actions.UpdatePointer
 import XMonad.Actions.WithAll
 
 import XMonad.Layout.LayoutHints
-import XMonad.Layout.Named
+import XMonad.Layout.Renamed
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Spacing
@@ -66,6 +67,7 @@ theWorkspaces :: [String]
 --theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
 --                ++ ["NSP"]
 theWorkspaces = clickable [" ⅰ "," ⅱ "," ⅲ "," ⅳ "," ⅴ "," ⅵ "," ⅶ "," ⅷ "," ⅸ "]
+--theWorkspaces = clickable [" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "]
                 ++ ["NSP"]
     where
       clickable ws = zipWith action ws [1..]
@@ -107,7 +109,7 @@ scratchpads = [ NS "htop" "st -A 0.95 -C -e htop" (title =? "htop") $
 
 theLogHook :: Handle -> X ()
 theLogHook h = blurWallpaper wallpapers
-               <+> (ewmhDesktopsLogHook >> updatePointer (0.5, 0.5) (0, 0))
+               <+> updatePointer (0.5, 0.5) (0, 0)
                <+> fancyPP (thePP h)
 
 theLayoutHook = avoidStruts $ toggleLayouts tabbed cantors
@@ -118,8 +120,8 @@ theLayoutHook = avoidStruts $ toggleLayouts tabbed cantors
     mirror   = Cantor (3/100) (1/2)
     zoom     = zoomSecondary 0.95 False
     cantors  = hints' . spacing' . zoom $ (tall ||| mirror)
-    tabbed   = named "t" $ noBorders Full
-    full     = named "f" $ noBorders Full
+    tabbed   = renamed [Replace "t"] $ noBorders Full
+    full     = renamed [Replace "f"] $ noBorders Full
 
 theHandleEventHook = hintsEventHook
 
@@ -177,19 +179,20 @@ theKeys =
     --, ("M-C-v",             decScreenWindowSpacing 1)
     --, ("M-C-c",             incScreenWindowSpacing 1)
     -- misc
+    , ("M-C-S-q M-C-S-q",   io $ exitWith ExitSuccess)
     , ("M-b",               sendMessage ToggleStruts)
     , ("M-S-t",             withFocused $ windows . S.sink)
     -- workspaces
     , ("M-<Tab>",           toggleWS' ["NSP"])
-    , ("M-d",               moveTo Next EmptyWS)
-    , ("M-C-d",             moveTo Prev EmptyWS)
-    , ("M-S-d",             shiftTo Next EmptyWS)
-    , ("M-S-C-d",           shiftTo Prev EmptyWS)
+    , ("M-d",               moveTo Next emptyWS)
+    , ("M-C-d",             moveTo Prev emptyWS)
+    , ("M-S-d",             shiftTo Next emptyWS)
+    , ("M-S-C-d",           shiftTo Prev emptyWS)
     , ("M-w",               nextScreen)
     , ("M-S-w",             shiftNextScreen)
     , ("M-C-w",             swapNextScreen)
-    , ("M-c",               moveTo Prev NonEmptyWS)
-    , ("M-v",               moveTo Next NonEmptyWS)
+    , ("M-c",               moveTo Prev $ Not emptyWS)
+    , ("M-v",               moveTo Next $ Not emptyWS)
     , ("M-S-c",             shiftToPrev)
     , ("M-S-v",             shiftToNext)
     -- killing
@@ -219,6 +222,7 @@ theKeys =
     , ("M-M1-t",            spawn "terminal-at-window-title")
     , ("M-p",               namedScratchpadAction scratchpads "pavucontrol")
     , ("M-m",               spawn "emacsclient -c")
+    , ("M-S-m",             spawn "wrkmacs")
     , ("M-.",               spawn "dmenu-latexsub")
     , ("M-f",               spawn "dmenu-open")
     -- actions

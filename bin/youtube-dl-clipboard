@@ -5,6 +5,6 @@ rm "$CACHE"
 
 url=$(xclip -o -selection clipboard)
 notify-send -i $ICON "Downloading" "$url"
-youtube-dl -w --no-warnings -c -o "$HOME/downloads/%(title)s-$RANDOM.%(ext)s" "$url" --exec \
+yt-dlp -w --no-warnings -c -o "$HOME/downloads/%(title)s-$RANDOM.%(ext)s" "$url" --exec \
 	   "notify-send -i $ICON Downloaded" 2>"$CACHE" ||
     notify-send -i $ICON Error "$(sed 's/ERROR://' $CACHE)" &

@@ -98,7 +98,7 @@ fancyPPString pp = do
   allWindows <- mapM getName $ S.index winset
   let tabs = fancyTabs layoutDesc focusedWindow allWindows pp
 
-  return . encodeString . show $ glue pp workspaces tabs
+  return . show $ glue pp workspaces tabs
 
 fancyPP :: FancyPP -> X ()
 fancyPP pp = fancyPPString pp >>= io . outputHandler pp

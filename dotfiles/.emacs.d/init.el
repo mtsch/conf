@@ -265,18 +265,3 @@
 (use-package edit-indirect)
 
 (use-package yaml-mode)
-
-(require 'mu4e)
-(setq mu4e-get-mail-command "mbsync -c ~/.config/mu4e/mbsyncrc main"
-      mu4e-update-interval 300)
-
-(use-package smtpmail
-  :config
-  (setq message-send-mail-function 'smtpmail-send-it
-        starttls-use-gnutls t
-        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-        smtpmail-auth-credentials
-        '(("smtp.gmail.com" 587 "matijacufar@gmail.com" nil))
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587))
