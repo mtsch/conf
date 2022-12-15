@@ -47,14 +47,14 @@ thePP h = FancyPP { backgroundColor    = barBg
                   , tabWSSeparator     = fancy barBg barBg " "
                   , tabsPostfix        = fancy barBg barBg " "
 
-                  , currentWSTheme     = fancy base03 base2 . font 2 . underline' blue
-                  , visibleWSTheme     = fancy base1 base02 . font 2 . underline' green
-                  , hiddenWSTheme      = fancy base1 base02 . font 2 . underline' barBg
-                  , hiddenEmptyWSTheme = fancy base01 base04 . font 2 . underline' barBg
-                  , urgentWSTheme      = fancy base03 red . font 2 . underline' barBg
+                  , currentWSTheme     = fancy base03 base2 . underline' blue
+                  , visibleWSTheme     = fancy base1 base02 . underline' green
+                  , hiddenWSTheme      = fancy base1 base02 . underline' barBg
+                  , hiddenEmptyWSTheme = fancy base01 base04 . underline' barBg
+                  , urgentWSTheme      = fancy base03 red . underline' barBg
 
                   , isTabbedLayout     = (== "t")
-                  , tabAreaWidth       = 95
+                  , tabAreaWidth       = 90
                   , noWindowsTheme     = fancy barBg barBg
                   , untabbedTheme      = fancy base01 barBg
                   , activeTabTheme     = fancy base1 base03 . underline' yellow

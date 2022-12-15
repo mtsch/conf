@@ -178,6 +178,8 @@
 (use-package flyspell
   :hook markdown-mode)
 
+(use-package eglot)
+
 (defun m/org-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
@@ -193,25 +195,6 @@
   (setq org-src-preserve-indentation nil)
   (setq org-src-fontify-natively t))
   (setq org-replace-disputed-keys t)
-
-;; Heading fonts
-(dolist (face '((org-level-1 . 1.5)
-                (org-level-2 . 1.3)
-                (org-level-3 . 1.15)
-                (org-level-4 . 1.1)
-                (org-level-5 . 1.1)
-                (org-level-6 . 1.1)
-                (org-level-7 . 1.1)
-                (org-level-8 . 1.1)))
-  (set-face-attribute (car face) nil :font "Ubuntu" :height (cdr face)))
-
-(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-(set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-table nil :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
 (use-package org-bullets
   :after org
@@ -265,3 +248,5 @@
 (use-package edit-indirect)
 
 (use-package yaml-mode)
+
+(use-package gdscript-mode)

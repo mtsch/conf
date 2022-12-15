@@ -26,6 +26,7 @@ redshift -l -36.8:174.8 -t 6000:3500 &
 trayer --align right --width 10 --transparent true --alpha 0 --tint 0x001E26 --edge top &
 xfce4-power-manager --daemon
 nm-applet &
+conky &
 pasystray --notify=sink_default &
 lxappearance &
 

@@ -11,7 +11,7 @@ source "$SOURCES"/git-completion-bash
 # misc
 alias df='df -h'
 alias du='du -h'
-alias grep='egrep --color=auto'
+alias grep='grep -E --color=auto'
 alias poogle='ping www.google.com'
 # restart
 alias rebash='source ~/.bashrc'

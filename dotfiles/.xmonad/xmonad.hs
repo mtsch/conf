@@ -66,8 +66,8 @@ theTerminal = "st"
 theWorkspaces :: [String]
 --theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
 --                ++ ["NSP"]
-theWorkspaces = clickable [" ⅰ "," ⅱ "," ⅲ "," ⅳ "," ⅴ "," ⅵ "," ⅶ "," ⅷ "," ⅸ "]
---theWorkspaces = clickable [" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "]
+--theWorkspaces = clickable [" ⅰ "," ⅱ "," ⅲ "," ⅳ "," ⅴ "," ⅵ "," ⅶ "," ⅷ "," ⅸ "]
+theWorkspaces = clickable [" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "]
                 ++ ["NSP"]
     where
       clickable ws = zipWith action ws [1..]

@@ -10,3 +10,6 @@
 [submodule "dotfiles/.xmonad/xmobar-git"]
 	path = dotfiles/.xmonad/xmobar-git
 	url = https://codeberg.org/xmobar/xmobar
+[submodule "dotfiles/.themes/numix-solarized-gtk-theme"]
+	path = dotfiles/.themes/numix-solarized-gtk-theme
+	url = https://github.com/mtsch/numix-solarized-gtk-theme

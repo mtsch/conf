@@ -1,20 +1,16 @@
-Config { font = "xft:Hack Nerd Font Mono:pixelsize=18"
-       , additionalFonts = [ "xft:Ubuntu:pixelsize=18"
-                           , "xft:Nanum Gothic Coding:pixelsize=16:weight=bold"
-                           , "xft:Hack Nerd Font Mono:pixelsize=18:antialias=true:weight=Bold"
-                           ]
-       --, bgColor = "#001e26"
+Config { font = "Hack Nerd Font Mono 18px"
+       , additionalFonts = []
        , bgColor = "#001e26"
        , fgColor = "#839496"
        , alpha = 255
-       , position = TopW L 90
+       , position = TopSize L 90 26
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%UnsafeStdinReader%}{%NZAA%<action=`xdotool key super+Delete`>%multicpu%%memory%</action> %date%"
+       , template = "%UnsafeStdinReader%}{<action=`xdotool key super+Delete`>%multicpu%%memory%</action> %date%"
 
        , lowerOnStart = True
        , commands = [ Run UnsafeStdinReader
-                    , Run MultiCpu [ "--template" , "<vbar0><vbar1><vbar2><vbar3>"
+                    , Run MultiCpu [ "--template" , "<vbar0><vbar1><vbar2><vbar3><vbar4><vbar5><vbar6><vbar7><vbar8><vbar9><vbar10><vbar11>"
                                    , "--Low"      , "50"
                                    , "--High"     , "85"
                                    , "--low"      , "#859900"
