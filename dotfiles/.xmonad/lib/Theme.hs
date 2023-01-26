@@ -54,7 +54,7 @@ thePP h = FancyPP { backgroundColor    = barBg
                   , urgentWSTheme      = fancy base03 red . underline' barBg
 
                   , isTabbedLayout     = (== "t")
-                  , tabAreaWidth       = 90
+                  , tabAreaWidth       = 89
                   , noWindowsTheme     = fancy barBg barBg
                   , untabbedTheme      = fancy base01 barBg
                   , activeTabTheme     = fancy base1 base03 . underline' yellow

@@ -5,9 +5,13 @@
       user-mail-address "matijacufar@gmail.com")
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(setq package-archives '(
+  ("org" . "https://orgmode.org/elpa/")
+  ("gnu" . "https://elpa.gnu.org/packages/")
+  ("melpa" . "https://melpa.org/packages/")
+))
 (package-initialize)
+(package-refresh-contents)
 
 (unless package-archive-contents
   (package-refresh-contents))
@@ -126,7 +130,6 @@
          ))
 
   :config
-  (require 'helm-config)
   (require 'helm-misc)
   (require 'helm-locate)
   (setq helm-quick-update t)
@@ -146,6 +149,12 @@
 (use-package evil-collection
   :after evil
   :config
+  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+  ; Make horizontal movement cross lines
+  (setq-default evil-cross-lines t)
   (evil-collection-init))
 
 (use-package which-key
@@ -182,9 +191,8 @@
 
 (defun m/org-setup ()
   (org-indent-mode)
-  (variable-pitch-mode 1)
-  (auto-fill-mode 0)
-  (visual-line-mode 1)
+  (auto-fill-mode nil)
+  (visual-line-mode t)
   (setq evil-auto-indent nil))
 
 (use-package org
@@ -209,7 +217,7 @@
 
 (defun m/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
-                      (expand-file-name "~/.emacs.d/init.org"))
+                      (expand-file-name "~/conf/dotfiles/.emacs.d/init.org"))
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
 
@@ -231,7 +239,7 @@
   (setq julia-repl-switches "-O3 -t2")
   (setq julia-repl-executable-records
         '((master "julia-master")
-          (stable "julia-stable")
+          (stable "julia")
           (remote "julia-remote")
           (lts "julia-lts")))
   (julia-repl-set-terminal-backend 'vterm))
@@ -250,3 +258,38 @@
 (use-package yaml-mode)
 
 (use-package gdscript-mode)
+
+(use-package reftex)
+(use-package auctex-latexmk)
+(use-package pdf-tools
+  :config (progn (define-key pdf-view-mode-map (kbd "h")
+                   'pdf-annot-add-highlight-markup-annotation)
+                 (define-key pdf-view-mode-map (kbd "t")
+                   'pdf-annot-add-text-annotation)
+                 (define-key pdf-view-mode-map (kbd "d")
+                   'pdf-annot-delete)
+                 (define-key pdf-view-mode-map (kbd "s")
+                   'pdf-annot-add-strikeout-markup-annotation))
+)
+(use-package tex
+  :ensure auctex
+  :mode ("\\.tex\\'" . latex-mode)
+  :config
+  (setq TeX-source-correlate-mode t)
+  (setq TeX-source-correlate-method 'synctex)
+  (require 'reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (require 'auctex-latexmk)
+  (auctex-latexmk-setup)
+  (pdf-tools-install)
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-source-correlate-start-server t)
+  ;; Update PDF buffers after successful LaTeX runs
+  (add-hook 'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer)
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (reftex-mode t)
+              (flyspell-mode t)
+              (visual-line-mode t)
+              )))

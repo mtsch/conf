@@ -1,0 +1,34 @@
+#!/bin/sh
+
+volume=$(pulsemixer --get-volume | awk '{print $1}')
+mute=$(pulsemixer --get-mute)
+
+if [ $mute -eq 1 ]; then
+    echo "婢"
+elif [ $volume -ge 100 ]; then
+    echo ""
+elif [ $volume -ge 90 ]; then
+    echo ""
+elif [ $volume -ge 80 ]; then
+    echo ""
+elif [ $volume -ge 70 ]; then
+    echo ""
+elif [ $volume -ge 60 ]; then
+    echo ""
+elif [ $volume -gt 50 ]; then
+    echo ""
+elif [ $volume -eq 50 ]; then
+    echo ""
+elif [ $volume -ge 40 ]; then
+    echo ""
+elif [ $volume -ge 30 ]; then
+    echo ""
+elif [ $volume -ge 20 ]; then
+    echo ""
+elif [ $volume -ge 10 ]; then
+    echo ""
+elif [ $volume -gt 0 ]; then
+    echo ""
+elif [ $volume -eq 0 ]; then
+    echo ""
+fi

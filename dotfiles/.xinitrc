@@ -12,19 +12,18 @@ export QT_QPA_PLATFORMTHEME=gtk2
 xrdb ~/.Xresources
 
 # Keyboard stuff
-syndaemon -t -k -i 1 -d # disable touchpad when typing
 xset -b # disable beep
 
 # Daemons
 emacs --daemon
 redshift -l -36.8:174.8 -t 6000:3500 &
+xfce4-powermanager &
 /usr/lib/xfce4/notifyd/xfce4-notifyd &
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 ~/.dropbox-dist/dropboxd &
 
 # Tray stuff
-trayer --align right --width 10 --transparent true --alpha 0 --tint 0x001E26 --edge top &
-xfce4-power-manager --daemon
+trayer --align right --width 5 --transparent true --alpha 0 --tint 0x001E26 --edge top &
 nm-applet &
 conky &
 pasystray --notify=sink_default &

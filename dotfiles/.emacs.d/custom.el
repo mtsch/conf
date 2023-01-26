@@ -8,7 +8,7 @@
    '("4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "c433c87bd4b64b8ba9890e8ed64597ea0f8eb0396f4c9a9e01bd20a04d15d358" default))
  '(helm-minibuffer-history-key "M-p")
  '(package-selected-packages
-   '(markdown-mode haskell-mode eglot elgot helm-lsp lsp-mode gdscript-mode yaml-mode org-chef mu4e which-key vterm visual-fill-column visual-fill use-package undo-tree solarized-theme rich-minority org-bullets magit-todos lsp-haskell julia-repl julia-mode helm heaven-and-hell forge flycheck fill-column-indicator evil-magit evil-collection edit-indirect doom-modeline))
+   '(auctex pdf-tools auctex-latexmk markdown-mode haskell-mode eglot elgot helm-lsp lsp-mode gdscript-mode yaml-mode org-chef mu4e which-key vterm visual-fill-column visual-fill use-package undo-tree solarized-theme rich-minority org-bullets magit-todos lsp-haskell julia-repl julia-mode helm heaven-and-hell forge flycheck fill-column-indicator evil-magit evil-collection edit-indirect doom-modeline))
  '(send-mail-function 'smtpmail-send-it)
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 25)

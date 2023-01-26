@@ -3,25 +3,41 @@ Config { font = "Hack Nerd Font Mono 18px"
        , bgColor = "#001e26"
        , fgColor = "#839496"
        , alpha = 255
-       , position = TopSize L 90 26
+       , position = TopSize L 95 26
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%UnsafeStdinReader%}{<action=`xdotool key super+Delete`>%multicpu%%memory%</action> %date%"
+       , template = "%UnsafeStdinReader%}{<action=`xdotool key super+Delete`>%multicpu%%memory%</action> %date% <action=`cycle-power-profile`>%battery%</action> <action=`pulsemixer --change-volume +5` button=4><action=`pulsemixer --change-volume -5` button=5><action=`pulsemixer --set-volume 50` button=2>%volicon%</action></action></action>"
 
        , lowerOnStart = True
-       , commands = [ Run UnsafeStdinReader
-                    , Run MultiCpu [ "--template" , "<vbar0><vbar1><vbar2><vbar3><vbar4><vbar5><vbar6><vbar7><vbar8><vbar9><vbar10><vbar11>"
-                                   , "--Low"      , "50"
-                                   , "--High"     , "85"
-                                   , "--low"      , "#859900"
-                                   , "--normal"   , "#b58900"
-                                   , "--high"     , "#dc322f"
-                                   ] 10
+       , commands =
+         [ Run UnsafeStdinReader
+         , Run MultiCpu [ "--template" , "<vbar0><vbar1><vbar2><vbar3><vbar4><vbar5><vbar6><vbar7><vbar8><vbar9><vbar10><vbar11>"
+                        , "--Low"      , "50"
+                        , "--High"     , "85"
+                        , "--low"      , "#859900"
+                        , "--normal"   , "#b58900"
+                        , "--high"     , "#dc322f"
+                        ] 10
 
-                    , Run Memory ["--template", "<usedvbar>"] 10
-                    , Run Date "<action=`xdotool key super+shift+control+c`><box type=Bottom width=4 color=#001e26><fc=#839496,#073642> %a %b %d </fc><fc=#93a1a1,#073642>%H:%M:%S </fc></box></action>" "date" 10
-                    , Run Weather "NZAA" [ "--template", "<action=`xdotool key super+shift+control+w`><tempC>°C</action>"] 18000
-                    ]
+         , Run Memory ["--template", "<usedvbar>"] 10
+         , Run Date "<action=`xdotool key super+shift+control+c`><box type=Bottom width=4 color=#001e26><fc=#839496,#073642> %a %b %d </fc><fc=#93a1a1,#073642>%H:%M:%S </fc></box></action>" "date" 10
+         , Run Weather "NZAA" [ "--template", "<action=`xdotool key super+shift+control+w`><tempC>°C</action>"] 18000
+         , Run BatteryP ["BAT0"] [ "--template", "<leftbar><acstatus>"
+                                 , "-W", "0"
+                                 , "-f", "\xf579\xf57a\xf57b\xf57c\xf57d\xf57e\xf57f\xf580\xf581\xf578"
+                                 , "--"
+                                 , "-L", "10"
+                                 , "-H", "75"
+                                 , "-l", "#dc322f"
+                                 , "-m", "#cb4b16"
+                                 , "-h", "#859900"
+                                 , "-p", "#6c71c4"
+                                 , "-O", " \xfba3   "
+                                 , "-i", " \xfba3   "
+                                 , "-o", " <timeleft>"
+                                 ] 50
+         , Run Com "volicon" [] "volume" 10
+         ]
        }
 
 -- base04 = "#001e26"

@@ -1,5 +1,15 @@
 #!/bin/bash
-PS1='[\W]$ '
+
+# Display red dollar sign when previous command failed
+function color_dollar() {
+    if [ $1 == 0 ]; then
+	echo -e '$'
+    else
+	echo -e '\e[0;31m$\e[0m'
+    fi
+}
+
+PS1='[\W]$(color_dollar $?) '
 shopt -s checkwinsize
 
 SOURCES=$HOME/conf/scripts/bashrc-sources

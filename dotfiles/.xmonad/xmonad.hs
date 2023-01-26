@@ -61,7 +61,7 @@ main = do
     `additionalKeysP` theKeys
 
 theTerminal :: String
-theTerminal = "st"
+theTerminal = "alacritty"
 
 theWorkspaces :: [String]
 --theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
@@ -230,8 +230,7 @@ theKeys =
     -- audio
     , ("M-=",               spawn "pulsemixer --change-volume +5")
     , ("M--",               spawn "pulsemixer --change-volume -5")
-    , ("M-S-=",             spawn "pulsemixer --change-volume +1")
-    , ("M-S--",             spawn "pulsemixer --change-volume -1")
+    , ("M-S-=",             spawn "pulsemixer --set-volume 50")
     , ("M-C-=",             spawn "pulsemixer --set-volume 100")
     , ("M-C--",             spawn "pulsemixer --toggle-mute")
 

@@ -1,0 +1,16 @@
+#!/bin/sh
+current_profile=$(system76-power profile | grep 'Power Profile:' | awk '{print $3}')
+
+brightness=$(brightnessctl g)
+
+if [ $current_profile == "Battery" ]; then
+   new_profile=balanced
+elif [ $current_profile == "Balanced" ]; then
+   new_profile=performance
+else
+   new_profile=battery
+fi
+system76-power profile $new_profile
+brightnessctl s $brightness
+
+notify-send "profile $new_profile"

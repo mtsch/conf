@@ -2,3 +2,4 @@
 ICON="/usr/share/icons/Papirus/128x128/apps/emacs25.svg"
 emacsclient -e '(kill-emacs)'
 emacs --daemon && notify-send -i "$ICON" "Restarted successfully."
+emacsclient -nc
