@@ -61,7 +61,7 @@ main = do
     `additionalKeysP` theKeys
 
 theTerminal :: String
-theTerminal = "alacritty"
+theTerminal = "st"
 
 theWorkspaces :: [String]
 --theWorkspaces = clickable [" 일 "," 이 "," 삼 "," 사 "," 오 "," 육 "," 칠 "," 팔 "," 구 "]
@@ -80,6 +80,7 @@ theManageHook = composeAll
     , className =? "st-256color" --> doF S.swapDown
     , className =? "Thunar"      --> doF S.swapDown
     , className =? "Emacs"       --> doF S.swapDown
+    , className =? "floatme"     --> doFloat
     -- default workspaces
     -- don't focus xfce4-notifyd
     , className =? "Xfce4-notifyd" --> doIgnore
@@ -206,7 +207,7 @@ theKeys =
     , ("M-<F1>",            sendMessage FirstLayout)
     , ("M-<F2>",            sendMessage FirstLayout >> sendMessage NextLayout)
     -- application shortcuts and scratchpads
-    , ("M-S-p",             spawn "screenshot")
+    , ("M-C-p",             spawn "xfce4-screenshooter")
     , ("M-`",               namedScratchpadAction scratchpads "scratch")
     , ("M-C-`",             namedScratchpadAction scratchpads "julia")
     , ("M-i",               spawn "notify-window-title")

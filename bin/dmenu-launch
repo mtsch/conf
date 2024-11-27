@@ -11,13 +11,16 @@ firefox	firefox
 firefox (private window)	firefox --private-window
 web search	dmenu-websearch
 transmission	transmission-gtk
+trenchbroom	trenchbroom
+morrowind	openmw-launcher
 restart xmonad	remonad
 restart emacs	remacs
 youtube-dl clipboard	youtube-dl-clipboard
 mpv clipboard	mpv-clipboard
 wget clipboard	wget-clipboard
 slsk	soulseekqt
-morrowind	openmw-launcher
 bitwig	bitwig-studio
 zoom	zoom
+darkmod	~/darkmod/thedarkmod.x64
+beyondallreason	beyondallreason
 EOF

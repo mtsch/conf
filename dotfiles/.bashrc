@@ -1,15 +1,5 @@
 #!/bin/bash
-
-# Display red dollar sign when previous command failed
-function color_dollar() {
-    if [ $1 == 0 ]; then
-	echo -e '$'
-    else
-	echo -e '\e[0;31m$\e[0m'
-    fi
-}
-
-PS1='[\W]$(color_dollar $?) '
+PS1='[\W]$ '
 shopt -s checkwinsize
 
 SOURCES=$HOME/conf/scripts/bashrc-sources
@@ -43,26 +33,26 @@ opc() { setsid ${OPENER:-exo-open} "$@" & disown; exit; }
 toup(){ touch "$1" && op "$1";}
 mkcd (){ mkdir -p "$*"; cd "$*";}
 
-# yaourt reminders
-alias yaoupg='echo yay -Syu'
-alias yaoinst='echo yay -S'
-alias yaoreps='echo yay -Ss'
-alias yaorem='echo yay -Rns'
-
-# Toggle novartis proxy.
-lekproxy () {
-    if [ -e "$http_proxy" ]; then
-        echo "lekproxy on"
-        export {http,https,ftp}_proxy='http://simg-proxy.eu.novartis.net:2010'
-    else
-        echo "lekproxy off"
-        unset {http,https,ftp}_proxy
-    fi
-}
-
 PROMPT_COMMAND='printf "\033]0;%s\007" "${PWD/#$HOME/"~"}"'
 
 export HISTSIZE=-1
 export HISTFILESIZE=-1
 
-export RACK_DIR=~/programs/Rack-SDK
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/m/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/m/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/m/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/m/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+  
+conda deactivate
+
+export PYTHONPATH=$PYTHONPATH:/home/m/wrk/aqmc/ad_afqmc

@@ -11,10 +11,10 @@
   ("melpa" . "https://melpa.org/packages/")
 ))
 (package-initialize)
-(package-refresh-contents)
+; (package-refresh-contents)
 
-(unless package-archive-contents
-  (package-refresh-contents))
+; (unless package-archive-contents
+;  (package-refresh-contents))
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -164,6 +164,8 @@
   :config
   (setq which-key-idle-delay 1))
 
+(use-package company)
+
 (use-package magit
   :bind ((:map magit-status-mode-map)
          ("C-<tab>" . nil)))
@@ -191,7 +193,6 @@
 
 (defun m/org-setup ()
   (org-indent-mode)
-  (auto-fill-mode nil)
   (visual-line-mode t)
   (setq evil-auto-indent nil))
 
@@ -236,10 +237,10 @@
   :load-path "~/.emacs.d/plugins/julia-repl"
   :config
   (add-hook 'julia-mode-hook 'julia-repl-mode)
-  (setq julia-repl-switches "-O3 -t2")
+  (setq julia-repl-switches "-O3 -tauto")
   (setq julia-repl-executable-records
-        '((master "julia-master")
-          (stable "julia")
+        '((stable "julia")
+          (master "julia-master")
           (remote "julia-remote")
           (lts "julia-lts")))
   (julia-repl-set-terminal-backend 'vterm))
@@ -259,18 +260,22 @@
 
 (use-package gdscript-mode)
 
+(use-package quelpa
+  :ensure t)
+
 (use-package reftex)
 (use-package auctex-latexmk)
 (use-package pdf-tools
-  :config (progn (define-key pdf-view-mode-map (kbd "h")
-                   'pdf-annot-add-highlight-markup-annotation)
-                 (define-key pdf-view-mode-map (kbd "t")
-                   'pdf-annot-add-text-annotation)
-                 (define-key pdf-view-mode-map (kbd "d")
-                   'pdf-annot-delete)
-                 (define-key pdf-view-mode-map (kbd "s")
-                   'pdf-annot-add-strikeout-markup-annotation))
-)
+  :ensure t
+  :after (quelpa)
+  :config
+  (pdf-tools-install t)
+  (quelpa '(pdf-continuous-scroll-mode
+          :fetcher github
+          :repo "dalanicolai/pdf-continuous-scroll-mode.el"))
+
+  (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode))
+
 (use-package tex
   :ensure auctex
   :mode ("\\.tex\\'" . latex-mode)
@@ -293,3 +298,6 @@
               (flyspell-mode t)
               (visual-line-mode t)
               )))
+
+(use-package rustic)
+(use-package wgsl-mode)

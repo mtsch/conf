@@ -3,7 +3,7 @@
 export INPUTRC=~/.inputrc
 
 export EDITOR="emacsclient -c"
-export PATH=$PATH:$HOME/conf/bin:$HOME/.local/bin
+export PATH=$PATH:$HOME/conf/bin:$HOME/.local/bin:$HOME/miniconda3/bin
 
 export XDG_DESKTOP_DIR="$HOME/desktop"
 export XDG_DOCUMENTS="$HOME/docs"

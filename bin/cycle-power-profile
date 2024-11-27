@@ -4,11 +4,14 @@ current_profile=$(system76-power profile | grep 'Power Profile:' | awk '{print $
 brightness=$(brightnessctl g)
 
 if [ $current_profile == "Battery" ]; then
-   new_profile=balanced
+    new_profile=balanced
 elif [ $current_profile == "Balanced" ]; then
-   new_profile=performance
+    new_profile=performance
+elif [ $current_profile == "Performance" ]; then
+    new_profile=battery
 else
-   new_profile=battery
+    notify-send "unknown profile: \"$current_profile\""
+    exit 1
 fi
 system76-power profile $new_profile
 brightnessctl s $brightness

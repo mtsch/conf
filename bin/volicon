@@ -4,7 +4,7 @@ volume=$(pulsemixer --get-volume | awk '{print $1}')
 mute=$(pulsemixer --get-mute)
 
 if [ $mute -eq 1 ]; then
-    echo "婢"
+    echo ""
 elif [ $volume -ge 100 ]; then
     echo ""
 elif [ $volume -ge 90 ]; then

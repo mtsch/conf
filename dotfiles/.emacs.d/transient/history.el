@@ -17,5 +17,8 @@
  (magit-pull nil)
  (magit-push nil
 	     ("--force-with-lease"))
- (magit-rebase nil)
- (magit-stash nil))
+ (magit-rebase
+  ("--autostash")
+  nil)
+ (magit-stash nil)
+ (magit-tag nil))
