@@ -3,6 +3,7 @@ USAGE="""
 Usage:
   vid split [FILE] [TIMES...]
   vid rotate [cw,ccw,f] [FILE]
+  vid resize [HEIGHT] [FILE]
   vid join [-o FILE] [FILES...]
   vid audio [-o FILE] [FILE] [TIMES]
   vid deborder [-s skip_frames | -m w:h:x:y] [FILE]
@@ -59,6 +60,15 @@ rotate() {
     echo "$FFMPEG -i '$input' -vf transpose=$direction '$base-$1.$ext'" > "$CMD"
     process
 }
+
+resize() {
+    input=$2
+    base="${input%.*}"
+    ext="${input##*.}"
+    echo "$FFMPEG -i '$input' -filter:v scale=-1:$1 -c:a copy '$base-${1}p.$ext'" > "$CMD"
+    process
+}
+
 
 join() {
     rm "$CACHEDIR/filelist"
@@ -149,6 +159,7 @@ case "$action" in
     split) split "$@";;
     resolution) resolution "$@";;
     rotate) rotate "$@";;
+    resize) resize "$@";;
     join) join "$@";;
     audio) audio "$@";;
     deborder) deborder "$@";;
